@@ -1,10 +1,10 @@
-import {Request, Response, NextFunction} from "express";
-import {HttpException} from "../errors";
+import { Request, Response, NextFunction } from "express";
+import { NotFoundError } from "../errors/NotFoundError";
 
 class NotFoundController {
 
     async handle(request: Request, response: Response, next: NextFunction){
-        const error = new HttpException(404, "Not Found");
+        const error = new NotFoundError();
         next(error);
     }
 
