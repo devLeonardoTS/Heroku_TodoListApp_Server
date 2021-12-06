@@ -13,13 +13,15 @@ datasource db {
 
 model UserAccount {
   username String @id @db.VarChar(50)
+  
+  password String @db.VarChar(100)
 
-  password String @db.VarChar(50)
-  createdAt DateTime @db.Timestamp(0) @default(now())
-  updatedAt DateTime @db.Timestamp(0) @default(now())
-  lastLogin DateTime @db.Timestamp(0) @default(now())
+  role UserRole @default(USER)
+  
+  createdAt DateTime @db.Timestamptz(0) @default(now())
+  updatedAt DateTime @db.Timestamptz(0) @default(now())
+  lastLogin DateTime @db.Timestamptz(0) @default(now())
 
-  Tasks Task[]
   UserProfile UserProfile?
 }
 
@@ -28,10 +30,13 @@ model UserProfile {
   nickname String @db.VarChar(50)
   photoId String @db.VarChar(255) @default("default_user_profile_photo.png")
   message String? @db.VarChar(255)
-  updatedAt DateTime @db.Timestamp(0) @default(now())
+  updatedAt DateTime @db.Timestamptz(0) @default(now())
 
   ownerUsername String @db.VarChar(50)
   UserAccount UserAccount @relation(fields: [ownerUsername], references: [username])
+
+  Tasks Task[]
+  ApplicationReview ApplicationReview?
 }
 
 model Task {
@@ -39,12 +44,34 @@ model Task {
   
   description String @db.VarChar(255)
   status TaskStatus @default(TODO)
-  createdAt DateTime @db.Timestamp(0) @default(now())
-  updatedAt DateTime @db.Timestamp(0) @default(now())
-  completedAt DateTime? @db.Timestamp(0) 
+  createdAt DateTime @db.Timestamptz(0) @default(now())
+  updatedAt DateTime @db.Timestamptz(0) @default(now())
+  completedAt DateTime? @db.Timestamptz(0) 
 
-  creatorUsername String @db.VarChar(50)
-  UserAccount UserAccount @relation(fields: [creatorUsername], references: [username])
+  creatorProfileId String
+  UserProfile UserProfile @relation(fields: [creatorProfileId], references: [id])
+}
+
+model ApplicationReview {
+  id String @id @default(uuid())
+
+  commentary String @db.VarChar(255)
+  rate Int @db.SmallInt
+
+  createdAt DateTime @db.Timestamptz(0) @default(now())
+  updatedAt DateTime @db.Timestamptz(0) @default(now())
+
+  active Boolean @db.Boolean @default(true)
+
+  creatorProfileId String
+  UserProfile UserProfile @relation(fields: [creatorProfileId], references: [id])
+}
+
+enum UserRole {
+  ADMIN
+  EMPLOYEE
+  USER
+  PREMIUM_USER
 }
 
 enum TaskStatus {

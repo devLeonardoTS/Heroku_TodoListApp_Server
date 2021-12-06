@@ -1,6 +1,7 @@
 import { EHttpStatusCode } from "../constants/EHttpStatusCode";
+import { IHttpError } from "./IHttpError";
 
-export abstract class HttpError extends Error {
+export abstract class HttpError extends Error implements IHttpError {
 
     code: EHttpStatusCode;
     status: string;
