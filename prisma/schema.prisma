@@ -11,10 +11,10 @@ datasource db {
 }
 
 model UserAccount {
-  username String @id @db.VarChar(50)
-  
-  password String @db.VarChar(100)
+  id String @id @default(uuid())
 
+  username String @unique @db.VarChar(50)
+  password String @db.VarChar(100)
   role UserRole @default(USER)
   
   createdAt DateTime @db.Timestamptz(0) @default(now())
@@ -26,13 +26,15 @@ model UserAccount {
 
 model UserProfile {
   id String @id @default(uuid())
+
   nickname String @db.VarChar(50)
   photoId String @db.VarChar(255) @default("default_user_profile_photo.png")
   message String? @db.VarChar(255)
+
   updatedAt DateTime @db.Timestamptz(0) @default(now())
 
-  ownerUsername String @db.VarChar(50)
-  UserAccount UserAccount @relation(fields: [ownerUsername], references: [username])
+  ownerId String @db.VarChar(50)
+  UserAccount UserAccount @relation(fields: [ownerId], references: [id])
 
   Tasks Task[]
   ApplicationReview ApplicationReview?
