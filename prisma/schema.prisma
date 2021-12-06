@@ -11,7 +11,7 @@ datasource db {
 }
 
 model UserAccount {
-  id String @id @default(uuid())
+  id String @id @db.VarChar(50) @default(uuid())
 
   username String @unique @db.VarChar(50)
   password String @db.VarChar(100)
@@ -25,7 +25,7 @@ model UserAccount {
 }
 
 model UserProfile {
-  id String @id @default(uuid())
+  id String @id @db.VarChar(50) @default(uuid())
 
   nickname String @db.VarChar(50)
   photoId String @db.VarChar(255) @default("default_user_profile_photo.png")
@@ -41,7 +41,7 @@ model UserProfile {
 }
 
 model Task {
-  id String @id @default(uuid())
+  id String @id @db.VarChar(50) @default(uuid())
   
   description String @db.VarChar(255)
   status TaskStatus @default(TODO)
@@ -54,7 +54,7 @@ model Task {
 }
 
 model ApplicationReview {
-  id String @id @default(uuid())
+  id String @id @db.VarChar(50) @default(uuid())
 
   commentary String @db.VarChar(255)
   rate Int @db.SmallInt
