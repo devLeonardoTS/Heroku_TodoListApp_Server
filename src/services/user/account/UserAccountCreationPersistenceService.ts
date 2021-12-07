@@ -1,11 +1,11 @@
-import prismaClient from "../../apis/prisma";
-import { ISafeUserAccountDataDisplay } from "../../classes/UserAccount/ISafeUserAccountDataDisplay";
-import { IUserAccountCreationData } from "../../classes/UserAccount/IUserAccountCreationData";
-import { SafeUserAccountDataDisplay } from "../../classes/UserAccount/SafeUserAccountDataDisplay";
-import { EDatabaseErrorMessage } from "../../constants/EDatabaseErrorMessage";
-import { EDatabaseErrorStatus } from "../../constants/EDatabaseErrorStatus";
-import { DatabaseError } from "../../errors/DatabaseError";
-import { ApplicationService } from "../ApplicationService";
+import prismaClient from "../../../apis/prisma";
+import { ISafeUserAccountDataDisplay } from "../../../classes/user/account/ISafeUserAccountDataDisplay";
+import { IUserAccountCreationData } from "../../../classes/user/account/IUserAccountCreationData";
+import { SafeUserAccountDataDisplay } from "../../../classes/user/account/SafeUserAccountDataDisplay";
+import { EDatabaseErrorMessage } from "../../../constants/EDatabaseErrorMessage";
+import { EDatabaseErrorStatus } from "../../../constants/EDatabaseErrorStatus";
+import { DatabaseError } from "../../../errors/DatabaseError";
+import { ApplicationService } from "../../ApplicationService";
 
 export class UserAccountCreationPersistenceService extends ApplicationService<ISafeUserAccountDataDisplay> {
 
@@ -34,16 +34,16 @@ export class UserAccountCreationPersistenceService extends ApplicationService<IS
                 error.msg = errorArr[errorArr.length - 1]?.trim() || error.message;
 
                 this.error = new DatabaseError(
-                    EDatabaseErrorStatus.DATA_INSERTION_ERROR,
-                    EDatabaseErrorMessage.DATA_INSERTION_ERROR,
+                    EDatabaseErrorStatus.DATABASE_INSERTION_ERROR,
+                    EDatabaseErrorMessage.DATABASE_INSERTION_ERROR,
                     error
                 );
 
             } else {
 
                 this.error = new DatabaseError(
-                    EDatabaseErrorStatus.DATA_INSERTION_ERROR,
-                    EDatabaseErrorMessage.DATA_INSERTION_ERROR
+                    EDatabaseErrorStatus.DATABASE_INSERTION_ERROR,
+                    EDatabaseErrorMessage.DATABASE_INSERTION_ERROR
                 );
 
             }

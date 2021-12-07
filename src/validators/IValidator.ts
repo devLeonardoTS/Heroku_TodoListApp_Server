@@ -1,11 +1,11 @@
 import { IHttpError } from "../errors/IHttpError";
 import { IRequestedFieldsDetails } from "./IRequestedFieldsDetails";
 
-export interface IValidator<T> {
-    data: T;
+export interface IValidator<AnyInputType> {
+    data: AnyInputType;
     requestedFieldsDetails: IRequestedFieldsDetails;
 
-    validated: T | null;
+    validated: AnyInputType | null;
     error: IHttpError | null;
 
     validate(): Promise<boolean>;

@@ -1,6 +1,6 @@
 import express from "express";
 import cors from "cors";
-import { router } from "./routes";
+import { baseRouter } from "./routers/baseRouter";
 import { ErrorHandlerController } from "./controllers/ErrorHandlerController";
 import { NotFoundController } from "./controllers/NotFoundController";
 
@@ -12,7 +12,7 @@ app.use(express.json());
 
 app.use(express.urlencoded({extended: true}));
 
-app.use("/api", router);
+app.use("/api", baseRouter);
 
 app.use(new NotFoundController().handle);
 

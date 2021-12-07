@@ -12,7 +12,7 @@ export class UserAccountCreationData {
 
     constructor(data: any){
         const { username, password } = data;
-        this.username = username || '';
-        this.password = password || '';
+        this.username = username || "";
+        this.password = password || "";
     }
 }

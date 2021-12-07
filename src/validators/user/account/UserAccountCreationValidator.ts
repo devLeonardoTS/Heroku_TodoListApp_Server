@@ -1,23 +1,23 @@
-import prismaClient from "../../apis/prisma";
-import { IUserAccountCreationData } from "../../classes/UserAccount/IUserAccountCreationData";
-import { UserAccountCreationData } from "../../classes/UserAccount/UserAccountCreationData";
-import { EDatabaseErrorMessage } from "../../constants/EDatabaseErrorMessage";
-import { EDatabaseErrorStatus } from "../../constants/EDatabaseErrorStatus";
-import { EUserAccountCreationValidationMessage } from "../../constants/UserAccount/EUserAccountCreationValidationMessage";
-import { EUserAccountCreationField } from "../../constants/UserAccount/EUserAccountCreationField";
-import { DatabaseError } from "../../errors/DatabaseError";
-import { FieldValidationError } from "../../errors/FieldValidationError";
-import { FieldValidationErrorData } from "../../errors/FieldValidationErrorData";
-import { IHttpError } from "../../errors/IHttpError";
-import { IRequestedFieldsDetails } from "../IRequestedFieldsDetails";
-import { RequestedFieldsDetails } from "../RequestedFieldsDetails";
-import { Validator } from "../Validator";
-import { EUserAccountCreationFieldLength } from "../../constants/UserAccount/EUserAccountCreationFieldLength";
+import prismaClient from "../../../apis/prisma";
+import { IUserAccountCreationData } from "../../../classes/user/account/IUserAccountCreationData";
+import { UserAccountCreationData } from "../../../classes/user/account/UserAccountCreationData";
+import { EDatabaseErrorMessage } from "../../../constants/EDatabaseErrorMessage";
+import { EDatabaseErrorStatus } from "../../../constants/EDatabaseErrorStatus";
+import { EUserAccountCreationValidationMessage } from "../../../constants/user/account/EUserAccountCreationValidationMessage";
+import { EUserAccountCreationField } from "../../../constants/user/account/EUserAccountCreationField";
+import { DatabaseError } from "../../../errors/DatabaseError";
+import { FieldValidationError } from "../../../errors/FieldValidationError";
+import { FieldValidationErrorData } from "../../../errors/FieldValidationErrorData";
+import { IHttpError } from "../../../errors/IHttpError";
+import { IRequestedFieldsDetails } from "../../IRequestedFieldsDetails";
+import { RequestedFieldsDetails } from "../../RequestedFieldsDetails";
+import { Validator } from "../../Validator";
+import { EUserAccountCreationFieldLength } from "../../../constants/user/account/EUserAccountCreationFieldLength";
 import validator from "validator";
 import bcrypt from "bcrypt";
-import { ValidationError } from "../../errors/ValidationError";
-import { EValidationErrorStatus } from "../../constants/EValidationErrorStatus";
-import { EValidationErrorMessage } from "../../constants/EValidationErrorMessage";
+import { ValidationError } from "../../../errors/ValidationError";
+import { EValidationErrorStatus } from "../../../constants/EValidationErrorStatus";
+import { EValidationErrorMessage } from "../../../constants/EValidationErrorMessage";
 
 
 export class UserAccountCreationValidator extends Validator<IUserAccountCreationData> {
@@ -174,15 +174,15 @@ export class UserAccountCreationValidator extends Validator<IUserAccountCreation
                 error.msg = errorArr[errorArr.length - 1]?.trim() || error.message;
 
                 this.error = new DatabaseError(
-                    EDatabaseErrorStatus.DATA_VERIFICATION_ERROR,
-                    EDatabaseErrorMessage.DATA_VERIFICATION_ERROR,
+                    EDatabaseErrorStatus.DATABASE_VERIFICATION_ERROR,
+                    EDatabaseErrorMessage.DATABASE_VERIFICATION_ERROR,
                     error
                 );
 
             } else {
                 this.error = new DatabaseError(
-                    EDatabaseErrorStatus.DATA_VERIFICATION_ERROR,
-                    EDatabaseErrorMessage.DATA_VERIFICATION_ERROR
+                    EDatabaseErrorStatus.DATABASE_VERIFICATION_ERROR,
+                    EDatabaseErrorMessage.DATABASE_VERIFICATION_ERROR
                 );
             }
 

@@ -11,7 +11,7 @@ datasource db {
 }
 
 model UserAccount {
-  id String @id @db.VarChar(50) @default(uuid())
+  id String @id @db.Char(36) @default(uuid())
 
   username String @unique @db.VarChar(50)
   password String @db.VarChar(100)
@@ -22,39 +22,42 @@ model UserAccount {
   lastLogin DateTime @db.Timestamptz(0) @default(now())
 
   UserProfile UserProfile?
-}
-
-model UserProfile {
-  id String @id @db.VarChar(50) @default(uuid())
-
-  nickname String @db.VarChar(50)
-  photoId String @db.VarChar(255) @default("default_user_profile_photo.png")
-  message String? @db.VarChar(255)
-
-  updatedAt DateTime @db.Timestamptz(0) @default(now())
-
-  ownerId String @db.VarChar(50)
-  UserAccount UserAccount @relation(fields: [ownerId], references: [id])
-
   Tasks Task[]
   ApplicationReview ApplicationReview?
 }
 
-model Task {
-  id String @id @db.VarChar(50) @default(uuid())
+model UserProfile {
+  id String @id @db.Char(36) @default(uuid())
+  ownerId String @db.VarChar(50)
+
+  nickname String @db.VarChar(50)
+  avatarUrl String @db.VarChar(255) @default("default_user_avatar.png")
+  message String? @db.VarChar(255)
+
+  updatedAt DateTime @db.Timestamptz(0) @default(now())
+
   
+  UserAccount UserAccount @relation(fields: [ownerId], references: [id])
+}
+
+model Task {
+  id String @id @db.Char(36) @default(uuid())
+  creatorId String @db.Char(36)
+
   description String @db.VarChar(255)
   status TaskStatus @default(TODO)
+
   createdAt DateTime @db.Timestamptz(0) @default(now())
   updatedAt DateTime @db.Timestamptz(0) @default(now())
   completedAt DateTime? @db.Timestamptz(0) 
 
-  creatorProfileId String
-  UserProfile UserProfile @relation(fields: [creatorProfileId], references: [id])
+  
+  UserAccount UserAccount @relation(fields: [creatorId], references: [id])
 }
 
 model ApplicationReview {
-  id String @id @db.VarChar(50) @default(uuid())
+  id String @id @db.Char(36) @default(uuid())
+  creatorId String @db.Char(36)
 
   commentary String @db.VarChar(255)
   rate Int @db.SmallInt
@@ -64,8 +67,8 @@ model ApplicationReview {
 
   active Boolean @db.Boolean @default(true)
 
-  creatorProfileId String
-  UserProfile UserProfile @relation(fields: [creatorProfileId], references: [id])
+  
+  UserAccount UserAccount @relation(fields: [creatorId], references: [id])
 }
 
 enum UserRole {
