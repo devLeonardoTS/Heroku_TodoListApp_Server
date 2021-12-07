@@ -1,6 +1,6 @@
 import prismaClient from "../../apis/prisma";
-import { IUserAccountCreationData } from "../../classes/UserAccount/IUserAccountCreationData";
-import { UserAccountCreationData } from "../../classes/UserAccount/UserAccountCreationData";
+import { IUserAccountCreationData } from "../../classes/UserAccountClasses/IUserAccountCreationData";
+import { UserAccountCreationData } from "../../classes/UserAccountClasses/UserAccountCreationData";
 import { EDatabaseErrorMessage } from "../../constants/EDatabaseErrorMessage";
 import { EDatabaseErrorStatus } from "../../constants/EDatabaseErrorStatus";
 import { EUserAccountCreationValidationMessage } from "../../constants/UserAccount/EUserAccountCreationValidationMessage";

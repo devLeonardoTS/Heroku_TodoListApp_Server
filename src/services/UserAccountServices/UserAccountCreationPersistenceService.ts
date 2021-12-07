@@ -1,7 +1,7 @@
 import prismaClient from "../../apis/prisma";
-import { ISafeUserAccountDataDisplay } from "../../classes/UserAccount/ISafeUserAccountDataDisplay";
-import { IUserAccountCreationData } from "../../classes/UserAccount/IUserAccountCreationData";
-import { SafeUserAccountDataDisplay } from "../../classes/UserAccount/SafeUserAccountDataDisplay";
+import { ISafeUserAccountDataDisplay } from "../../classes/UserAccountClasses/ISafeUserAccountDataDisplay";
+import { IUserAccountCreationData } from "../../classes/UserAccountClasses/IUserAccountCreationData";
+import { SafeUserAccountDataDisplay } from "../../classes/UserAccountClasses/SafeUserAccountDataDisplay";
 import { EDatabaseErrorMessage } from "../../constants/EDatabaseErrorMessage";
 import { EDatabaseErrorStatus } from "../../constants/EDatabaseErrorStatus";
 import { DatabaseError } from "../../errors/DatabaseError";

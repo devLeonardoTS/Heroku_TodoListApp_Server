@@ -1,13 +1,13 @@
 import { Request, Response, NextFunction } from "express";
-import { ISafeUserAccountDataDisplay } from "../classes/UserAccount/ISafeUserAccountDataDisplay";
-import { IUserAccountCreationData } from "../classes/UserAccount/IUserAccountCreationData";
+import { ISafeUserAccountDataDisplay } from "../classes/UserAccountClasses/ISafeUserAccountDataDisplay";
+import { IUserAccountCreationData } from "../classes/UserAccountClasses/IUserAccountCreationData";
 import { EHttpStatusCode } from "../constants";
 import { UnexpectedError } from "../errors/UnexpectedError";
 import { IApplicationService } from "../services/IApplicationService";
-import { UserAccountCreationPersistenceService } from "../services/UserAccount/UserAccountCreationPersistenceService";
-import { UserAccountCreationValidationService } from "../services/UserAccount/UserAccountCreationValidationService";
+import { UserAccountCreationPersistenceService } from "../services/UserAccountServices/UserAccountCreationPersistenceService";
+import { UserAccountCreationValidationService } from "../services/UserAccountServices/UserAccountCreationValidationService";
 import { IValidator } from "../validators/IValidator";
-import { UserAccountCreationValidator } from "../validators/UserAccount/UserAccountCreationValidator";
+import { UserAccountCreationValidator } from "../validators/UserAccountValidators/UserAccountCreationValidator";
 
 
 export class UserAccountCreationController {
