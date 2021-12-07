@@ -9,11 +9,11 @@ import { ValuelessFieldsErrorData } from "../errors/ValuelessFieldsErrorData";
 import { IRequestedFieldsDetails } from "./IRequestedFieldsDetails";
 import { IValidator } from "./IValidator";
 
-export abstract class Validator<T> implements IValidator<T> {
+export abstract class Validator<InputType> implements IValidator<InputType> {
 
-    abstract data: T;
+    abstract data: InputType;
     abstract requestedFieldsDetails: IRequestedFieldsDetails;
-    abstract validated: T | null;
+    abstract validated: InputType | null;
     abstract error: IHttpError | null;
 
     abstract validate(): Promise<boolean>;
@@ -22,7 +22,14 @@ export abstract class Validator<T> implements IValidator<T> {
 
         if (this.error){ return true; }
 
-        const receivedDataFields: Array<string> = Object.keys(this.data as T);
+        if (!this.data){
+            this.error = new EmptyFieldsError(
+                new EmptyFieldsErrorData(this.requestedFieldsDetails.acceptableFields as Array<string>)
+            );
+            return true;
+        }
+
+        const receivedDataFields: Array<string> = Object.keys(this.data as InputType);
         if (receivedDataFields.length < 1){ 
             this.error = new EmptyFieldsError(
                 new EmptyFieldsErrorData(this.requestedFieldsDetails.acceptableFields as Array<string>)
@@ -39,7 +46,14 @@ export abstract class Validator<T> implements IValidator<T> {
 
         if (!this.requestedFieldsDetails.requiredFields) { return false; }
 
-        const receivedDataFields: Array<string> = Object.keys(this.data as T);
+        if (!this.data){
+            this.error = new EmptyFieldsError(
+                new EmptyFieldsErrorData(this.requestedFieldsDetails.acceptableFields as Array<string>)
+            );
+            return true;
+        }
+
+        const receivedDataFields: Array<string> = Object.keys(this.data as InputType);
 
         const missingRequiredFields: Array<string> = new Array<string>();
 
@@ -67,14 +81,14 @@ export abstract class Validator<T> implements IValidator<T> {
 
         if (!this.requestedFieldsDetails.acceptableFields) { return false; }
 
-        const receivedDataFields: Array<Array<string>> = Object.entries(this.data as T);
+        const receivedDataFields: Array<Array<string>> = Object.entries(this.data as InputType);
         const valuelessFields: Array<string> = new Array<string>();
         
         receivedDataFields.forEach((keyValuePair) => {
             if (this.requestedFieldsDetails.acceptableFields){
 
                 const key = keyValuePair[0];
-                const value = keyValuePair[1];
+                const value = keyValuePair[1] || "";
 
                 const isAtAcceptableDataField: boolean = this.requestedFieldsDetails.acceptableFields.includes(key);
                 const isValueAttached: boolean = value.trim() ? true : false;
@@ -99,14 +113,14 @@ export abstract class Validator<T> implements IValidator<T> {
 
         if (this.error){ return false; }
         
-        const trimmedData: T = this.data as T;
+        const trimmedData: InputType = this.data as InputType;
 
         const fieldKeys: Array<any> = Object.keys(trimmedData);
         
         try {
-            fieldKeys.forEach((key: keyof T) => {
-                const value: string = trimmedData[key] as unknown as string;
-                trimmedData[key] = value.trim() as unknown as T[keyof T];
+            fieldKeys.forEach((key: keyof InputType) => {
+                const value: string = trimmedData[key] as unknown as string || "";
+                trimmedData[key] = value.trim() as unknown as InputType[keyof InputType];
             });
         } catch (error) {
             this.error = new UnexpectedError();

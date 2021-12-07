@@ -1,8 +1,8 @@
-import { IUserAccountCreationData } from "../../classes/UserAccountClasses/IUserAccountCreationData";
-import { UnexpectedError } from "../../errors/UnexpectedError";
-import { IValidator } from "../../validators/IValidator";
-import { UserAccountCreationValidator } from "../../validators/UserAccountValidators/UserAccountCreationValidator";
-import { ApplicationService } from "../ApplicationService";
+import { IUserAccountCreationData } from "../../../classes/user/account/IUserAccountCreationData";
+import { UnexpectedError } from "../../../errors/UnexpectedError";
+import { IValidator } from "../../../validators/IValidator";
+import { UserAccountCreationValidator } from "../../../validators/user/account/UserAccountCreationValidator";
+import { ApplicationService } from "../../ApplicationService";
 
 export class UserAccountCreationValidationService extends ApplicationService<IUserAccountCreationData> {
 
