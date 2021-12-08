@@ -47,7 +47,10 @@ export class UserAuthenticationService extends ApplicationService<IAuthenticated
             return false;
         }
 
-        this.jwtPayload = new UserAuthenticationJWTPayload(this.userAccount);
+        this.jwtPayload = new UserAuthenticationJWTPayload(
+            this.userAccount.id,
+            this.userAccount.role
+        );
 
         if (!this.jwtPayload){
             this.error = new UnexpectedError();
@@ -59,7 +62,7 @@ export class UserAuthenticationService extends ApplicationService<IAuthenticated
             return false; 
         }
 
-        const encoded = jwt.sign(
+        const accessToken = jwt.sign(
             {
                 ...this.jwtPayload
             },
@@ -70,13 +73,15 @@ export class UserAuthenticationService extends ApplicationService<IAuthenticated
             }
         );
 
-        if (!encoded){
+        if (!accessToken){
             this.error = new UnexpectedError();
             return false;
         }
 
+        if (!await this.updateUserAccountLastLogin()){ return false; }
+
         this.result = new AuthenticatedUserResponse(
-            encoded,
+            accessToken,
             new DisplayableAuthenticatedUserAccountData(this.userAccount)
         );
 
@@ -121,6 +126,52 @@ export class UserAuthenticationService extends ApplicationService<IAuthenticated
                 this.error = new DatabaseError(
                     EDatabaseErrorStatus.DATABASE_VERIFICATION_ERROR,
                     EDatabaseErrorMessage.DATABASE_VERIFICATION_ERROR
+                );
+            }
+
+            return false;
+
+        });
+
+    }
+
+    private async updateUserAccountLastLogin(): Promise<boolean> {
+
+        if (!this.userAccount){
+            this.error = new UnexpectedError();
+            return false;
+        }
+
+        return prismaClient.userAccount
+        .update({
+            where: {
+                id: this.userAccount.id
+            },
+            data: {
+                lastLogin: new Date()
+            }
+        })
+        .then((userAccount) => {
+            this.userAccount = userAccount;
+            return true;
+        })
+        .catch((error) => {
+
+            if (process.env.NODE_ENV === "development"){
+
+                const errorArr: Array<string> = error.message.split("\n");
+                error.msg = errorArr[errorArr.length - 1]?.trim() || error.message;
+
+                this.error = new DatabaseError(
+                    EDatabaseErrorStatus.DATABASE_UPDATE_ERROR,
+                    EDatabaseErrorMessage.DATABASE_UPDATE_ERROR,
+                    error
+                );
+
+            } else {
+                this.error = new DatabaseError(
+                    EDatabaseErrorStatus.DATABASE_UPDATE_ERROR,
+                    EDatabaseErrorMessage.DATABASE_UPDATE_ERROR
                 );
             }
 

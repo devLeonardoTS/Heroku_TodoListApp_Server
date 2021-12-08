@@ -3,6 +3,7 @@ import { IDisplayableAuthenticatedUserAccountData } from "./IDisplayableAuthenti
 
 export interface IAuthenticatedUserResponse {
     message: EUserAuthenticationMessage;
-    authToken: string;
+    accessToken: string;
+    tokenType: string;
     user: IDisplayableAuthenticatedUserAccountData;
 }

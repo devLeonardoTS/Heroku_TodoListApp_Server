@@ -4,12 +4,15 @@ import { IDisplayableAuthenticatedUserAccountData } from "./IDisplayableAuthenti
 
 export class AuthenticatedUserResponse implements IAuthenticatedUserResponse {
     message: EUserAuthenticationMessage;
-    authToken: string;
+    accessToken: string;
+    tokenType: string;
     user: IDisplayableAuthenticatedUserAccountData;
 
-    constructor(authToken: string, user: IDisplayableAuthenticatedUserAccountData){
+    constructor(accessToken: string, user: IDisplayableAuthenticatedUserAccountData){
+        const { id, role, createdAt, updatedAt, lastLogin } = user;
         this.message = EUserAuthenticationMessage.AUTHENTICATED;
-        this.authToken = authToken;
-        this.user = user;
+        this.accessToken = accessToken;
+        this.tokenType = 'Bearer';
+        this.user = { id, role, createdAt, updatedAt, lastLogin };
     }
 }

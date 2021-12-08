@@ -5,8 +5,8 @@ export class UserAuthenticationJWTPayload implements IUserAuthenticationJWTPaylo
     userId: string | null;
     userRole: UserRole | null;
 
-    constructor(userAccount: UserAccount){
-        this.userId = userAccount.id;
-        this.userRole = userAccount.role;
+    constructor(userId: string, userRole: UserRole){
+        this.userId = userId;
+        this.userRole = userRole;
     }
 }
