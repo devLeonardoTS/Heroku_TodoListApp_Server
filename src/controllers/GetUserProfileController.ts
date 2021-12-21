@@ -1,27 +1,29 @@
 import { Request, Response, NextFunction } from 'express';
-import { IGetUserProfileRequestParams } from '../classes/user/profile/IGetUserProfileRequestParams';
-import { EUserAuthenticationErrorMessage } from '../constants/user/authentication/EUserAuthenticationErrorMessage';
-import { EUserAuthenticationErrorStatus } from '../constants/user/authentication/EUserAuthenticationErrorStatus';
-import { UserAuthenticationError } from '../errors/UserAuthenticationError';
-
+import { IUserResourceRequestParams } from "../classes/user/IUserResourceRequestParams";
+import { GetUserProfileResponse } from '../classes/user/profile/GetUserProfileResponse';
+import { IDisplayableUserProfileData } from '../classes/user/profile/IDisplayableUserProfileData';
+import { EHttpStatusCode } from '../constants/EHttpStatusCode';
+import { UnexpectedError } from '../errors/UnexpectedError';
+import { IApplicationService } from '../services/IApplicationService';
+import { GetUserProfileService } from '../services/user/profile/GetUserProfileService';
 
 export class GetUserProfileController {
 
-    async handle(request: Request<IGetUserProfileRequestParams>, response: Response, next: NextFunction){
+    async handle(request: Request<IUserResourceRequestParams>, response: Response, next: NextFunction){
 
-        if (!request.user){
-            return next(
-                new UserAuthenticationError(
-                    EUserAuthenticationErrorStatus.AUTHENTICATION_REQUIRED,
-                    EUserAuthenticationErrorMessage.AUTHENTICATION_REQUIRED
-                )
-            );
+        const getUserProfileService: IApplicationService<IDisplayableUserProfileData> = 
+            new GetUserProfileService(request.params.userId);
+
+        await getUserProfileService.execute();
+
+        if (!getUserProfileService.result){
+            if (getUserProfileService.error){ return next (getUserProfileService.error); }
+            return next(new UnexpectedError());
         }
 
-        return response.json({ 
-            message: "Hello I'm responsible for delivering the Profile data of a User. I'm still a work in progress route, so please, come back soon, when I'm ready.",
-            requester: request.user
-        });
+        const userProfile: IDisplayableUserProfileData = getUserProfileService.result;
+
+        return response.status(EHttpStatusCode.OK).json(new GetUserProfileResponse(userProfile));
 
     }
 

@@ -1,8 +1,13 @@
 import { NextFunction, Request, Response } from 'express';
+import { MulterError } from 'multer';
+import { avatarFileSizeLimit, avatarValidMimeTypes } from '../apis/multer';
 import { EHttpStatusCode } from '../constants';
+import { EFileUploadErrorMessage } from '../constants/apis/EFileUploadErrorMessage';
+import { EFileUploadErrorStatus } from '../constants/apis/EFileUploadErrorStatus';
+import { AvatarUploadErrorData } from '../errors/AvatarUploadErrorData';
+import { FileUploadError } from '../errors/FileUploadError';
 import { HttpError } from '../errors/HttpError';
 import { UnexpectedError } from '../errors/UnexpectedError';
-
 
 class ErrorHandlerController {
 
@@ -39,6 +44,24 @@ class ErrorHandlerController {
             }
 
             return response.status(error.code).json(error);
+            
+        }
+
+        if (error instanceof MulterError){
+
+            if (error.code === "LIMIT_FILE_SIZE"){
+                
+                if (error.field === "avatar"){
+                    const uploadError = new FileUploadError(
+                        EFileUploadErrorStatus.INVALID_AVATAR_FILE_SIZE,
+                        EFileUploadErrorMessage.INVALID_AVATAR_FILE_SIZE,
+                        new AvatarUploadErrorData(avatarValidMimeTypes, avatarFileSizeLimit)
+                    );
+
+                    return response.status(uploadError.code).json(uploadError);
+                }
+
+            }
             
         }
 

@@ -2,6 +2,6 @@ import { IUserAuthenticationJWTPayload } from "../../classes/user/authentication
 
 declare module 'express-serve-static-core' {
     interface Request {
-        user: IUserAuthenticationJWTPayload;
+        authenticated?: IUserAuthenticationJWTPayload;
     }
 }

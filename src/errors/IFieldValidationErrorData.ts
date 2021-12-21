@@ -1,4 +1,5 @@
+import { IInvalidField } from "./IInvalidField";
+
 export interface IFieldValidationErrorData {
-    invalidField: string;
-    reason: string;
+    invalidFields: Array<IInvalidField>;
 }

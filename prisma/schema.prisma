@@ -28,10 +28,10 @@ model UserAccount {
 
 model UserProfile {
   id String @id @db.Char(36) @default(uuid())
-  ownerId String @db.VarChar(50)
+  ownerId String @db.Char(36)
 
   nickname String @db.VarChar(50)
-  avatarUrl String @db.VarChar(255) @default("default_user_avatar.png")
+  avatarUrl String @db.VarChar(255) @default("http://storage.googleapis.com/heroku-todolist-server.appspot.com/uploads/avatars/default_user_avatar.png")
   message String? @db.VarChar(255)
 
   updatedAt DateTime @db.Timestamptz(0) @default(now())

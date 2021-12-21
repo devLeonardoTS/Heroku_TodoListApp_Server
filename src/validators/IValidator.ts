@@ -1,12 +1,9 @@
 import { IHttpError } from "../errors/IHttpError";
-import { IRequestedFieldsDetails } from "./IRequestedFieldsDetails";
+import { IValidatableData } from "./IValidatableData";
 
-export interface IValidator<AnyInputType> {
-    data: AnyInputType;
-    requestedFieldsDetails: IRequestedFieldsDetails;
-
-    validated: AnyInputType | null;
+export interface IValidator<AnyTypeToBeValidatorResult> {
+    validatableData: IValidatableData;
+    result: AnyTypeToBeValidatorResult | null;
     error: IHttpError | null;
-
-    validate(): Promise<boolean>;
+    execute(): Promise<boolean>;
 }

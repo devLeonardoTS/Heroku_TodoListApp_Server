@@ -1,11 +1,11 @@
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response, NextFunction } from "express";
 import { EUserAuthenticationErrorMessage } from "../constants/user/authentication/EUserAuthenticationErrorMessage";
 import { EUserAuthenticationErrorStatus } from "../constants/user/authentication/EUserAuthenticationErrorStatus";
-import { UnexpectedError } from '../errors/UnexpectedError';
+import { UnexpectedError } from "../errors/UnexpectedError";
 import { UserAuthenticationError } from "../errors/UserAuthenticationError";
+import { IUserAuthenticationJWTPayload } from "../classes/user/authentication/IUserAuthenticationJWTPayload";
+import { UserAuthenticationJWTPayload } from "../classes/user/authentication/UserAuthenticationJWTPayload";
 import jwt from 'jsonwebtoken';
-import { UserAuthenticationJWTPayload } from '../classes/user/authentication/UserAuthenticationJWTPayload';
-import { IUserAuthenticationJWTPayload } from '../classes/user/authentication/IUserAuthenticationJWTPayload';
 
 export class UserAuthenticationMiddleware {
 
@@ -30,7 +30,10 @@ export class UserAuthenticationMiddleware {
 
         try {
 
-            const { userId, userRole } = jwt.verify(token, process.env.USER_AUTH_JWT_SECRET) as IUserAuthenticationJWTPayload;
+            const { userId, userRole } = jwt.verify(
+                token,
+                process.env.USER_AUTH_JWT_SECRET
+            ) as IUserAuthenticationJWTPayload;
 
             if (!userId || !userRole){
                 return next(
@@ -41,15 +44,15 @@ export class UserAuthenticationMiddleware {
                 );
             }
 
-            request.user = new UserAuthenticationJWTPayload(userId, userRole);
+            request.authenticated = new UserAuthenticationJWTPayload(userId, userRole);
 
         } catch (error: any) {
 
             if (error instanceof jwt.TokenExpiredError){
                 return next(
                     new UserAuthenticationError(
-                        EUserAuthenticationErrorStatus.AUTHENTICATION_EXPIRED,
-                        EUserAuthenticationErrorMessage.AUTHENTICATION_EXPIRED
+                        EUserAuthenticationErrorStatus.EXPIRED_ACCESS_TOKEN,
+                        EUserAuthenticationErrorMessage.EXPIRED_ACCESS_TOKEN
                     )
                 );
             }
