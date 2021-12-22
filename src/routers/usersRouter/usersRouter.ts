@@ -1,11 +1,12 @@
-import { Router } from 'express';
 import multer from 'multer';
+import { Router } from 'express';
 import { multerAvatarUploadConfigs } from '../../apis/multer';
 import { GetUserProfileController } from '../../controllers/GetUserProfileController';
 import { UserAccountCreationController } from '../../controllers/UserAccountCreationController';
 import { UserAuthenticationController } from '../../controllers/UserAuthenticationController';
 import { UserProfileAvatarUploadController } from '../../controllers/UserProfileAvatarUploadController';
 import { UserProfileCreationController } from '../../controllers/UserProfileCreationController';
+import { UserProfileUpdateController } from '../../controllers/UserProfileUpdateController';
 import { AccessPermissionMiddleware } from '../../middlewares/AccessPermissionMiddleware';
 import { UserAuthenticationMiddleware } from '../../middlewares/UserAuthenticationMiddleware';
 
@@ -26,11 +27,19 @@ usersRouter.post("/:userId/profile",
     new UserProfileCreationController().handle
 );
 
+usersRouter.patch("/:userId/profile",
+    new UserAuthenticationMiddleware().requireAuthenticatedUser,
+    new AccessPermissionMiddleware().strictToOwner,
+    new UserProfileUpdateController().handle
+);
+
 usersRouter.patch("/:userId/profile/avatar",
     new UserAuthenticationMiddleware().requireAuthenticatedUser,
     new AccessPermissionMiddleware().strictToOwner,
     multer(multerAvatarUploadConfigs).single("avatar"),
     new UserProfileAvatarUploadController().handle
 );
+
+
 
 export { usersRouter }

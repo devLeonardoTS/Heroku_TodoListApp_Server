@@ -2,7 +2,7 @@ import prismaClient from "../../../apis/prisma";
 import { DisplayableUserProfileData } from "../../../classes/user/profile/DisplayableUserProfileData";
 import { IDisplayableUserProfileData } from "../../../classes/user/profile/IDisplayableUserProfileData";
 import { EAppDefaultString } from "../../../constants/EAppDefaultString";
-import { PrismaErrorUtils } from "../../../utils/PrismaErrorUtils";
+import { PrismaUtils } from "../../../utils/PrismaUtils";
 import { ApplicationService } from "../../ApplicationService";
 
 export class UserProfileAvatarUpdateService extends ApplicationService<IDisplayableUserProfileData> {
@@ -36,7 +36,7 @@ export class UserProfileAvatarUpdateService extends ApplicationService<IDisplaya
         })
         .catch((updateError) => {
 
-            this.error = PrismaErrorUtils.handle(updateError);
+            this.error = PrismaUtils.handleUpdateError(updateError);
             return false;
 
         });

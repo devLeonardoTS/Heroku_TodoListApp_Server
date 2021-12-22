@@ -1,5 +1,6 @@
 import validator from "validator";
 import prismaClient from "../../../apis/prisma";
+import bcrypt from 'bcrypt';
 import { IUserAccountCreationModel } from "../../../models/user/account/IUserAccountCreationModel";
 import { UserAccountCreationModel } from "../../../models/user/account/UserAccountCreationModel";
 import { EDatabaseErrorMessage } from "../../../constants/EDatabaseErrorMessage";
@@ -15,11 +16,10 @@ import { UnexpectedError } from "../../../errors/UnexpectedError";
 import { Validator } from "../../Validator";
 import { IValidatableData } from "../../IValidatableData";
 import { IValidatableField } from "../../IValidatableField";
-import bcrypt from 'bcrypt';
 import { ValidatorError } from "../../../errors/ValidatorError";
 import { EValidatorErrorStatus } from "../../../constants/EValidatorErrorStatus";
 import { EValidatorErrorMessage } from "../../../constants/EValidatorErrorMessage";
-import { EUserAccountCreationField } from "../../../constants/user/account/EUserAccountCreationField";
+import { UserAccountConstants } from "../../../constants/user/account/UserAccountConstants";
 
 export class UserAccountCreationValidator extends Validator<IUserAccountCreationModel> {
 
@@ -40,8 +40,8 @@ export class UserAccountCreationValidator extends Validator<IUserAccountCreation
         if (!await this.encryptPassword()){ return false; }
         
         this.result = new UserAccountCreationModel(
-            this.validatableData.getFieldValue(EUserAccountCreationField.USERNAME),
-            this.validatableData.getFieldValue(EUserAccountCreationField.PASSWORD)
+            this.validatableData.getFieldValue(UserAccountConstants.USERNAME),
+            this.validatableData.getFieldValue(UserAccountConstants.PASSWORD)
         );
 
         return true;
@@ -52,13 +52,13 @@ export class UserAccountCreationValidator extends Validator<IUserAccountCreation
 
         if (this.error){ return true; }
 
-        const password: string = String(this.validatableData.getFieldValue(EUserAccountCreationField.PASSWORD));
-        const username: string = String(this.validatableData.getFieldValue(EUserAccountCreationField.USERNAME));
+        const password: string = String(this.validatableData.getFieldValue(UserAccountConstants.PASSWORD));
+        const username: string = String(this.validatableData.getFieldValue(UserAccountConstants.USERNAME));
 
         const isPasswordEqualsToUsername: boolean = validator.equals(password, username);
 
         if (isPasswordEqualsToUsername){
-            const invalidField: IInvalidField = new InvalidField(EUserAccountCreationField.PASSWORD, EUserAccountCreationValidationMessage.PASSWORD_EQUAL_TO_USERNAME);
+            const invalidField: IInvalidField = new InvalidField(UserAccountConstants.PASSWORD, EUserAccountCreationValidationMessage.PASSWORD_EQUAL_TO_USERNAME);
             const errorData: IFieldValidationErrorData = new FieldValidationErrorData([invalidField]);
             this.error = new FieldValidationError(errorData);
             return true;
@@ -71,7 +71,7 @@ export class UserAccountCreationValidator extends Validator<IUserAccountCreation
 
         if (this.error){ return true; }
 
-        const passwordValidatableField: IValidatableField | null = this.validatableData.getField(EUserAccountCreationField.PASSWORD);
+        const passwordValidatableField: IValidatableField | null = this.validatableData.getField(UserAccountConstants.PASSWORD);
         if (!passwordValidatableField){
             this.error = new UnexpectedError();
             return true;
@@ -96,7 +96,7 @@ export class UserAccountCreationValidator extends Validator<IUserAccountCreation
             });
 
         if (!isStrongPassword){
-            const invalidField: IInvalidField = new InvalidField(EUserAccountCreationField.PASSWORD, EUserAccountCreationValidationMessage.WEAK_PASSWORD);
+            const invalidField: IInvalidField = new InvalidField(UserAccountConstants.PASSWORD, EUserAccountCreationValidationMessage.WEAK_PASSWORD);
             const errorData: IFieldValidationErrorData = new FieldValidationErrorData([invalidField]);
             this.error = new FieldValidationError(errorData);
             return true;
@@ -110,7 +110,7 @@ export class UserAccountCreationValidator extends Validator<IUserAccountCreation
 
         if (this.error){ return true; }
 
-        const username: string = String(this.validatableData.getFieldValue(EUserAccountCreationField.USERNAME));
+        const username: string = String(this.validatableData.getFieldValue(UserAccountConstants.USERNAME));
         
         return prismaClient.userAccount
         .findUnique({
@@ -122,7 +122,7 @@ export class UserAccountCreationValidator extends Validator<IUserAccountCreation
             if (!userAccount){
                 return false;
             } else {
-                const invalidField: IInvalidField = new InvalidField(EUserAccountCreationField.USERNAME, EUserAccountCreationValidationMessage.USERNAME_TAKEN);
+                const invalidField: IInvalidField = new InvalidField(UserAccountConstants.USERNAME, EUserAccountCreationValidationMessage.USERNAME_TAKEN);
                 const errorData: IFieldValidationErrorData = new FieldValidationErrorData([invalidField]);
                 this.error = new FieldValidationError(errorData);
                 return true;
@@ -155,7 +155,7 @@ export class UserAccountCreationValidator extends Validator<IUserAccountCreation
 
     private async encryptPassword(): Promise<boolean> {
 
-        const password: string = String(this.validatableData.getFieldValue(EUserAccountCreationField.PASSWORD));
+        const password: string = String(this.validatableData.getFieldValue(UserAccountConstants.PASSWORD));
 
         const hash: string = await bcrypt.hash(password, 13);
 
@@ -167,7 +167,7 @@ export class UserAccountCreationValidator extends Validator<IUserAccountCreation
             return false;
         }
 
-        const hashedField: IValidatableField | null = this.validatableData.setFieldValue(EUserAccountCreationField.PASSWORD, hash);
+        const hashedField: IValidatableField | null = this.validatableData.setFieldValue(UserAccountConstants.PASSWORD, hash);
 
         if (!hashedField){
             this.error = new UnexpectedError();

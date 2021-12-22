@@ -4,12 +4,12 @@ import { FieldDetails } from "../../FieldDetails";
 import { ValidatableData } from "../../ValidatableData";
 import { ValidatableField } from "../../ValidatableField";
 
-export class UserProfileCreationValidatableData extends ValidatableData {
+export class UserProfileUpdateValidatableData extends ValidatableData {
 
     constructor(ownerId: string, receivedData: any){
         super([
             new ValidatableField(UserProfileConstants.OWNER_ID, new FieldDetails(EFieldValueType.STRING, true)),
-            new ValidatableField(UserProfileConstants.NICKNAME, new FieldDetails(EFieldValueType.STRING, true)),
+            new ValidatableField(UserProfileConstants.NICKNAME, new FieldDetails(EFieldValueType.STRING, false)),
             new ValidatableField(UserProfileConstants.MESSAGE, new FieldDetails(EFieldValueType.STRING, false))
         ]);
 
@@ -22,7 +22,6 @@ export class UserProfileCreationValidatableData extends ValidatableData {
         this.setStringDetails(UserProfileConstants.OWNER_ID, UserProfileConstants.OWNER_ID_MIN_LENGTH, UserProfileConstants.OWNER_ID_MAX_LENGTH);
         this.setStringDetails(UserProfileConstants.NICKNAME, UserProfileConstants.NICKNAME_MIN_LENGTH, UserProfileConstants.NICKNAME_MAX_LENGTH);
         this.setStringDetails(UserProfileConstants.MESSAGE, UserProfileConstants.MESSAGE_MIN_LENGTH, UserProfileConstants.MESSAGE_MAX_LENGTH);
-
     }
 
 }

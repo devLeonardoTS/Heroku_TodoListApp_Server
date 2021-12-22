@@ -1,24 +1,24 @@
 import { EFieldValueType } from "../../../constants/EFieldValueType";
-import { EUserAccountCreationField } from "../../../constants/user/account/EUserAccountCreationField";
 import { ValidatableData } from "../../ValidatableData";
 import { FieldDetails } from "../../FieldDetails";
 import { ValidatableField } from "../../ValidatableField";
+import { UserAccountConstants } from "../../../constants/user/account/UserAccountConstants";
 
 export class UserAccountCreationValidatableData extends ValidatableData {
 
     constructor(receivedData: any){
         super([
-            new ValidatableField(EUserAccountCreationField.USERNAME, new FieldDetails(EFieldValueType.STRING, true)),
-            new ValidatableField(EUserAccountCreationField.PASSWORD, new FieldDetails(EFieldValueType.STRING, true))
+            new ValidatableField(UserAccountConstants.USERNAME, new FieldDetails(EFieldValueType.STRING, true)),
+            new ValidatableField(UserAccountConstants.PASSWORD, new FieldDetails(EFieldValueType.STRING, true))
         ]);
 
-        this.setStringDetails(EUserAccountCreationField.USERNAME, 1, 50);
-        this.setStringDetails(EUserAccountCreationField.PASSWORD, 6, 100);
+        this.setStringDetails(UserAccountConstants.USERNAME, UserAccountConstants.USERNAME_MIN_LENGTH, UserAccountConstants.USERNAME_MAX_LENGTH);
+        this.setStringDetails(UserAccountConstants.PASSWORD, UserAccountConstants.PASSWORD_MIN_LENGTH, UserAccountConstants.PASSWORD_MAX_LENGTH);
 
         const { username, password } = receivedData;
 
-        this.setFieldValue(EUserAccountCreationField.USERNAME, username);
-        this.setFieldValue(EUserAccountCreationField.PASSWORD, password);
+        this.setFieldValue(UserAccountConstants.USERNAME, username);
+        this.setFieldValue(UserAccountConstants.PASSWORD, password);
     }
 
 }

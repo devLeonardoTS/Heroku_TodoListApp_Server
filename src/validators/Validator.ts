@@ -5,7 +5,7 @@ import { FieldValidationErrorData } from "../errors/FieldValidationErrorData";
 import { IHttpError } from "../errors/IHttpError";
 import { IInvalidField } from "../errors/IInvalidField";
 import { InvalidField } from "../errors/InvalidField";
-import { MissingFieldsError } from "../errors/MissingFieldsError";
+import { MissingRequiredFieldsError } from "../errors/MissingRequiredFieldsError";
 import { MissingFieldsErrorData } from "../errors/MissingFieldsErrorData";
 import { UnexpectedError } from "../errors/UnexpectedError";
 import { IFieldDetails } from "./IFieldDetails";
@@ -46,7 +46,7 @@ export abstract class Validator<AnyTypeToBeValidatorResult> implements IValidato
         });
 
         if (missingRequiredFields){
-            this.error = new MissingFieldsError(
+            this.error = new MissingRequiredFieldsError(
                 new MissingFieldsErrorData(missingRequiredFields)
             );
             return true;
@@ -56,7 +56,7 @@ export abstract class Validator<AnyTypeToBeValidatorResult> implements IValidato
 
     };
 
-    protected async isAnyValueRangeInvalid(){
+    protected async isAnyValueRangeInvalid(): Promise<boolean>{
 
         if (this.error){ return true; }
 
@@ -103,6 +103,27 @@ export abstract class Validator<AnyTypeToBeValidatorResult> implements IValidato
         this.error = new FieldValidationError(
             new FieldValidationErrorData(invalidFields) 
         );
+
+        return true;
+
+    }
+
+    protected async capitalizeValue(fieldName: string): Promise<boolean>{
+
+        if (this.error){ return false; }
+
+        if (this.validatableData.fields.length < 1){ return true; }
+
+        const fieldValue: string = String(this.validatableData.getFieldValue(fieldName));
+        
+        if (fieldValue.length < 1){ return true; }
+
+        const fieldValueArr: Array<string> = fieldValue.split("");
+        fieldValueArr[0] = fieldValueArr[0].toUpperCase();
+        
+        const reconstructedFieldValue: string = fieldValueArr.join("");
+
+        this.validatableData.setFieldValue(fieldName, reconstructedFieldValue);
 
         return true;
 

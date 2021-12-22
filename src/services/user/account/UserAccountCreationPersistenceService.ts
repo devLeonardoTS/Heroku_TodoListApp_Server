@@ -6,7 +6,7 @@ import { EDatabaseErrorMessage } from "../../../constants/EDatabaseErrorMessage"
 import { EDatabaseErrorStatus } from "../../../constants/EDatabaseErrorStatus";
 import { DatabaseError } from "../../../errors/DatabaseError";
 import { ApplicationService } from "../../ApplicationService";
-import { PrismaErrorUtils } from "../../../utils/PrismaErrorUtils";
+import { PrismaUtils } from "../../../utils/PrismaUtils";
 
 export class UserAccountCreationPersistenceService extends ApplicationService<IDisplayableUserAccountData> {
 
@@ -29,7 +29,7 @@ export class UserAccountCreationPersistenceService extends ApplicationService<ID
         })
         .catch((error) => {
 
-            this.error = PrismaErrorUtils.handle(error);
+            this.error = PrismaUtils.handleInsertionError(error);
 
             // if (process.env.NODE_ENV === "development"){
 

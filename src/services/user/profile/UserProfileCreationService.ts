@@ -8,18 +8,18 @@ import { EDatabaseErrorStatus } from "../../../constants/EDatabaseErrorStatus";
 import { DatabaseError } from "../../../errors/DatabaseError";
 import { UnexpectedError } from "../../../errors/UnexpectedError";
 import { IUserProfileCreationModel } from "../../../models/user/profile/IUserProfileCreationModel";
-import { PrismaErrorUtils } from "../../../utils/PrismaErrorUtils";
+import { PrismaUtils } from "../../../utils/PrismaUtils";
 import { IValidator } from "../../../validators/IValidator";
 import { ApplicationService } from "../../ApplicationService";
 
 export class UserProfileCreationService extends ApplicationService<IUserProfileCreationResponse> {
     private validator: IValidator<IUserProfileCreationModel>;
-    private userProfile: IDisplayableUserProfileData | null;
+    private displayableUserProfile: IDisplayableUserProfileData | null;
 
     constructor(validator: IValidator<IUserProfileCreationModel>){
         super();
         this.validator = validator;
-        this.userProfile = null;
+        this.displayableUserProfile = null;
     }
 
     async execute(): Promise<boolean> {
@@ -38,13 +38,13 @@ export class UserProfileCreationService extends ApplicationService<IUserProfileC
         const validated: IUserProfileCreationModel = this.validator.result;
 
         await this.createUserProfile(validated);
-        if (!this.userProfile){
+        if (!this.displayableUserProfile){
             if (this.error){ return false; }
             this.error = new UnexpectedError();
             return false;
         }
 
-        this.result = new UserProfileCreationResponse(this.userProfile);
+        this.result = new UserProfileCreationResponse(this.displayableUserProfile);
         return true;
     }
 
@@ -70,12 +70,12 @@ export class UserProfileCreationService extends ApplicationService<IUserProfileC
                 return false;
             }
 
-            this.userProfile = new DisplayableUserProfileData(userProfile);
+            this.displayableUserProfile = new DisplayableUserProfileData(userProfile);
             return true;
         })
         .catch((error) => {
 
-            this.error = PrismaErrorUtils.handle(error);
+            this.error = PrismaUtils.handleInsertionError(error);
             return false;
 
         });

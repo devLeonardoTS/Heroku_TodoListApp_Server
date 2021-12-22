@@ -2,7 +2,7 @@ import prismaClient from "../../../apis/prisma";
 import { DisplayableUserProfileData } from "../../../classes/user/profile/DisplayableUserProfileData";
 import { IDisplayableUserProfileData } from "../../../classes/user/profile/IDisplayableUserProfileData";
 import { NotFoundError } from "../../../errors/NotFoundError";
-import { PrismaErrorUtils } from "../../../utils/PrismaErrorUtils";
+import { PrismaUtils } from "../../../utils/PrismaUtils";
 import { ApplicationService } from "../../ApplicationService";
 
 export class GetUserProfileService extends ApplicationService<IDisplayableUserProfileData> {
@@ -42,7 +42,7 @@ export class GetUserProfileService extends ApplicationService<IDisplayableUserPr
         })
         .catch((error) => {
 
-            this.error = PrismaErrorUtils.handle(error);
+            this.error = PrismaUtils.handleRetrievalError(error);
             return false;
 
         });

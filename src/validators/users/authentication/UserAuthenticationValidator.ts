@@ -1,8 +1,4 @@
-import prismaClient from "../../../apis/prisma";
-import { EUserAuthenticationErrorMessage } from "../../../constants/user/authentication/EUserAuthenticationErrorMessage";
-import { EUserAuthenticationErrorStatus } from "../../../constants/user/authentication/EUserAuthenticationErrorStatus";
-import { EUserAuthenticationField } from "../../../constants/user/authentication/EUserAuthenticationField";
-import { UserAuthenticationError } from "../../../errors/UserAuthenticationError";
+import { UserAccountConstants } from "../../../constants/user/account/UserAccountConstants";
 import { IUserAuthenticationModel } from "../../../models/user/authentication/IUserAuthenticationModel";
 import { UserAuthenticationModel } from "../../../models/user/authentication/UserAuthenticationModel";
 import { IValidatableData } from "../../IValidatableData";
@@ -20,8 +16,8 @@ export class UserAuthenticationValidator extends Validator<IUserAuthenticationMo
         if (await this.isAnyValueRangeInvalid()){ return false; }
 
         this.result = new UserAuthenticationModel(
-            this.validatableData.getFieldValue(EUserAuthenticationField.USERNAME),
-            this.validatableData.getFieldValue(EUserAuthenticationField.PASSWORD)
+            this.validatableData.getFieldValue(UserAccountConstants.USERNAME),
+            this.validatableData.getFieldValue(UserAccountConstants.PASSWORD)
         );
 
         return true;
