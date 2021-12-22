@@ -5,6 +5,7 @@ import { IUpdateUserProfileAvatarResponse } from "../classes/user/profile/IUpdat
 import { UpdateUserProfileAvatarResponse } from "../classes/user/profile/UpdateUserProfileAvatarResponse";
 import { EHttpStatusCode } from "../constants/EHttpStatusCode";
 import { EProfileHandlingErrorMessage } from "../constants/user/profile/EProfileHandlingErrorMessage";
+import { IHttpError } from "../errors/IHttpError";
 import { UnexpectedError } from "../errors/UnexpectedError";
 import { firebaseApi } from "../server";
 import { IApplicationService } from "../services/IApplicationService";
@@ -40,8 +41,13 @@ export class UserProfileAvatarUploadController {
         let isPreviousNonDefaultAvatarRemoved: boolean = oldUserProfileAvatarUrl.includes("default");
 
         if (!isPreviousNonDefaultAvatarRemoved){
-            isPreviousNonDefaultAvatarRemoved = 
-                await firebaseApi.removeAvatar(oldUserProfileAvatarUrl) ? false : true;
+            isPreviousNonDefaultAvatarRemoved = await firebaseApi.removeAvatar(oldUserProfileAvatarUrl)
+                .then((result) => {
+                    return true;
+                })
+                .catch((error) => {
+                    return false;
+                });
         }
 
         const profileAvatarUpdateService: IApplicationService<IDisplayableUserProfileData> =

@@ -33,16 +33,20 @@ export abstract class ServerUtils {
 
         if (isDevEnv){ 
             console.log("\nAn unhandled rejection was caught by ServerUtils.");
-            console.log("[Unhandled Rejection Error]: ", error.message, "\n");
+            console.log("[Unhandled Rejection Error]: ", error.message, error.code, "\n");
         }
 
-        const isFileNotFoundAtRemovalError: boolean = error.message === "The specified key does not exist." && error.code === 404;
-        if (isFileNotFoundAtRemovalError){
+        const ignorableMessages = [
+            "No such object:",
+            "The specified key does not exist."
+        ];
+
+        const isFirebaseStorageError: boolean = ignorableMessages.includes(error.message) && error.code === 404;
+        if (isFirebaseStorageError){
 
             if (isDevEnv){ 
-                console.log("\nAn unhandled rejection probably happened @ Firebase Storage Api.");
-                console.log("[Unhandled Rejection Error]: ", error, "\n");
-                // console.log("\n[Unhandled Rejection Promise]: ", promiseData, "\n");
+                console.log("\nAn unhandled rejection happened @ Firebase Storage Api.");
+                console.log("[Unhandled Rejection Error]: ", error.stack || error.message);
             }
 
         }

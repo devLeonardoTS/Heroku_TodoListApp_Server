@@ -8,6 +8,7 @@ import { AvatarUploadErrorData } from '../errors/AvatarUploadErrorData';
 import { FileUploadError } from '../errors/FileUploadError';
 import { HttpError } from '../errors/HttpError';
 import { UnexpectedError } from '../errors/UnexpectedError';
+import { firebaseApi } from '../server';
 
 class ErrorHandlerController {
 

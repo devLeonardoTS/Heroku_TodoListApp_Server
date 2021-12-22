@@ -1,9 +1,12 @@
 import { initializeApp, AppOptions, cert, App } from "firebase-admin/app";
 import { getStorage, Storage } from 'firebase-admin/storage';
+import { escape } from "querystring";
 import { EStorageErrorMessage } from "../../constants/apis/EStorageErrorMessage";
 import { EStorageErrorStatus } from "../../constants/apis/EStorageErrorStatus";
+import { EAppDefaultString } from "../../constants/EAppDefaultString";
 import { FileStorageError } from "../../errors/FileStorageError";
 import { IHttpError } from "../../errors/IHttpError";
+import { UnexpectedError } from "../../errors/UnexpectedError";
 
 export class FirebaseApi {
     private static _instance: FirebaseApi;
@@ -37,36 +40,43 @@ export class FirebaseApi {
         return this._instance || (this._instance = new FirebaseApi());
     }
 
-    public async removeAvatar(avatarUrl: string) : Promise<IHttpError | null> {
+    public removeAvatar(avatarUrl: string): Promise<void> {
+        return new Promise<void>( async (resolve, reject) => {
 
-        const fileLocation: string = 
-            avatarUrl.replace(
-                "https://storage.googleapis.com/heroku-todolist-server.appspot.com/",
+            const isDevEnv = process.env.NODE_ENV === "development";
+
+            if (!avatarUrl){ return reject(new UnexpectedError); }
+
+            const fileLocation: string = avatarUrl.replace(
+                EAppDefaultString.GOOGLE_STORAGE_BUCKET_URL,
                 ""
             );
-        
-        if (fileLocation.includes("default")){
-            return null;
-        }
 
-        const file = this.storage
-            .bucket()
-            .file(fileLocation);
+            if (fileLocation.includes("default")){ return resolve(); }
 
-        let error: IHttpError | null = null;
+            const fileAtStorage = this.storage.bucket().file(fileLocation);
 
-        await file.delete({ ignoreNotFound: true })
-            .then((response) => {
-                error = null;
+            /**
+             * Attention: ".delete()" triggers "unhandledRejection" Node.js event if the file is not found or being processed somehow.
+             **/ 
+            const removalError: IHttpError | null = await fileAtStorage
+            .delete()
+            .then((apiResponse) => {
+                return null;
             })
             .catch((error) => {
-                error = new FileStorageError(
+                return new FileStorageError(
                     EStorageErrorStatus.FILE_REMOVAL_ERROR,
-                    EStorageErrorMessage.FILE_REMOVAL_ERROR
-                )
+                    EStorageErrorMessage.FILE_REMOVAL_ERROR,
+                    isDevEnv ? error : undefined
+                );
             });
 
-        return error;
+            if (removalError){ return reject(removalError); }
+
+            return resolve();
+                
+        });
 
     }
 
