@@ -1,107 +1,54 @@
-import { EmptyFieldsError } from "../errors/EmptyFieldsError";
-import { EmptyFieldsErrorData } from "../errors/EmptyFieldsErrorData";
+import { EFieldValueType } from "../constants/EFieldValueType";
+import { EUserAccountCreationValidationMessage } from "../constants/user/account/EUserAccountCreationValidationMessage";
+import { FieldValidationError } from "../errors/FieldValidationError";
+import { FieldValidationErrorData } from "../errors/FieldValidationErrorData";
 import { IHttpError } from "../errors/IHttpError";
-import { MissingFieldsError } from "../errors/MissingFieldsError";
+import { IInvalidField } from "../errors/IInvalidField";
+import { InvalidField } from "../errors/InvalidField";
+import { MissingRequiredFieldsError } from "../errors/MissingRequiredFieldsError";
 import { MissingFieldsErrorData } from "../errors/MissingFieldsErrorData";
 import { UnexpectedError } from "../errors/UnexpectedError";
-import { ValuelessFieldsError } from "../errors/ValuelessFieldsError";
-import { ValuelessFieldsErrorData } from "../errors/ValuelessFieldsErrorData";
-import { IRequestedFieldsDetails } from "./IRequestedFieldsDetails";
+import { IFieldDetails } from "./IFieldDetails";
+import { IValidatableData } from "./IValidatableData";
+import { IValidatableField } from "./IValidatableField";
 import { IValidator } from "./IValidator";
 
-export abstract class Validator<InputType> implements IValidator<InputType> {
+export abstract class Validator<AnyTypeToBeValidatorResult> implements IValidator<AnyTypeToBeValidatorResult> {
 
-    abstract data: InputType;
-    abstract requestedFieldsDetails: IRequestedFieldsDetails;
-    abstract validated: InputType | null;
-    abstract error: IHttpError | null;
+    validatableData: IValidatableData;
 
-    abstract validate(): Promise<boolean>;
+    result: AnyTypeToBeValidatorResult | null;
+    error: IHttpError | null;
 
-    protected async isReceivedDataEmpty(): Promise<boolean>{
+    constructor(validatableData: IValidatableData){
+        this.validatableData = validatableData;
+        this.result = null;
+        this.error = null;
+    }
 
-        if (this.error){ return true; }
+    abstract execute(): Promise<boolean>;
 
-        if (!this.data){
-            this.error = new EmptyFieldsError(
-                new EmptyFieldsErrorData(this.requestedFieldsDetails.acceptableFields as Array<string>)
-            );
-            return true;
-        }
-
-        const receivedDataFields: Array<string> = Object.keys(this.data as InputType);
-        if (receivedDataFields.length < 1){ 
-            this.error = new EmptyFieldsError(
-                new EmptyFieldsErrorData(this.requestedFieldsDetails.acceptableFields as Array<string>)
-            );
-            return true;
-        }
-
-        return false;
-    };
-
-    protected async isReceivedDataLackingRequiredFields(): Promise<boolean>{
+    protected async isLackingRequired(): Promise<boolean>{
 
         if (this.error){ return true; }
 
-        if (!this.requestedFieldsDetails.requiredFields) { return false; }
+        const requiredFields: Array<IValidatableField> | null = this.validatableData.getAllRequired();
 
-        if (!this.data){
-            this.error = new EmptyFieldsError(
-                new EmptyFieldsErrorData(this.requestedFieldsDetails.acceptableFields as Array<string>)
-            );
-            return true;
-        }
+        if (!requiredFields){ return false; }
 
-        const receivedDataFields: Array<string> = Object.keys(this.data as InputType);
+        let missingRequiredFields: Array<string> | null = null;
 
-        const missingRequiredFields: Array<string> = new Array<string>();
-
-        this.requestedFieldsDetails.requiredFields.forEach((requiredField) => {
-            const hasRequiredField: boolean = receivedDataFields.includes(requiredField);
-            if (!hasRequiredField){ missingRequiredFields.push(requiredField); }
-        })        
-        
-        if (missingRequiredFields.length > 0){
-
-            this.error = new MissingFieldsError(
-                new MissingFieldsErrorData(missingRequiredFields)
-            );
-            
-            return true;
-        }
-
-        return false;
-
-    };
-
-    protected async isAnyReceivedAcceptableFieldValueless(): Promise<boolean>{
-
-        if (this.error){ return true; }
-
-        if (!this.requestedFieldsDetails.acceptableFields) { return false; }
-
-        const receivedDataFields: Array<Array<string>> = Object.entries(this.data as InputType);
-        const valuelessFields: Array<string> = new Array<string>();
-        
-        receivedDataFields.forEach((keyValuePair) => {
-            if (this.requestedFieldsDetails.acceptableFields){
-
-                const key = keyValuePair[0];
-                const value = keyValuePair[1] || "";
-
-                const isAtAcceptableDataField: boolean = this.requestedFieldsDetails.acceptableFields.includes(key);
-                const isValueAttached: boolean = value.trim() ? true : false;
-
-                if (isAtAcceptableDataField && !isValueAttached){ valuelessFields.push(key); }
+        requiredFields.forEach((field) => {
+            if (field.value === ""){
+                if (!missingRequiredFields) { missingRequiredFields = new Array(); }
+                missingRequiredFields.push(field.name);
             }
         });
 
-        if (valuelessFields.length > 0){
-            this.error = new ValuelessFieldsError(
-                new ValuelessFieldsErrorData(valuelessFields)
+        if (missingRequiredFields){
+            this.error = new MissingRequiredFieldsError(
+                new MissingFieldsErrorData(missingRequiredFields)
             );
-
             return true;
         }
 
@@ -109,27 +56,77 @@ export abstract class Validator<InputType> implements IValidator<InputType> {
 
     };
 
-    protected async trimReceivedData(): Promise<boolean>{
+    protected async isAnyValueRangeInvalid(): Promise<boolean>{
+
+        if (this.error){ return true; }
+
+        if (this.validatableData.fields.length < 1){ return false; }
+
+        let invalidFields: Array<IInvalidField> = new Array();
+
+        this.validatableData.fields.forEach((field) => {
+            const value: any = field.value;
+            const details: IFieldDetails = field.details;
+            const type: EFieldValueType = details.fieldValueType;
+
+            const hasValue: boolean = value !== "";
+            const isString: boolean = type === EFieldValueType.STRING;
+            const isNumber: boolean = type === EFieldValueType.NUMBER;
+
+            if (hasValue && isString){
+                if (details.minLength && details.maxLength){
+                    const valueAsString: string = String(value);
+                    const isInvalid: boolean = valueAsString.length < details.minLength || valueAsString.length > details.maxLength;
+                    
+                    if (isInvalid){
+                        const errorReason: string = `The value provided needs to contain between ${details.minLength} and ${details.maxLength} characters. Please verify your input.`;
+                        invalidFields.push(new InvalidField(field.name, errorReason, details));
+                    }
+                }
+            }
+
+            if (hasValue && isNumber){
+                if (details.minValue && details.maxValue){
+                    const valueAsNumber: number = Number(value);
+                    const isInvalid: boolean = valueAsNumber < details.minValue || valueAsNumber > details.maxValue;
+                    
+                    if (isInvalid){
+                        const errorReason: string = `The value needs to be between ${details.minValue} and ${details.maxValue}. Please verify your input.`;
+                        invalidFields.push(new InvalidField(field.name, errorReason, details));
+                    }
+                }
+            }
+        });
+
+        if (invalidFields.length < 1){ return false; }
+
+        this.error = new FieldValidationError(
+            new FieldValidationErrorData(invalidFields) 
+        );
+
+        return true;
+
+    }
+
+    protected async capitalizeValue(fieldName: string): Promise<boolean>{
 
         if (this.error){ return false; }
-        
-        const trimmedData: InputType = this.data as InputType;
 
-        const fieldKeys: Array<any> = Object.keys(trimmedData);
-        
-        try {
-            fieldKeys.forEach((key: keyof InputType) => {
-                const value: string = trimmedData[key] as unknown as string || "";
-                trimmedData[key] = value.trim() as unknown as InputType[keyof InputType];
-            });
-        } catch (error) {
-            this.error = new UnexpectedError();
-            return false;
-        }
+        if (this.validatableData.fields.length < 1){ return true; }
 
-        this.data = trimmedData;
+        const fieldValue: string = String(this.validatableData.getFieldValue(fieldName));
         
+        if (fieldValue.length < 1){ return true; }
+
+        const fieldValueArr: Array<string> = fieldValue.split("");
+        fieldValueArr[0] = fieldValueArr[0].toUpperCase();
+        
+        const reconstructedFieldValue: string = fieldValueArr.join("");
+
+        this.validatableData.setFieldValue(fieldName, reconstructedFieldValue);
+
         return true;
-    };
+
+    }
 
 }

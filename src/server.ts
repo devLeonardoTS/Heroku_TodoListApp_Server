@@ -1,6 +1,21 @@
 import http from "http";
 import { app } from './app';
 import { AddressInfo } from 'node:net';
+import { ServerUtils } from "./utils/ServerUtils";
+import { FirebaseApi } from "./apis/firebase";
+
+ServerUtils.ensureRequiredEnvVars(
+    [
+        "USER_AUTH_JWT_SECRET",
+        "USER_REFRESH_JWT_SECRET",
+        "FIREBASE_API_KEY",
+        "FIREBASE_ADM_CLIENT_EMAIL",
+        "FIREBASE_ADM_PRIVATE_KEY",
+        "FIREBASE_ADM_PROJECT_ID"
+    ]
+);
+
+ServerUtils.listenForApplicationExceptions();
 
 const httpServer = http.createServer(app);
 
@@ -20,3 +35,5 @@ httpServer.on('error', (error) => {
     
     httpServer.close();
 });
+
+export const firebaseApi = FirebaseApi.getInstance();

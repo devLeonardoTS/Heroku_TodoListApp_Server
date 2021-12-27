@@ -1,13 +1,13 @@
 import { IFieldValidationErrorData } from "./IFieldValidationErrorData";
+import { IInvalidField } from "./IInvalidField";
 
 export class FieldValidationErrorData implements IFieldValidationErrorData {
     
-    invalidField: string;
-    reason: string;
+    invalidFields: IInvalidField[];
 
-    constructor(invalidField: string, reason: string){
-        this.invalidField = invalidField;
-        this.reason = reason;
+    constructor(invalidFields: Array<IInvalidField>){
+        this.invalidFields = invalidFields;
     }
+    
 
 }

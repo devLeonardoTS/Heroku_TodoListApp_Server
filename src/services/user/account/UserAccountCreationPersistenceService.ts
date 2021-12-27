@@ -1,17 +1,18 @@
 import prismaClient from "../../../apis/prisma";
-import { ISafeUserAccountDataDisplay } from "../../../classes/user/account/ISafeUserAccountDataDisplay";
-import { IUserAccountCreationData } from "../../../classes/user/account/IUserAccountCreationData";
-import { SafeUserAccountDataDisplay } from "../../../classes/user/account/SafeUserAccountDataDisplay";
+import { IDisplayableUserAccountData } from "../../../classes/user/account/IDisplayableUserAccountData";
+import { IUserAccountCreationModel } from "../../../models/user/account/IUserAccountCreationModel";
+import { DisplayableUserAccountData } from "../../../classes/user/account/DisplayableUserAccountData";
 import { EDatabaseErrorMessage } from "../../../constants/EDatabaseErrorMessage";
 import { EDatabaseErrorStatus } from "../../../constants/EDatabaseErrorStatus";
 import { DatabaseError } from "../../../errors/DatabaseError";
 import { ApplicationService } from "../../ApplicationService";
+import { PrismaUtils } from "../../../utils/PrismaUtils";
 
-export class UserAccountCreationPersistenceService extends ApplicationService<ISafeUserAccountDataDisplay> {
+export class UserAccountCreationPersistenceService extends ApplicationService<IDisplayableUserAccountData> {
 
-    private data: IUserAccountCreationData;
+    private data: IUserAccountCreationModel;
 
-    constructor(data: IUserAccountCreationData){
+    constructor(data: IUserAccountCreationModel){
         super();
         this.data = data;
     }
@@ -23,30 +24,32 @@ export class UserAccountCreationPersistenceService extends ApplicationService<IS
             data: this.data
         })
         .then((createdAccount) => {
-            this.result = new SafeUserAccountDataDisplay(createdAccount);
+            this.result = new DisplayableUserAccountData(createdAccount);
             return true;
         })
         .catch((error) => {
 
-            if (process.env.NODE_ENV === "development"){
+            this.error = PrismaUtils.handleInsertionError(error);
 
-                const errorArr: Array<string> = error.message.split("\n");
-                error.msg = errorArr[errorArr.length - 1]?.trim() || error.message;
+            // if (process.env.NODE_ENV === "development"){
 
-                this.error = new DatabaseError(
-                    EDatabaseErrorStatus.DATABASE_INSERTION_ERROR,
-                    EDatabaseErrorMessage.DATABASE_INSERTION_ERROR,
-                    error
-                );
+            //     const errorArr: Array<string> = error.message.split("\n");
+            //     error.msg = errorArr[errorArr.length - 1]?.trim() || error.message;
 
-            } else {
+            //     this.error = new DatabaseError(
+            //         EDatabaseErrorStatus.DATABASE_INSERTION_ERROR,
+            //         EDatabaseErrorMessage.DATABASE_INSERTION_ERROR,
+            //         error
+            //     );
 
-                this.error = new DatabaseError(
-                    EDatabaseErrorStatus.DATABASE_INSERTION_ERROR,
-                    EDatabaseErrorMessage.DATABASE_INSERTION_ERROR
-                );
+            // } else {
 
-            }
+            //     this.error = new DatabaseError(
+            //         EDatabaseErrorStatus.DATABASE_INSERTION_ERROR,
+            //         EDatabaseErrorMessage.DATABASE_INSERTION_ERROR
+            //     );
+
+            // }
 
             return false;
 

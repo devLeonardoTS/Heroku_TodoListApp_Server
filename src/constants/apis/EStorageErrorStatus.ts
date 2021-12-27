@@ -1,0 +1,4 @@
+export enum EStorageErrorStatus {
+    FILE_UPLOAD_ERROR = "FILE_UPLOAD_ERROR",
+    FILE_REMOVAL_ERROR = "FILE_REMOVAL_ERROR"
+}
