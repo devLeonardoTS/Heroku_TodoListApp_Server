@@ -21,9 +21,22 @@ model UserAccount {
   updatedAt DateTime @db.Timestamptz(0) @default(now())
   lastLogin DateTime @db.Timestamptz(0) @default(now())
 
+  Tokens Token[]
   UserProfile UserProfile?
   Tasks Task[]
   ApplicationReview ApplicationReview?
+}
+
+model Token {
+  id String @id @db.Char(36) @default(uuid())
+  ownerId String @db.Char(36)
+
+  tokenType TokenType
+  
+  createdAt DateTime @db.Timestamptz(0) @default(now())
+  expiresAt DateTime @db.Timestamptz(0)
+
+  UserAccount UserAccount @relation(fields: [ownerId], references: [id])
 }
 
 model UserProfile {
@@ -34,8 +47,8 @@ model UserProfile {
   avatarUrl String @db.VarChar(255) @default("http://storage.googleapis.com/heroku-todolist-server.appspot.com/uploads/avatars/default_user_avatar.png")
   message String? @db.VarChar(255)
 
+  createdAt DateTime @db.Timestamptz(0) @default(now())
   updatedAt DateTime @db.Timestamptz(0) @default(now())
-
   
   UserAccount UserAccount @relation(fields: [ownerId], references: [id])
 }
@@ -50,7 +63,6 @@ model Task {
   createdAt DateTime @db.Timestamptz(0) @default(now())
   updatedAt DateTime @db.Timestamptz(0) @default(now())
   completedAt DateTime? @db.Timestamptz(0) 
-
   
   UserAccount UserAccount @relation(fields: [creatorId], references: [id])
 }
@@ -66,9 +78,12 @@ model ApplicationReview {
   updatedAt DateTime @db.Timestamptz(0) @default(now())
 
   active Boolean @db.Boolean @default(true)
-
   
   UserAccount UserAccount @relation(fields: [creatorId], references: [id])
+}
+
+enum TokenType {
+  ACCESS_REFRESH
 }
 
 enum UserRole {

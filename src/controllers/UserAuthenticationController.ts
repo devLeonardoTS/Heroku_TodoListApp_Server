@@ -28,7 +28,7 @@ export class UserAuthenticationController {
 
         const authenticatedResponse: IAuthenticatedUserResponse = userAuthenticationService.result;
 
-        response.status(EHttpStatusCode.OK).json(authenticatedResponse);
+        return response.status(EHttpStatusCode.OK).json(authenticatedResponse);
 
     }
 

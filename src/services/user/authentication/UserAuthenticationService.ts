@@ -1,7 +1,8 @@
-import { UserAccount } from '@prisma/client';
+import { TokenType, UserAccount, UserProfile } from '@prisma/client';
 import jwt from 'jsonwebtoken';
 import prismaClient from '../../../apis/prisma';
 import bcrypt from 'bcrypt';
+import dayjs from 'dayjs';
 import { IAuthenticatedUserResponse } from '../../../classes/user/authentication/IAuthenticatedUserResponse';
 import { IUserAuthenticationJWTPayload } from '../../../classes/user/authentication/IUserAuthenticationJWTPayload';
 import { EUserAuthenticationErrorMessage } from '../../../constants/user/authentication/EUserAuthenticationErrorMessage';
@@ -15,22 +16,33 @@ import { PrismaUtils } from '../../../utils/PrismaUtils';
 import { UserAuthenticationJWTPayload } from '../../../classes/user/authentication/UserAuthenticationJWTPayload';
 import { AuthenticatedUserResponse } from '../../../classes/user/authentication/AuthenticatedUserResponse';
 import { DisplayableAuthenticatedUserAccountData } from '../../../classes/user/authentication/DisplayableAuthenticatedUserAccountData';
+import { GetUserProfileService } from '../profile/GetUserProfileService';
+import { IApplicationService } from '../../IApplicationService';
+import { IDisplayableUserProfileData } from '../../../classes/user/profile/IDisplayableUserProfileData';
+import { DatabaseError } from '../../../errors/DatabaseError';
+import { EDatabaseErrorStatus } from '../../../constants/EDatabaseErrorStatus';
+import { EDatabaseErrorMessage } from '../../../constants/EDatabaseErrorMessage';
+import { UserAuthenticationConstants } from '../../../constants/user/authentication/UserAuthenticationConstants';
 
 export class UserAuthenticationService extends ApplicationService<IAuthenticatedUserResponse> {
 
     private validator: IValidator<IUserAuthenticationModel>;
     private userAccount: UserAccount | null;
     private jwtPayload: IUserAuthenticationJWTPayload | null;
-    private jwtExpirationTimeInSeconds: number;
+    private accessTokenExpirationInSeconds: number;
+    private refreshTokenExpirationInSeconds: number;
     private signedAccessToken: string | null;
+    private refreshToken: string | null;
     
     constructor(validator: IValidator<IUserAuthenticationModel>){
         super();
         this.validator = validator;
         this.userAccount = null;
         this.jwtPayload = null;
-        this.jwtExpirationTimeInSeconds = 30 * 60;
+        this.accessTokenExpirationInSeconds = UserAuthenticationConstants.ACCESS_TOKEN_EXPIRATION_IN_SECONDS;
+        this.refreshTokenExpirationInSeconds = UserAuthenticationConstants.REFRESH_TOKEN_EXPIRATION_IN_SECONDS;
         this.signedAccessToken = null;
+        this.refreshToken = null;
     }
 
     async execute(): Promise<boolean> {
@@ -47,7 +59,7 @@ export class UserAuthenticationService extends ApplicationService<IAuthenticated
         }
 
         const validatedAuthenticationData: IUserAuthenticationModel = this.validator.result;
-        if (!await this.isCredentialsCorrect(validatedAuthenticationData)){ return false; }
+        if (!await this.checkAuthAndGetAccount(validatedAuthenticationData)){ return false; }
 
         if (!this.userAccount){
             if (!this.error){ this.error = new UnexpectedError(); }
@@ -60,14 +72,22 @@ export class UserAuthenticationService extends ApplicationService<IAuthenticated
             return false; 
         }
 
-        const isUserAccountLastLoginUpdated: boolean = await this.updateUserAccountLastLogin(this.userAccount);
-        if (!isUserAccountLastLoginUpdated){ 
-            if (!this.error){ this.error = new UnexpectedError(); }
+        const isUserAuthenticated: boolean = await this.authenticateUser(this.userAccount);
+        if (!isUserAuthenticated){
+            if (this.error){ return false; }
+            this.error = new UnexpectedError();
+            return false;
+        }
+
+        if (!this.refreshToken){ 
+            if (this.error){ return false; }
+            this.error = new UnexpectedError();
             return false;
         }
 
         this.result = new AuthenticatedUserResponse(
             this.signedAccessToken,
+            this.refreshToken,
             new DisplayableAuthenticatedUserAccountData(this.userAccount)
         );
 
@@ -75,7 +95,7 @@ export class UserAuthenticationService extends ApplicationService<IAuthenticated
         
     }
 
-    private async isCredentialsCorrect(validated: IUserAuthenticationModel): Promise<boolean> {
+    private async checkAuthAndGetAccount(validated: IUserAuthenticationModel): Promise<boolean> {
 
         const username: string = validated.username;
         const password: string = validated.password;
@@ -140,7 +160,7 @@ export class UserAuthenticationService extends ApplicationService<IAuthenticated
             process.env.USER_AUTH_JWT_SECRET, 
             {
                 subject: this.jwtPayload.userId,
-                expiresIn: this.jwtExpirationTimeInSeconds
+                expiresIn: this.accessTokenExpirationInSeconds
             }
         );
 
@@ -148,26 +168,62 @@ export class UserAuthenticationService extends ApplicationService<IAuthenticated
 
     }
 
-    private async updateUserAccountLastLogin(userAccount: UserAccount): Promise<boolean> {
+    private async authenticateUser(userAccount: UserAccount): Promise<boolean> {
 
-        const userId = userAccount.id;
-
-        return await prismaClient.userAccount
-        .update({
-            where: {
-                id: userId
-            },
+        return await prismaClient.userAccount.update({
             data: {
-                lastLogin: new Date()
+                updatedAt: new Date(),
+                Tokens: {
+                    deleteMany: {
+                        ownerId: userAccount.id,
+                        AND: {
+                            tokenType: TokenType.ACCESS_REFRESH
+                        }
+                    },
+                    create: {
+                        tokenType: TokenType.ACCESS_REFRESH,
+                        expiresAt: dayjs(new Date()).add(this.refreshTokenExpirationInSeconds, "second").format()
+                    }
+                }
+            },
+            where: {
+                id: userAccount.id
+            },
+            include: {
+                Tokens: {
+                    where: {
+                        tokenType: TokenType.ACCESS_REFRESH
+                    }
+                }
             }
         })
         .then((updatedUserAccount) => {
+            if (!updatedUserAccount){
+                this.error = new DatabaseError(
+                    EDatabaseErrorStatus.DATABASE_UPDATE_ERROR,
+                    EDatabaseErrorMessage.DATABASE_UPDATE_ERROR
+                );
+                return false;
+            }
+
+            if (!updatedUserAccount.Tokens[0]){
+                this.error = new DatabaseError(
+                    EDatabaseErrorStatus.DATABASE_INSERTION_ERROR,
+                    EDatabaseErrorMessage.DATABASE_INSERTION_ERROR
+                );
+                return false;
+            }
+
             this.userAccount = updatedUserAccount;
+            this.refreshToken = updatedUserAccount.Tokens[0].id;
+
             return true;
         })
         .catch((error) => {
-            this.error = PrismaUtils.handleUpdateError(error);
+
+            this.error = PrismaUtils.handleTransactionError(error);
             return false;
+
         });
 
     }

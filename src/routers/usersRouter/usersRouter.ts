@@ -9,6 +9,8 @@ import { UserProfileCreationController } from '../../controllers/UserProfileCrea
 import { UserProfileUpdateController } from '../../controllers/UserProfileUpdateController';
 import { AccessPermissionMiddleware } from '../../middlewares/AccessPermissionMiddleware';
 import { UserAuthenticationMiddleware } from '../../middlewares/UserAuthenticationMiddleware';
+import { RefreshAccessTokenController } from '../../controllers/RefreshAccessTokenController';
+import { UserLogoutController } from '../../controllers/UserLogoutController';
 
 
 const usersRouter = Router();
@@ -16,6 +18,13 @@ const usersRouter = Router();
 usersRouter.post("/", new UserAccountCreationController().handle);
 
 usersRouter.post("/login", new UserAuthenticationController().handle);
+
+usersRouter.post("/login/renew", new RefreshAccessTokenController().handle);
+
+usersRouter.post("/logout",
+    new UserAuthenticationMiddleware().requireAuthenticatedUser,
+    new UserLogoutController().handle
+);
 
 usersRouter.get("/:userId/profile", 
     new UserAuthenticationMiddleware().requireAuthenticatedUser,

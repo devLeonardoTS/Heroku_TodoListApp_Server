@@ -7,6 +7,7 @@ import { FirebaseApi } from "./apis/firebase";
 ServerUtils.ensureRequiredEnvVars(
     [
         "USER_AUTH_JWT_SECRET",
+        "USER_REFRESH_JWT_SECRET",
         "FIREBASE_API_KEY",
         "FIREBASE_ADM_CLIENT_EMAIL",
         "FIREBASE_ADM_PRIVATE_KEY",

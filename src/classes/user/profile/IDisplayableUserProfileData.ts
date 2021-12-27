@@ -4,5 +4,6 @@ export interface IDisplayableUserProfileData {
     nickname: string;
     avatarUrl: string;
     message: string;
+    createdAt: string;
     updatedAt: string;
 }

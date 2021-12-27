@@ -68,4 +68,16 @@ export abstract class PrismaUtils {
 
     }
 
+    public static handleTransactionError(error?: Error): IHttpError {
+
+        const isDevelopmentEnv = process.env.NODE_ENV === "development";
+
+        return new DatabaseError(
+            EDatabaseErrorStatus.DATABASE_TRANSACTION_ERROR,
+            EDatabaseErrorMessage.DATABASE_TRANSACTION_ERROR,
+            isDevelopmentEnv ? error || undefined : undefined
+        );
+
+    }
+
 }
