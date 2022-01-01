@@ -1,5 +1,4 @@
 import { IFieldDetails } from "../validators/IFieldDetails";
-import { IValidatableField } from "../validators/IValidatableField";
 import { IInvalidField } from "./IInvalidField";
 
 export class InvalidField implements IInvalidField {

@@ -6,7 +6,7 @@ import { TaskConstants } from "../constants/user/task/TaskConstants";
 import { NotFoundError } from "../errors/NotFoundError";
 import { UnexpectedError } from "../errors/UnexpectedError";
 import { IApplicationService } from "../services/IApplicationService";
-import { GetTaskService } from "../services/task/GetTaskService";
+import { GetTaskService } from "../services/user/task/GetTaskService";
 
 export class GetTaskController {
 

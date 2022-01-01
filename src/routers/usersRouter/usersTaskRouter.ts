@@ -5,7 +5,7 @@ import { UserTaskCreationController } from '../../controllers/UserTaskCreationCo
 import { GetAllTasksController } from '../../controllers/GetAllTasksController';
 import { GetTaskController } from '../../controllers/GetTaskController';
 import { TaskUpdateController } from '../../controllers/TaskUpdateController';
-import { TaskRemovalController } from '../../_WorkInProgress/TasksFeature/TaskRemovalFeature';
+import { TaskRemovalController } from '../../controllers/TaskRemovalController';
 
 const usersTasksRouter = Router({ mergeParams: true });
 
