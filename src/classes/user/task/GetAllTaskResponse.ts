@@ -1,7 +1,7 @@
 import { IDisplayableTaskData } from "./IDisplayableTaskData";
-import { IGetAllUserTasksResponse } from "./IGetAllUserTasksResponse";
+import { IGetAllTasksResponse } from "./IGetAllTasksResponse";
 
-export class GetAllUserTasksResponse implements IGetAllUserTasksResponse {
+export class GetAllTasksResponse implements IGetAllTasksResponse {
     tasks: IDisplayableTaskData[];
     constructor(tasks: Array<IDisplayableTaskData>){
         this.tasks = tasks;

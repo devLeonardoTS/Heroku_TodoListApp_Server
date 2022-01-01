@@ -1,55 +1,55 @@
 import prismaClient from "../../apis/prisma";
 import { Task } from "@prisma/client";
 import { DisplayableTaskData } from "../../classes/user/task/DisplayableTaskData";
-import { GetAllUserTasksResponse } from "../../classes/user/task/GetAllUserTaskResponse";
+import { GetAllTasksResponse } from "../../classes/user/task/GetAllTaskResponse";
 import { IDisplayableTaskData } from "../../classes/user/task/IDisplayableTaskData";
-import { IGetAllUserTasksResponse } from "../../classes/user/task/IGetAllUserTasksResponse";
+import { IGetAllTasksResponse } from "../../classes/user/task/IGetAllTasksResponse";
 import { NotFoundError } from "../../errors/NotFoundError";
 import { UnexpectedError } from "../../errors/UnexpectedError";
 import { PrismaUtils } from "../../utils/PrismaUtils";
 import { ApplicationService } from "../ApplicationService";
 
-export class GetAllUserTasksService extends ApplicationService<IGetAllUserTasksResponse> {
+export class GetAllTasksService extends ApplicationService<IGetAllTasksResponse> {
 
     private ownerId: string;
     private userTasks: Array<Task> | null;
-    private displayableUserTasks: Array<IDisplayableTaskData> | null;
+    private displayableTasks: Array<IDisplayableTaskData> | null;
 
     constructor(ownerId: string){
         super();
         this.ownerId = ownerId;
         this.userTasks = null;
-        this.displayableUserTasks = null;
+        this.displayableTasks = null;
     }
 
     async execute(): Promise<boolean> {
 
-        if (!await this.getAllUserTasks(this.ownerId)){ return false; }
+        if (!await this.getAllTasks(this.ownerId)){ return false; }
 
         if (!this.userTasks){
             this.error = new UnexpectedError();
             return false;
         }
 
-        this.displayableUserTasks = new Array();
+        this.displayableTasks = new Array();
         this.userTasks.forEach((task) => {
-            if (this.displayableUserTasks){
-                this.displayableUserTasks.push(new DisplayableTaskData(task));
+            if (this.displayableTasks){
+                this.displayableTasks.push(new DisplayableTaskData(task));
             }
         });
 
-        if (this.displayableUserTasks.length < 1){
+        if (this.displayableTasks.length < 1){
             this.error = new UnexpectedError();
             return false;
         }
 
-        this.result = new GetAllUserTasksResponse(this.displayableUserTasks);
+        this.result = new GetAllTasksResponse(this.displayableTasks);
 
         return true;
 
     }
 
-    private async getAllUserTasks(ownerId: string): Promise<boolean> {
+    private async getAllTasks(ownerId: string): Promise<boolean> {
 
         return await prismaClient.task
         .findMany({

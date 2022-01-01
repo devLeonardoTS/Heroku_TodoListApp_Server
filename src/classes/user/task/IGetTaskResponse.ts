@@ -1,5 +1,5 @@
 import { IDisplayableTaskData } from "./IDisplayableTaskData";
 
-export interface IGetUserTaskResponse {
+export interface IGetTaskResponse {
     task: IDisplayableTaskData;
 }

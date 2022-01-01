@@ -1,7 +1,7 @@
 import { IDisplayableTaskData } from "./IDisplayableTaskData";
-import { IGetUserTaskResponse } from "./IGetUserTaskResponse";
+import { IGetTaskResponse } from "./IGetTaskResponse";
 
-export class GetUserTaskResponse implements IGetUserTaskResponse {
+export class GetTaskResponse implements IGetTaskResponse {
     task: IDisplayableTaskData;
 
     constructor(task: IDisplayableTaskData){

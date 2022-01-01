@@ -1,15 +1,15 @@
 import prismaClient from "../../apis/prisma";
 import { Task } from "@prisma/client";
 import { DisplayableTaskData } from "../../classes/user/task/DisplayableTaskData";
-import { GetUserTaskResponse } from "../../classes/user/task/GetUserTaskResponse";
+import { GetTaskResponse } from "../../classes/user/task/GetTaskResponse";
 import { IDisplayableTaskData } from "../../classes/user/task/IDisplayableTaskData";
-import { IGetUserTaskResponse } from "../../classes/user/task/IGetUserTaskResponse";
+import { IGetTaskResponse } from "../../classes/user/task/IGetTaskResponse";
 import { NotFoundError } from "../../errors/NotFoundError";
 import { UnexpectedError } from "../../errors/UnexpectedError";
 import { PrismaUtils } from "../../utils/PrismaUtils";
 import { ApplicationService } from "../ApplicationService";
 
-export class GetUserTaskService extends ApplicationService<IGetUserTaskResponse> {
+export class GetTaskService extends ApplicationService<IGetTaskResponse> {
 
     private requestedTaskId: string;
     private task: Task | null;
@@ -34,7 +34,7 @@ export class GetUserTaskService extends ApplicationService<IGetUserTaskResponse>
 
         this.displayableTask = new DisplayableTaskData(this.task);
 
-        this.result = new GetUserTaskResponse(this.displayableTask);
+        this.result = new GetTaskResponse(this.displayableTask);
 
         return true;
     }

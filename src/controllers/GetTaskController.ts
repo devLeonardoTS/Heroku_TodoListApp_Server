@@ -1,14 +1,14 @@
 import { Request, Response, NextFunction } from "express";
 import { IUserResourceRequestParams } from "../classes/user/IUserResourceRequestParams";
-import { IGetUserTaskResponse } from "../classes/user/task/IGetUserTaskResponse";
+import { IGetTaskResponse } from "../classes/user/task/IGetTaskResponse";
 import { EHttpStatusCode } from "../constants";
 import { TaskConstants } from "../constants/user/task/TaskConstants";
 import { NotFoundError } from "../errors/NotFoundError";
 import { UnexpectedError } from "../errors/UnexpectedError";
 import { IApplicationService } from "../services/IApplicationService";
-import { GetUserTaskService } from "../services/task/GetUserTaskService";
+import { GetTaskService } from "../services/task/GetTaskService";
 
-export class GetUserTaskController {
+export class GetTaskController {
 
     async handle(request: Request<IUserResourceRequestParams>, response: Response, next: NextFunction){
 
@@ -25,19 +25,19 @@ export class GetUserTaskController {
             return next(new NotFoundError());
         }
 
-        const getUserTaskService: IApplicationService<IGetUserTaskResponse> = 
-            new GetUserTaskService(params.taskId);
+        const getTaskService: IApplicationService<IGetTaskResponse> = 
+            new GetTaskService(params.taskId);
 
-        await getUserTaskService.execute();
+        await getTaskService.execute();
 
-        if (!getUserTaskService.result){
-            if (getUserTaskService.error){ return next(getUserTaskService.error); }
+        if (!getTaskService.result){
+            if (getTaskService.error){ return next(getTaskService.error); }
             return next(new UnexpectedError());
         }
 
-        const getUserTaskResponse: IGetUserTaskResponse = getUserTaskService.result;
+        const getTaskResponse: IGetTaskResponse = getTaskService.result;
 
-        return response.status(EHttpStatusCode.OK).json(getUserTaskResponse);
+        return response.status(EHttpStatusCode.OK).json(getTaskResponse);
 
     }
 

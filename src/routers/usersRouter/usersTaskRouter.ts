@@ -2,22 +2,23 @@ import { Router } from 'express';
 import { UserAuthenticationMiddleware } from '../../middlewares/UserAuthenticationMiddleware';
 import { AccessPermissionMiddleware } from '../../middlewares/AccessPermissionMiddleware';
 import { UserTaskCreationController } from '../../controllers/UserTaskCreationController';
-import { GetAllUserTasksController } from '../../controllers/GetAllUserTasksController';
-import { GetUserTaskController } from '../../controllers/GetUserTaskController';
+import { GetAllTasksController } from '../../controllers/GetAllTasksController';
+import { GetTaskController } from '../../controllers/GetTaskController';
 import { TaskUpdateController } from '../../controllers/TaskUpdateController';
+import { TaskRemovalController } from '../../_WorkInProgress/TasksFeature/TaskRemovalFeature';
 
 const usersTasksRouter = Router({ mergeParams: true });
 
 usersTasksRouter.get("/",
     new UserAuthenticationMiddleware().requireAuthenticatedUser,
     new AccessPermissionMiddleware().strictToOwner,
-    new GetAllUserTasksController().handle
+    new GetAllTasksController().handle
 );
 
 usersTasksRouter.get("/:taskId",
     new UserAuthenticationMiddleware().requireAuthenticatedUser,
     new AccessPermissionMiddleware().strictToOwner,
-    new GetUserTaskController().handle
+    new GetTaskController().handle
 );
 
 usersTasksRouter.post("/",
@@ -30,6 +31,12 @@ usersTasksRouter.patch("/:taskId",
     new UserAuthenticationMiddleware().requireAuthenticatedUser,
     new AccessPermissionMiddleware().strictToOwner,
     new TaskUpdateController().handle
+);
+
+usersTasksRouter.delete("/:taskId",
+    new UserAuthenticationMiddleware().requireAuthenticatedUser,
+    new AccessPermissionMiddleware().strictToOwner,
+    new TaskRemovalController().handle
 );
 
 export { usersTasksRouter };

@@ -1,12 +1,12 @@
 import { Request, Response, NextFunction } from 'express';
 import { IUserResourceRequestParams } from '../classes/user/IUserResourceRequestParams';
-import { IGetAllUserTasksResponse } from '../classes/user/task/IGetAllUserTasksResponse';
+import { IGetAllTasksResponse } from '../classes/user/task/IGetAllTasksResponse';
 import { EHttpStatusCode } from '../constants/EHttpStatusCode';
 import { UnexpectedError } from '../errors/UnexpectedError';
 import { IApplicationService } from '../services/IApplicationService';
-import { GetAllUserTasksService } from '../services/task/GetAllUserTasksService';
+import { GetAllTasksService } from '../services/task/GetAllTasksService';
 
-export class GetAllUserTasksController {
+export class GetAllTasksController {
     
     async handle(request: Request<IUserResourceRequestParams>, response: Response, next: NextFunction){
 
@@ -19,18 +19,18 @@ export class GetAllUserTasksController {
             return next(new UnexpectedError());
         }
 
-        const getAllUserTasksService: IApplicationService<IGetAllUserTasksResponse> = new GetAllUserTasksService(params.userId);
+        const getAllTasksService: IApplicationService<IGetAllTasksResponse> = new GetAllTasksService(params.userId);
 
-        await getAllUserTasksService.execute();
+        await getAllTasksService.execute();
 
-        if (!getAllUserTasksService.result){
-            if (getAllUserTasksService.error){ return next(getAllUserTasksService.error); }
+        if (!getAllTasksService.result){
+            if (getAllTasksService.error){ return next(getAllTasksService.error); }
             return next(new UnexpectedError());
         }
 
-        const getAllUserTasksResponse: IGetAllUserTasksResponse = getAllUserTasksService.result;
+        const getAllTasksResponse: IGetAllTasksResponse = getAllTasksService.result;
 
-        return response.status(EHttpStatusCode.OK).json(getAllUserTasksResponse);
+        return response.status(EHttpStatusCode.OK).json(getAllTasksResponse);
 
     }
 
