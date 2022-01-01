@@ -6,7 +6,7 @@ import { EHttpStatusCode } from '../constants/EHttpStatusCode';
 import { UnexpectedError } from '../errors/UnexpectedError';
 import { ITaskCreationModel } from '../models/user/task/ITaskCreationModel';
 import { IApplicationService } from '../services/IApplicationService';
-import { TaskCreationService } from '../services/task/TaskCreationService';
+import { TaskCreationService } from '../services/user/task/TaskCreationService';
 import { IValidatableData } from '../validators/IValidatableData';
 import { IValidator } from '../validators/IValidator';
 import { TaskCreationValidatableData } from '../validators/users/task/TaskCreationValidatableData';

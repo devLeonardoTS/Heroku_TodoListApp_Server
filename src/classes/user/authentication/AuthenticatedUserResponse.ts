@@ -1,5 +1,4 @@
 import { EUserAuthenticationMessage } from "../../../constants/user/authentication/EUserAuthenticationMessage";
-import { IDisplayableUserProfileData } from "../profile/IDisplayableUserProfileData";
 import { IAuthenticatedUserResponse } from "./IAuthenticatedUserResponse";
 import { IDisplayableAuthenticatedUserAccountData } from "./IDisplayableAuthenticatedUserAccountData";
 

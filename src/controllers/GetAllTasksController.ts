@@ -4,7 +4,7 @@ import { IGetAllTasksResponse } from '../classes/user/task/IGetAllTasksResponse'
 import { EHttpStatusCode } from '../constants/EHttpStatusCode';
 import { UnexpectedError } from '../errors/UnexpectedError';
 import { IApplicationService } from '../services/IApplicationService';
-import { GetAllTasksService } from '../services/task/GetAllTasksService';
+import { GetAllTasksService } from '../services/user/task/GetAllTasksService';
 
 export class GetAllTasksController {
     

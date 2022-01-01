@@ -1,13 +1,13 @@
-import prismaClient from "../../apis/prisma";
+import prismaClient from "../../../apis/prisma";
 import { Task } from "@prisma/client";
-import { DisplayableTaskData } from "../../classes/user/task/DisplayableTaskData";
-import { GetTaskResponse } from "../../classes/user/task/GetTaskResponse";
-import { IDisplayableTaskData } from "../../classes/user/task/IDisplayableTaskData";
-import { IGetTaskResponse } from "../../classes/user/task/IGetTaskResponse";
-import { NotFoundError } from "../../errors/NotFoundError";
-import { UnexpectedError } from "../../errors/UnexpectedError";
-import { PrismaUtils } from "../../utils/PrismaUtils";
-import { ApplicationService } from "../ApplicationService";
+import { DisplayableTaskData } from "../../../classes/user/task/DisplayableTaskData";
+import { GetTaskResponse } from "../../../classes/user/task/GetTaskResponse";
+import { IDisplayableTaskData } from "../../../classes/user/task/IDisplayableTaskData";
+import { IGetTaskResponse } from "../../../classes/user/task/IGetTaskResponse";
+import { NotFoundError } from "../../../errors/NotFoundError";
+import { UnexpectedError } from "../../../errors/UnexpectedError";
+import { PrismaUtils } from "../../../utils/PrismaUtils";
+import { ApplicationService } from "../../ApplicationService";
 
 export class GetTaskService extends ApplicationService<IGetTaskResponse> {
 

@@ -1,6 +1,5 @@
 import { initializeApp, AppOptions, cert, App } from "firebase-admin/app";
 import { getStorage, Storage } from 'firebase-admin/storage';
-import { escape } from "querystring";
 import { EStorageErrorMessage } from "../../constants/apis/EStorageErrorMessage";
 import { EStorageErrorStatus } from "../../constants/apis/EStorageErrorStatus";
 import { EAppDefaultString } from "../../constants/EAppDefaultString";

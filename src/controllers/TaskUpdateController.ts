@@ -5,7 +5,7 @@ import { EHttpStatusCode } from "../constants";
 import { UnexpectedError } from "../errors/UnexpectedError";
 import { ITaskUpdateModel } from "../models/user/task/ITaskUpdateModel";
 import { IApplicationService } from "../services/IApplicationService";
-import { TaskUpdateService } from "../services/task/TaskUpdateService";
+import { TaskUpdateService } from "../services/user/task/TaskUpdateService";
 import { IValidatableData } from "../validators/IValidatableData";
 import { IValidator } from "../validators/IValidator";
 import { TaskUpdateValidatableData } from "../validators/users/task/TaskUpdateValidatableData";

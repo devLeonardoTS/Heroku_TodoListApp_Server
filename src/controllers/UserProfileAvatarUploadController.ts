@@ -5,7 +5,6 @@ import { IUpdateUserProfileAvatarResponse } from "../classes/user/profile/IUpdat
 import { UpdateUserProfileAvatarResponse } from "../classes/user/profile/UpdateUserProfileAvatarResponse";
 import { EHttpStatusCode } from "../constants/EHttpStatusCode";
 import { EProfileHandlingErrorMessage } from "../constants/user/profile/EProfileHandlingErrorMessage";
-import { IHttpError } from "../errors/IHttpError";
 import { UnexpectedError } from "../errors/UnexpectedError";
 import { firebaseApi } from "../server";
 import { IApplicationService } from "../services/IApplicationService";
