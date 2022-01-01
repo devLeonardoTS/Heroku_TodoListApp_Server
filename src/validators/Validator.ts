@@ -12,6 +12,7 @@ import { IFieldDetails } from "./IFieldDetails";
 import { IValidatableData } from "./IValidatableData";
 import { IValidatableField } from "./IValidatableField";
 import { IValidator } from "./IValidator";
+import { IFieldValidationErrorData } from "../errors/IFieldValidationErrorData";
 
 export abstract class Validator<AnyTypeToBeValidatorResult> implements IValidator<AnyTypeToBeValidatorResult> {
 
@@ -74,8 +75,16 @@ export abstract class Validator<AnyTypeToBeValidatorResult> implements IValidato
             const isNumber: boolean = type === EFieldValueType.NUMBER;
 
             if (hasValue && isString){
-                if (details.minLength && details.maxLength){
-                    const valueAsString: string = String(value);
+
+                let valueAsString: string | null = null;
+                try {
+                    valueAsString = String(value);
+                } catch (error) {
+                    const errorReason: string = "Invalid field value. The input should be of type string.";
+                    invalidFields.push(new InvalidField(field.name, errorReason));
+                }
+
+                if (valueAsString && details.minLength && details.maxLength){
                     const isInvalid: boolean = valueAsString.length < details.minLength || valueAsString.length > details.maxLength;
                     
                     if (isInvalid){
@@ -86,8 +95,16 @@ export abstract class Validator<AnyTypeToBeValidatorResult> implements IValidato
             }
 
             if (hasValue && isNumber){
-                if (details.minValue && details.maxValue){
-                    const valueAsNumber: number = Number(value);
+
+                let valueAsNumber: number | null = null;
+                try {
+                    valueAsNumber = Number(value);
+                } catch (error) {
+                    const errorReason: string = "Invalid field value. The input should be of type number.";
+                    invalidFields.push(new InvalidField(field.name, errorReason));
+                }
+
+                if (valueAsNumber && details.minValue && details.maxValue){
                     const isInvalid: boolean = valueAsNumber < details.minValue || valueAsNumber > details.maxValue;
                     
                     if (isInvalid){
@@ -96,6 +113,79 @@ export abstract class Validator<AnyTypeToBeValidatorResult> implements IValidato
                     }
                 }
             }
+        });
+
+        if (invalidFields.length < 1){ return false; }
+
+        this.error = new FieldValidationError(
+            new FieldValidationErrorData(invalidFields) 
+        );
+
+        return true;
+
+    }
+
+    protected async isNotAcceptable(): Promise<boolean>{
+
+        if (this.error){ return true; }
+
+        if (this.validatableData.fields.length < 1){ return false; }
+
+        const invalidFields: Array<IInvalidField> = new Array();
+
+        this.validatableData.fields.forEach((field) => {
+
+            const value: any = field.value;
+            const details: IFieldDetails = field.details;
+            const acceptableStrings: Array<string> | null = field.details.acceptableStringValues;
+            const acceptableNumbers: Array<number> | null = field.details.acceptableNumberValues;
+            const type: EFieldValueType = details.fieldValueType;
+
+            const hasValue: boolean = value !== "";
+            const isString: boolean = type === EFieldValueType.STRING;
+            const isNumber: boolean = type === EFieldValueType.NUMBER;
+
+            if (hasValue && isString && acceptableStrings){
+
+                let valueAsString: string | null = null;
+                try {
+                    valueAsString = String(value).toUpperCase();
+                } catch (error) {
+                    const errorReason: string = "Invalid field value. The input should be of type string.";
+                    invalidFields.push(new InvalidField(field.name, errorReason));
+                }
+
+                if (valueAsString){
+
+                    if (!acceptableStrings.includes(valueAsString)){
+                        const errorReason: string = "The value provided was not within the acceptable values list."
+                        invalidFields.push(new InvalidField(field.name, errorReason, details));
+                    }
+
+                }
+
+            }
+
+            if (hasValue && isNumber && acceptableNumbers){
+
+                let valueAsNumber: number | null = null;
+                try {
+                    valueAsNumber = Number(value);
+                } catch (error) {
+                    const errorReason: string = "Invalid field value. The input should be of type number.";
+                    invalidFields.push(new InvalidField(field.name, errorReason));
+                }
+
+                if (valueAsNumber){
+                    if (!acceptableNumbers.includes(valueAsNumber)){
+                        const errorReason: string = "The value provided was not within the acceptable values list."
+                        invalidFields.push(new InvalidField(field.name, errorReason, details));
+                    }
+                }
+
+
+            }
+
         });
 
         if (invalidFields.length < 1){ return false; }
