@@ -3,6 +3,7 @@ import { EDatabaseErrorMessage } from "../constants/EDatabaseErrorMessage";
 import { EDatabaseErrorStatus } from "../constants/EDatabaseErrorStatus";
 import { DatabaseError } from "../errors/DatabaseError";
 import { IHttpError } from "../errors/IHttpError";
+import { NotFoundError } from "../errors/NotFoundError";
 
 export abstract class PrismaUtils {
 
@@ -48,6 +49,21 @@ export abstract class PrismaUtils {
 
         const isDevelopmentEnv = process.env.NODE_ENV === "development";
 
+        if (error instanceof PrismaClientKnownRequestError){
+
+            const errorArr: Array<string> = error.message.split("\n");
+            const errorMsg = errorArr[errorArr.length - 1]?.trim() || error.message;
+
+            if (error.code === "P2025") {
+
+                return new NotFoundError(
+                    isDevelopmentEnv ? error ? {...error, message: errorMsg} : undefined : undefined
+                );
+                
+            }
+            
+        }
+
         return new DatabaseError(
             EDatabaseErrorStatus.DATABASE_UPDATE_ERROR,
             EDatabaseErrorMessage.DATABASE_UPDATE_ERROR,
@@ -59,6 +75,20 @@ export abstract class PrismaUtils {
     public static handleRemovalError(error?: Error): IHttpError {
 
         const isDevelopmentEnv = process.env.NODE_ENV === "development";
+
+        if (error instanceof PrismaClientKnownRequestError){
+
+            const errorArr: Array<string> = error.message.split("\n");
+            const errorMsg = errorArr[errorArr.length - 1]?.trim() || error.message;
+
+            if (error.code === "P2025") {
+
+                return new NotFoundError(
+                    isDevelopmentEnv ? error ? {...error, message: errorMsg} : undefined : undefined
+                );
+
+            }
+        }
 
         return new DatabaseError(
             EDatabaseErrorStatus.DATABASE_REMOVAL_ERROR,

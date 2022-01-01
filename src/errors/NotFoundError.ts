@@ -3,12 +3,12 @@ import { HttpError } from './HttpError';
 
 export class NotFoundError extends HttpError {
 
-    constructor(){
+    constructor(data?: any){
         super(
             EHttpStatusCode.NOT_FOUND,
             ERequestErrorStatus.NOT_FOUND,
             ERequestErrorMessage.RESOURCE_NOT_FOUND,
-            null
+            data ? data : null
         );
     }
 

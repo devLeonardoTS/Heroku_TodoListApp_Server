@@ -36,14 +36,14 @@ export abstract class ValidatableData implements IValidatableData {
         return validatableField;
     }
 
-    setStringDetails(fieldName: string, minLength: number, maxLength: number, acceptableStringValues?: Array<string>): IFieldDetails | null {
+    setStringDetails(fieldName: string, minLength?: number, maxLength?: number, acceptableStringValues?: Array<string>): IFieldDetails | null {
         const validatableField: IValidatableField | null = this.getField(fieldName);
         if (!validatableField){ return null; }
 
         if(validatableField.details.fieldValueType !== EFieldValueType.STRING){ return null; }
 
-        validatableField.details.minLength = minLength;
-        validatableField.details.maxLength = maxLength;
+        validatableField.details.minLength = minLength || null;
+        validatableField.details.maxLength = maxLength || null;
 
         validatableField.details.acceptableStringValues = acceptableStringValues || null;
 
