@@ -54,7 +54,7 @@ export abstract class ValidatableData implements IValidatableData {
         const validatableField: IValidatableField | null = this.getField(fieldName);
         if (!validatableField){ return null; }
 
-        if(validatableField.details.fieldValueType !== EFieldValueType.STRING){ return null; }
+        if(validatableField.details.fieldValueType !== EFieldValueType.NUMBER){ return null; }
 
         validatableField.details.minValue = minValue;
         validatableField.details.maxValue = maxValue;
