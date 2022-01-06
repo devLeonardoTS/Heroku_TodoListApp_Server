@@ -1,12 +1,12 @@
 import { IUserProfileUpdateModel } from "./IUserProfileUpdateModel";
 
 export class UserProfileUpdateModel implements IUserProfileUpdateModel {
-    ownerId: string;
+    ownerUid: string;
     nickname: string | undefined;
     message: string | undefined;
 
-    constructor(ownerId: string, nickname?: string, message?: string){
-        this.ownerId = ownerId;
+    constructor(ownerUid: string, nickname?: string, message?: string){
+        this.ownerUid = ownerUid;
         this.nickname = nickname;
         this.message = message;
     }

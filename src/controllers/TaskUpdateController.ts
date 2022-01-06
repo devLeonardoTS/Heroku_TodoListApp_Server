@@ -16,18 +16,18 @@ export class TaskUpdateController {
     async handle(request: Request<IUserResourceRequestParams>, response: Response, next: NextFunction){
 
         const { authenticated } = request;
-        const { userId: ownerId } = request.params;
-        const { taskId } = request.params;
+        const { userUid: ownerUid } = request.params;
+        const { taskUid } = request.params;
 
-        if ((!authenticated || !authenticated.userId) || !ownerId || !taskId){
+        if ((!authenticated || !authenticated.userUid) || !ownerUid || !taskUid){
             return next(new UnexpectedError());
         }
 
-        if (authenticated.userId !== ownerId){
+        if (authenticated.userUid !== ownerUid){
             return next(new UnexpectedError());
         }
 
-        const validatableData: IValidatableData = new TaskUpdateValidatableData(taskId, request.body);
+        const validatableData: IValidatableData = new TaskUpdateValidatableData(taskUid, request.body);
         const validator: IValidator<ITaskUpdateModel> = new TaskUpdateValidator(validatableData);
 
         const updateTaskService: IApplicationService<ITaskUpdateResponse> = new TaskUpdateService(validator);

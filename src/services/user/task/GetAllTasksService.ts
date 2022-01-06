@@ -11,20 +11,20 @@ import { ApplicationService } from "../../ApplicationService";
 
 export class GetAllTasksService extends ApplicationService<IGetAllTasksResponse> {
 
-    private ownerId: string;
+    private ownerUid: string;
     private userTasks: Array<Task> | null;
     private displayableTasks: Array<IDisplayableTaskData> | null;
 
-    constructor(ownerId: string){
+    constructor(ownerUid: string){
         super();
-        this.ownerId = ownerId;
+        this.ownerUid = ownerUid;
         this.userTasks = null;
         this.displayableTasks = null;
     }
 
     async execute(): Promise<boolean> {
 
-        if (!await this.getAllTasks(this.ownerId)){ return false; }
+        if (!await this.getAllTasks(this.ownerUid)){ return false; }
 
         if (!this.userTasks){
             this.error = new UnexpectedError();
@@ -49,12 +49,12 @@ export class GetAllTasksService extends ApplicationService<IGetAllTasksResponse>
 
     }
 
-    private async getAllTasks(ownerId: string): Promise<boolean> {
+    private async getAllTasks(ownerUid: string): Promise<boolean> {
 
         return await prismaClient.task
         .findMany({
             where: {
-                creatorId: ownerId
+                creatorUid: ownerUid
             }
         })
         .then((userTasks) => {

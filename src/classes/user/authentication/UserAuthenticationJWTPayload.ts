@@ -2,11 +2,11 @@ import { UserRole } from "@prisma/client";
 import { IUserAuthenticationJWTPayload } from "./IUserAuthenticationJWTPayload";
 
 export class UserAuthenticationJWTPayload implements IUserAuthenticationJWTPayload {
-    userId: string | null;
+    userUid: string | null;
     userRole: UserRole | null;
 
-    constructor(userId: string, userRole: UserRole){
-        this.userId = userId;
+    constructor(userUid: string, userRole: UserRole){
+        this.userUid = userUid;
         this.userRole = userRole;
     }
 }

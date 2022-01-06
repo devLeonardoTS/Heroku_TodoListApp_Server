@@ -9,12 +9,12 @@ export class UserLogoutController {
 
     async handle(request: Request, response: Response, next: NextFunction){
 
-        if (!request.authenticated || !request.authenticated.userId){
+        if (!request.authenticated || !request.authenticated.userUid){
             return next(new UnexpectedError());
         }
 
         const userLogoutService: IApplicationService<IUserLogoutResponse> = 
-            new UserLogoutService(request.authenticated.userId);
+            new UserLogoutService(request.authenticated.userUid);
 
         await userLogoutService.execute();
 

@@ -16,7 +16,7 @@ export class TaskCreationValidator extends Validator<ITaskCreationModel> {
         if (!await this.capitalizeValue(TaskConstants.DESCRIPTION)){ return false; }
 
         this.result = new TaskCreationModel(
-            this.validatableData.getFieldValue(TaskConstants.CREATOR_ID),
+            this.validatableData.getFieldValue(TaskConstants.CREATOR_UID),
             this.validatableData.getFieldValue(TaskConstants.DESCRIPTION)
         );
 

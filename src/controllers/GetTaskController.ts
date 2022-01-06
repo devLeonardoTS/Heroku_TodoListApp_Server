@@ -13,20 +13,20 @@ export class GetTaskController {
     async handle(request: Request<IUserResourceRequestParams>, response: Response, next: NextFunction){
 
         const { authenticated, params } = request;
-        if (!(authenticated && authenticated.userId) || !params.userId){
+        if (!(authenticated && authenticated.userUid) || !params.userUid){
             return next(new UnexpectedError());
         }
 
-        if (authenticated.userId !== params.userId){
+        if (authenticated.userUid !== params.userUid){
             return next(new UnexpectedError());
         }
 
-        if (!params.taskId || params.taskId.length !== TaskConstants.TASK_ID_MAX_LENGTH){
+        if (!params.taskUid || params.taskUid.length !== TaskConstants.TASK_UID_MAX_LENGTH){
             return next(new NotFoundError());
         }
 
         const getTaskService: IApplicationService<IGetTaskResponse> = 
-            new GetTaskService(params.taskId);
+            new GetTaskService(params.taskUid);
 
         await getTaskService.execute();
 

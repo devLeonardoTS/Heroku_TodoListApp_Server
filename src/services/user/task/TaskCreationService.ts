@@ -1,4 +1,4 @@
-import { Task } from "@prisma/client";
+import { Task, UserAccount } from "@prisma/client";
 import prismaClient from "../../../apis/prisma";
 import { DisplayableTaskData } from "../../../classes/user/task/DisplayableTaskData";
 import { IDisplayableTaskData } from "../../../classes/user/task/IDisplayableTaskData";
@@ -17,11 +17,13 @@ export class TaskCreationService extends ApplicationService<ITaskCreationRespons
 
     private validator: IValidator<ITaskCreationModel>;
     private task: Task | null;
+    private userAccount: UserAccount | null;
 
     constructor(validator: IValidator<ITaskCreationModel>){
         super();
         this.validator = validator;
         this.task = null;
+        this.userAccount = null;
     }
 
     async execute(): Promise<boolean> {
@@ -55,10 +57,18 @@ export class TaskCreationService extends ApplicationService<ITaskCreationRespons
 
     private async createTask(taskCreationModel: ITaskCreationModel): Promise<void> {
 
+        const isUserAccountRetrieved: boolean = await this.findUserAccountByUid(taskCreationModel.creatorUid);
+
+        if (!isUserAccountRetrieved || !this.userAccount){
+            if (!this.error){ this.error = new UnexpectedError(); }
+            return;
+        }
+
         return await prismaClient.task
         .create({
             data: {
-                creatorId: taskCreationModel.creatorId,
+                creatorId: this.userAccount.id,
+                creatorUid: taskCreationModel.creatorUid,
                 description: taskCreationModel.description
             }
         })
@@ -75,6 +85,33 @@ export class TaskCreationService extends ApplicationService<ITaskCreationRespons
             this.error = PrismaUtils.handleInsertionError(error);
         });
 
+    }
+
+    private async findUserAccountByUid(ownerUid: string): Promise<boolean>{
+        return await prismaClient.userAccount
+        .findUnique({
+            where: {
+                uid: ownerUid
+            }
+        })
+        .then((userAccount) => {
+            if (!userAccount){
+                this.error = new DatabaseError(
+                    EDatabaseErrorStatus.DATABASE_RETRIEVAL_ERROR,
+                    EDatabaseErrorMessage.DATABASE_RETRIEVAL_ERROR
+                );
+                return false;
+            }
+
+            this.userAccount = userAccount;
+            return true;
+        })
+        .catch((retrievalError) => {
+
+            this.error = PrismaUtils.handleRetrievalError(retrievalError);
+            return false;
+            
+        });
     }
 
 }

@@ -6,18 +6,18 @@ import { ValidatableField } from "../../ValidatableField";
 
 export class TaskCreationValidatableData extends ValidatableData {
 
-    constructor(creatorId: string, receivedData: any){
+    constructor(creatorUid: string, receivedData: any){
         super([
-            new ValidatableField(TaskConstants.CREATOR_ID, new FieldDetails(EFieldValueType.STRING, true)),
+            new ValidatableField(TaskConstants.CREATOR_UID, new FieldDetails(EFieldValueType.STRING, true)),
             new ValidatableField(TaskConstants.DESCRIPTION, new FieldDetails(EFieldValueType.STRING, true))
         ]);
 
         const { description } = receivedData;
 
-        this.setFieldValue(TaskConstants.CREATOR_ID, creatorId);
+        this.setFieldValue(TaskConstants.CREATOR_UID, creatorUid);
         this.setFieldValue(TaskConstants.DESCRIPTION, description);
 
-        this.setStringDetails(TaskConstants.CREATOR_ID, TaskConstants.CREATOR_ID_MIN_LENGTH, TaskConstants.CREATOR_ID_MAX_LENGTH);
+        this.setStringDetails(TaskConstants.CREATOR_UID, TaskConstants.CREATOR_UID_MIN_LENGTH, TaskConstants.CREATOR_UID_MAX_LENGTH);
         this.setStringDetails(TaskConstants.DESCRIPTION, TaskConstants.DESCRIPTION_MIN_LENGTH, TaskConstants.DESCRIPTION_MAX_LENGTH);
     }
 

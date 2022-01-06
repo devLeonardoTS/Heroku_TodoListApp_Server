@@ -2,8 +2,8 @@ import { Task } from "@prisma/client";
 import { IDisplayableTaskData } from "./IDisplayableTaskData";
 
 export class DisplayableTaskData implements IDisplayableTaskData {
-    id: string;
-    creatorId: string;
+    uid: string;
+    creatorUid: string;
     description: string;
     status: string;
     createdAt: string;
@@ -11,9 +11,9 @@ export class DisplayableTaskData implements IDisplayableTaskData {
     completedAt: string | null;
 
     constructor(task: Task){
-        const { id, creatorId, description, status, createdAt, updatedAt, completedAt } = task;
-        this.id = id;
-        this.creatorId = creatorId;
+        const { uid, creatorUid, description, status, createdAt, updatedAt, completedAt } = task;
+        this.uid = uid;
+        this.creatorUid = creatorUid;
         this.description = description;
         this.status = status;
         this.createdAt = createdAt.toString();

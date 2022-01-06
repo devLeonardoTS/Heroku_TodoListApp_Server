@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
+import { IUserResourceRequestParams } from '../classes/user/IUserResourceRequestParams';
 import { ITaskRemovalResponse } from '../classes/user/task/ITaskRemovalResponse';
 import { EHttpStatusCode } from '../constants';
 import { UnexpectedError } from '../errors/UnexpectedError';
@@ -7,22 +8,22 @@ import { TaskRemovalService } from '../services/user/task/TaskRemovalService';
 
 export class TaskRemovalController {
 
-    async handle(request: Request, response: Response, next: NextFunction){
+    async handle(request: Request<IUserResourceRequestParams>, response: Response, next: NextFunction){
 
         const { authenticated } = request;
-        const { userId: ownerId } = request.params;
-        const { taskId } = request.params;
+        const { userUid: ownerUid } = request.params;
+        const { taskUid } = request.params;
 
-        if ((!authenticated || !authenticated.userId) || !ownerId || !taskId){
+        if ((!authenticated || !authenticated.userUid) || !ownerUid || !taskUid){
             return next(new UnexpectedError());
         }
 
-        if (authenticated.userId !== ownerId){
+        if (authenticated.userUid !== ownerUid){
             return next(new UnexpectedError());
         }
 
         const taskRemovalService: IApplicationService<ITaskRemovalResponse> = 
-            new TaskRemovalService(taskId);
+            new TaskRemovalService(taskUid);
 
         await taskRemovalService.execute();
 

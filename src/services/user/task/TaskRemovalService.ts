@@ -8,16 +8,16 @@ import { ApplicationService } from "../../ApplicationService";
 
 export class TaskRemovalService extends ApplicationService<ITaskRemovalResponse>{
 
-    private taskId: string;
+    private taskUid: string;
 
-    constructor(taskId: string){
+    constructor(taskUid: string){
         super();
-        this.taskId = taskId;
+        this.taskUid = taskUid;
     }
 
     async execute(): Promise<boolean> {
 
-        if (!await this.removeTask(this.taskId)){ return false; }
+        if (!await this.removeTask(this.taskUid)){ return false; }
 
         const taskRemovalResponse: ITaskRemovalResponse = new TaskRemovalResponse();
 
@@ -27,9 +27,9 @@ export class TaskRemovalService extends ApplicationService<ITaskRemovalResponse>
 
     }
 
-    private async removeTask(taskId: string): Promise<boolean> {
+    private async removeTask(taskUid: string): Promise<boolean> {
 
-        if (!this.taskId){
+        if (!taskUid){
             this.error = new UnexpectedError();
             return false;
         }
@@ -37,7 +37,7 @@ export class TaskRemovalService extends ApplicationService<ITaskRemovalResponse>
         return await prismaClient.task
         .delete({
             where: {
-                id: this.taskId
+                uid: taskUid
             }
         })
         .then((task) => {

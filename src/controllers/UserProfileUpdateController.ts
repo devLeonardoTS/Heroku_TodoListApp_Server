@@ -15,10 +15,10 @@ export class UserProfileUpdateController {
 
     async handle(request: Request<IUserResourceRequestParams>, response: Response, next: NextFunction) {
 
-        const { userId: ownerId } = request.params;
+        const { userUid: ownerUid } = request.params;
         const receivedData = request.body;
 
-        const validatableData: IValidatableData = new UserProfileUpdateValidatableData(ownerId, receivedData);
+        const validatableData: IValidatableData = new UserProfileUpdateValidatableData(ownerUid, receivedData);
         const validator: IValidator<IUserProfileUpdateModel> = new UserProfileUpdateValidator(validatableData);
 
         const userProfileUpdateService: IApplicationService<IUserProfileUpdateResponse> =

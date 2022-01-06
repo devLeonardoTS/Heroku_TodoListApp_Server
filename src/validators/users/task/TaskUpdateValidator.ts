@@ -17,12 +17,12 @@ export class TaskUpdateValidator extends Validator<ITaskUpdateModel> {
         if (await this.isAnyReceivedValueNotAcceptable()){ return false; }
         if (!await this.capitalizeValue(TaskConstants.DESCRIPTION)){ return false; }
 
-        const taskId = this.validatableData.getFieldValue(TaskConstants.TASK_ID);
+        const taskUid = this.validatableData.getFieldValue(TaskConstants.TASK_UID);
         const taskDescription = this.validatableData.getFieldValue(TaskConstants.DESCRIPTION);
         const taskStatus = this.validatableData.getFieldValue(TaskConstants.STATUS);
 
         this.result = new TaskUpdateModel(
-            taskId,
+            taskUid,
             taskDescription === "" ? undefined : taskDescription,
             taskStatus === "" ? undefined : taskStatus
         );

@@ -15,10 +15,10 @@ export class ApplicationReviewCreationController {
 
     async handle(request: Request<IUserResourceRequestParams>, response: Response, next: NextFunction){
 
-        const creatorId: string = request.params.userId;
-        if (!creatorId){ return next(new UnexpectedError()); }
+        const creatorUid: string = request.params.userUid;
+        if (!creatorUid){ return next(new UnexpectedError()); }
 
-        const validatableData: IValidatableData = new ApplicationReviewCreationValidatableData(creatorId, request.body);
+        const validatableData: IValidatableData = new ApplicationReviewCreationValidatableData(creatorUid, request.body);
         const validator: IValidator<IApplicationReviewCreationModel> = new ApplicationReviewCreationValidator(validatableData);
 
         const applicationReviewCreationService: IApplicationService<IApplicationReviewCreationResponse> =

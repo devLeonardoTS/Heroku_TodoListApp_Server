@@ -1,6 +1,6 @@
 export interface IDisplayableApplicationReviewData {
-    id: string;
-    creatorId: string;
+    uid: string;
+    creatorUid: string;
     commentary: string;
     rate: number;
     createdAt: string;

@@ -10,11 +10,11 @@ export class AccessPermissionMiddleware {
 
         const {authenticated, params} = request;
 
-        if (!authenticated || !authenticated.userId){
+        if (!authenticated || !authenticated.userUid){
             return next(new UnexpectedError());
         }
 
-        if (authenticated.userId !== params.userId){
+        if (authenticated.userUid !== params.userUid){
             return next(
                 new AccessPermissionError(
                     EAccessPermissionStatus.REQUESTER_NOT_OWNER,

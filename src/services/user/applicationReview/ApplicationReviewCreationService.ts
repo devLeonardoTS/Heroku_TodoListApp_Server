@@ -1,4 +1,4 @@
-import { ApplicationReview } from "@prisma/client";
+import { ApplicationReview, UserAccount } from "@prisma/client";
 import prismaClient from "../../../apis/prisma";
 import { ApplicationReviewCreationResponse } from "../../../classes/user/applicationReview/ApplicationReviewCreationResponse";
 import { DisplayableApplicationReviewData } from "../../../classes/user/applicationReview/DisplayableApplicationReviewData";
@@ -17,11 +17,13 @@ export class ApplicationReviewCreationService extends ApplicationService<IApplic
 
     private validator: IValidator<IApplicationReviewCreationModel>;
     private applicationReview: ApplicationReview | null;
+    private userAccount: UserAccount | null;
 
     constructor(validator: IValidator<IApplicationReviewCreationModel>){
         super();
         this.validator = validator;
         this.applicationReview = null;
+        this.userAccount = null;
     }
 
     async execute(): Promise<boolean> {
@@ -57,12 +59,20 @@ export class ApplicationReviewCreationService extends ApplicationService<IApplic
 
     private async createApplicationReview(applicationReviewCreationModel: IApplicationReviewCreationModel): Promise<void>{
 
-        const { creatorId, commentary, rate } = applicationReviewCreationModel;
+        const { creatorUid, commentary, rate } = applicationReviewCreationModel;
+
+        const isUserAccountRetrieved: boolean = await this.findUserAccountByUid(creatorUid);
+
+        if (!isUserAccountRetrieved || !this.userAccount){
+            if (!this.error){ this.error = new UnexpectedError(); }
+            return;
+        }
 
         return await prismaClient.applicationReview
         .create({
             data: {
-                creatorId: creatorId,
+                creatorId: this.userAccount.id,
+                creatorUid: creatorUid,
                 commentary: commentary,
                 rate: rate
             }
@@ -80,6 +90,33 @@ export class ApplicationReviewCreationService extends ApplicationService<IApplic
             this.error = PrismaUtils.handleInsertionError(insertionError);
         });
 
+    }
+
+    private async findUserAccountByUid(ownerUid: string): Promise<boolean>{
+        return await prismaClient.userAccount
+        .findUnique({
+            where: {
+                uid: ownerUid
+            }
+        })
+        .then((userAccount) => {
+            if (!userAccount){
+                this.error = new DatabaseError(
+                    EDatabaseErrorStatus.DATABASE_RETRIEVAL_ERROR,
+                    EDatabaseErrorMessage.DATABASE_RETRIEVAL_ERROR
+                );
+                return false;
+            }
+
+            this.userAccount = userAccount;
+            return true;
+        })
+        .catch((retrievalError) => {
+
+            this.error = PrismaUtils.handleRetrievalError(retrievalError);
+            return false;
+            
+        });
     }
     
 }

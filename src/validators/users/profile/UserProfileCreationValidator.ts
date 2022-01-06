@@ -16,7 +16,7 @@ export class UserProfileCreationValidator extends Validator<IUserProfileCreation
         if (await this.isAnyReceivedValueRangeInvalid()){ return false; }
 
         this.result = new UserProfileCreationModel(
-            this.validatableData.getFieldValue(UserProfileConstants.OWNER_ID),
+            this.validatableData.getFieldValue(UserProfileConstants.OWNER_UID),
             this.validatableData.getFieldValue(UserProfileConstants.NICKNAME),
             this.validatableData.getFieldValue(UserProfileConstants.MESSAGE)
         );

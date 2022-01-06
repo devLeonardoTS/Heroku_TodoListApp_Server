@@ -17,12 +17,12 @@ export class ApplicationReviewCreationValidator extends Validator<IApplicationRe
 
         if (!await this.capitalizeValue(ApplicationReviewConstants.COMMENTARY)){ return false; }
 
-        const creatorId: string = String(this.validatableData.getFieldValue(ApplicationReviewConstants.CREATOR_ID));
+        const creatorUid: string = String(this.validatableData.getFieldValue(ApplicationReviewConstants.CREATOR_UID));
         const commentary: string = String(this.validatableData.getFieldValue(ApplicationReviewConstants.COMMENTARY));
         const rate: number = Number(this.validatableData.getFieldValue(ApplicationReviewConstants.RATE));
 
         const applicationReviewCreationModel: IApplicationReviewCreationModel = 
-            new ApplicationReviewCreationModel(creatorId, commentary, rate);
+            new ApplicationReviewCreationModel(creatorUid, commentary, rate);
 
         this.result = applicationReviewCreationModel;
 

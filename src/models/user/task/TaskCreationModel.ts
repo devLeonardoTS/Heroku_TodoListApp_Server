@@ -1,11 +1,11 @@
 import { ITaskCreationModel } from "./ITaskCreationModel";
 
 export class TaskCreationModel implements ITaskCreationModel {
-    creatorId: string;
+    creatorUid: string;
     description: string;
 
-    constructor(creatorId: string, description: string){
-        this.creatorId = creatorId;
+    constructor(creatorUid: string, description: string){
+        this.creatorUid = creatorUid;
         this.description = description;
     }
 }

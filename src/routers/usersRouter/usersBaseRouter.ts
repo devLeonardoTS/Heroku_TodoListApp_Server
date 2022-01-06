@@ -21,10 +21,10 @@ usersBaseRouter.delete("/logout",
     new UserLogoutController().handle
 );
 
-usersBaseRouter.use("/:userId/profile", usersProfileRouter);
+usersBaseRouter.use("/:userUid/profile", usersProfileRouter);
 
-usersBaseRouter.use("/:userId/tasks", usersTasksRouter);
+usersBaseRouter.use("/:userUid/tasks", usersTasksRouter);
 
-usersBaseRouter.use("/:userId/app_review", usersAppReviewRouter);
+usersBaseRouter.use("/:userUid/app_review", usersAppReviewRouter);
 
 export { usersBaseRouter }

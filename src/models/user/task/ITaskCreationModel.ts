@@ -1,4 +1,4 @@
 export interface ITaskCreationModel {
-    creatorId: string;
+    creatorUid: string;
     description: string;
 }

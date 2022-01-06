@@ -79,7 +79,7 @@ export class TaskUpdateService extends ApplicationService<ITaskUpdateResponse> {
         return await prismaClient.task
         .update({
             where: {
-                id: validated.id
+                uid: validated.uid
             },
             data: {
                 description: validated.description,
@@ -113,7 +113,7 @@ export class TaskUpdateService extends ApplicationService<ITaskUpdateResponse> {
             const key: string = keyValuePair[0];
             const value: any = keyValuePair[1];
 
-            const isUpdatableKey = key !== TaskConstants.CREATOR_ID;
+            const isUpdatableKey = key !== TaskConstants.CREATOR_UID;
             const hasValue = !(value === undefined || value === "" || value === null);
 
             if (isUpdatableKey && hasValue){

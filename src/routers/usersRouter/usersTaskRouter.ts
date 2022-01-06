@@ -15,7 +15,7 @@ usersTasksRouter.get("/",
     new GetAllTasksController().handle
 );
 
-usersTasksRouter.get("/:taskId",
+usersTasksRouter.get("/:taskUid",
     new UserAuthenticationMiddleware().requireAuthenticatedUser,
     new AccessPermissionMiddleware().strictToOwner,
     new GetTaskController().handle
@@ -27,13 +27,13 @@ usersTasksRouter.post("/",
     new UserTaskCreationController().handle
 );
 
-usersTasksRouter.patch("/:taskId",
+usersTasksRouter.patch("/:taskUid",
     new UserAuthenticationMiddleware().requireAuthenticatedUser,
     new AccessPermissionMiddleware().strictToOwner,
     new TaskUpdateController().handle
 );
 
-usersTasksRouter.delete("/:taskId",
+usersTasksRouter.delete("/:taskUid",
     new UserAuthenticationMiddleware().requireAuthenticatedUser,
     new AccessPermissionMiddleware().strictToOwner,
     new TaskRemovalController().handle

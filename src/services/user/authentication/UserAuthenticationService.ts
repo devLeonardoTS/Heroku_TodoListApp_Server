@@ -136,7 +136,7 @@ export class UserAuthenticationService extends ApplicationService<IAuthenticated
     private async signAccessToken(userAccount: UserAccount): Promise<boolean> {
 
         this.jwtPayload = new UserAuthenticationJWTPayload(
-            userAccount.id,
+            userAccount.uid,
             userAccount.role
         );
 
@@ -145,7 +145,7 @@ export class UserAuthenticationService extends ApplicationService<IAuthenticated
             return false;
         }
 
-        if (!process.env.USER_AUTH_JWT_SECRET || !this.jwtPayload.userId){
+        if (!process.env.USER_AUTH_JWT_SECRET || !this.jwtPayload.userUid){
             this.error = new UnexpectedError();
             return false;
         }
@@ -156,7 +156,7 @@ export class UserAuthenticationService extends ApplicationService<IAuthenticated
             },
             process.env.USER_AUTH_JWT_SECRET, 
             {
-                subject: this.jwtPayload.userId,
+                subject: this.jwtPayload.userUid,
                 expiresIn: this.accessTokenExpirationInSeconds
             }
         );
@@ -167,9 +167,12 @@ export class UserAuthenticationService extends ApplicationService<IAuthenticated
 
     private async authenticateUser(userAccount: UserAccount): Promise<boolean> {
 
+        const operationDate: Date = new Date();
+
         return await prismaClient.userAccount.update({
             data: {
-                updatedAt: new Date(),
+                updatedAt: operationDate,
+                lastLogin: operationDate,
                 Tokens: {
                     deleteMany: {
                         ownerId: userAccount.id,
@@ -178,6 +181,7 @@ export class UserAuthenticationService extends ApplicationService<IAuthenticated
                         }
                     },
                     create: {
+                        ownerUid: userAccount.uid,
                         tokenType: TokenType.ACCESS_REFRESH,
                         expiresAt: dayjs(new Date()).add(this.refreshTokenExpirationInSeconds, "second").format()
                     }
@@ -212,7 +216,7 @@ export class UserAuthenticationService extends ApplicationService<IAuthenticated
             }
 
             this.userAccount = updatedUserAccount;
-            this.refreshToken = updatedUserAccount.Tokens[0].id;
+            this.refreshToken = updatedUserAccount.Tokens[0].uid;
 
             return true;
         })

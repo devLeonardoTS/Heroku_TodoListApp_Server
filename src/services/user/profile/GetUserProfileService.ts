@@ -7,11 +7,11 @@ import { ApplicationService } from "../../ApplicationService";
 
 export class GetUserProfileService extends ApplicationService<IDisplayableUserProfileData> {
 
-    private ownerId: string;
+    private ownerUid: string;
 
-    constructor(ownerId: string){
+    constructor(ownerUid: string){
         super();
-        this.ownerId = ownerId;
+        this.ownerUid = ownerUid;
     }
 
     async execute(): Promise<boolean> {
@@ -23,10 +23,11 @@ export class GetUserProfileService extends ApplicationService<IDisplayableUserPr
     }
 
     private async isUserProfileFound(): Promise<boolean>{
+
         return await prismaClient.userProfile
         .findUnique({
             where: {
-                ownerId: this.ownerId
+                ownerUid: this.ownerUid
             }
         })
         .then((userProfile) => {

@@ -30,12 +30,12 @@ export class UserAuthenticationMiddleware {
 
         try {
 
-            const { userId, userRole } = jwt.verify(
+            const { userUid, userRole } = jwt.verify(
                 token,
                 process.env.USER_AUTH_JWT_SECRET
             ) as IUserAuthenticationJWTPayload;
 
-            if (!userId || !userRole){
+            if (!userUid || !userRole){
                 return next(
                     new UserAuthenticationError(
                         EUserAuthenticationErrorStatus.INVALID_ACCESS_TOKEN,
@@ -44,7 +44,7 @@ export class UserAuthenticationMiddleware {
                 );
             }
 
-            request.authenticated = new UserAuthenticationJWTPayload(userId, userRole);
+            request.authenticated = new UserAuthenticationJWTPayload(userUid, userRole);
 
         } catch (error: any) {
 

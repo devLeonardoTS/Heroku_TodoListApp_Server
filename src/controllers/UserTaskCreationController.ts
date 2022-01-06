@@ -16,13 +16,13 @@ export class UserTaskCreationController {
 
     async handle(request: Request<IUserResourceRequestParams>, response: Response, next: NextFunction){
 
-        const creatorId = request.params.userId;
-        if (!creatorId){ return next(new UnexpectedError()); }
+        const creatorUid = request.params.userUid;
+        if (!creatorUid){ return next(new UnexpectedError()); }
 
-        const validatableData: IValidatableData = new TaskCreationValidatableData(creatorId, request.body);
+        const validatableData: IValidatableData = new TaskCreationValidatableData(creatorUid, request.body);
         const validator: IValidator<ITaskCreationModel> = new TaskCreationValidator(validatableData);
 
-        const taskCreationService: IApplicationService<TaskCreationResponse> =
+        const taskCreationService: IApplicationService<ITaskCreationResponse> =
             new TaskCreationService(validator);
 
         await taskCreationService.execute();

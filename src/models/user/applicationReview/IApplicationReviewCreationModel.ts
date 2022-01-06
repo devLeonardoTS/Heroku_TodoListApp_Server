@@ -1,5 +1,5 @@
 export interface IApplicationReviewCreationModel {
-    creatorId: string;
+    creatorUid: string;
     commentary: string;
     rate: number;
 }

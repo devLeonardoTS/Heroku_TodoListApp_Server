@@ -1,12 +1,12 @@
 import { IUserProfileCreationModel } from "./IUserProfileCreationModel";
 
 export class UserProfileCreationModel implements IUserProfileCreationModel {
-    ownerId: string;
+    ownerUid: string;
     nickname: string;
     message: string;
 
-    constructor(ownerId: string, nickname: string, message: string){
-        this.ownerId = ownerId;
+    constructor(ownerUid: string, nickname: string, message: string){
+        this.ownerUid = ownerUid;
         this.nickname = nickname;
         this.message = message;
     }

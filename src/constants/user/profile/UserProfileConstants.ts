@@ -1,10 +1,10 @@
 export abstract class UserProfileConstants {
-    public static readonly OWNER_ID: string = "ownerId";
+    public static readonly OWNER_UID: string = "ownerUid";
     public static readonly NICKNAME: string = "nickname";
     public static readonly MESSAGE: string = "message";
 
-    public static readonly OWNER_ID_MIN_LENGTH: number = 36;
-    public static readonly OWNER_ID_MAX_LENGTH: number = 36;
+    public static readonly OWNER_UID_MIN_LENGTH: number = 36;
+    public static readonly OWNER_UID_MAX_LENGTH: number = 36;
 
     public static readonly NICKNAME_MIN_LENGTH: number = 3;
     public static readonly NICKNAME_MAX_LENGTH: number = 50;

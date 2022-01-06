@@ -1,6 +1,6 @@
 export interface IDisplayableTaskData {
-    id: string;
-    creatorId: string;
+    uid: string;
+    creatorUid: string;
     description: string;
     status: string;
     createdAt: string;

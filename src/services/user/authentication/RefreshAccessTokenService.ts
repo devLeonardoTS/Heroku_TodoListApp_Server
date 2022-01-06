@@ -104,7 +104,7 @@ export class RefreshAccessTokenService extends ApplicationService<IAuthenticated
         return await prismaClient.token
         .findUnique({
             where: {
-                id: receivedRefreshToken
+                uid: receivedRefreshToken
             },
             include: {
                 UserAccount: true
@@ -150,7 +150,7 @@ export class RefreshAccessTokenService extends ApplicationService<IAuthenticated
     private async signRenewedAccessToken(userAccount: UserAccount): Promise<boolean> {
 
         this.jwtPayload = new UserAuthenticationJWTPayload(
-            userAccount.id,
+            userAccount.uid,
             userAccount.role
         );
 
@@ -159,7 +159,7 @@ export class RefreshAccessTokenService extends ApplicationService<IAuthenticated
             return false;
         }
 
-        if (!process.env.USER_AUTH_JWT_SECRET || !this.jwtPayload.userId){
+        if (!process.env.USER_AUTH_JWT_SECRET || !this.jwtPayload.userUid){
             this.error = new UnexpectedError();
             return false;
         }
@@ -170,7 +170,7 @@ export class RefreshAccessTokenService extends ApplicationService<IAuthenticated
             },
             process.env.USER_AUTH_JWT_SECRET, 
             {
-                subject: this.jwtPayload.userId,
+                subject: this.jwtPayload.userUid,
                 expiresIn: this.accessTokenExpirationInSeconds
             }
         );
@@ -192,6 +192,7 @@ export class RefreshAccessTokenService extends ApplicationService<IAuthenticated
                         }
                     },
                     create: {
+                        ownerUid: userAccount.uid,
                         tokenType: TokenType.ACCESS_REFRESH,
                         expiresAt: dayjs(new Date()).add(this.refreshTokenExpirationInSeconds, "second").format()
                     }
@@ -226,7 +227,7 @@ export class RefreshAccessTokenService extends ApplicationService<IAuthenticated
             }
 
             this.userAccount = updatedUserAccount;
-            this.renewedRefreshToken = updatedUserAccount.Tokens[0].id;
+            this.renewedRefreshToken = updatedUserAccount.Tokens[0].uid;
 
             return true;
         })

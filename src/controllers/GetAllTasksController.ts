@@ -11,15 +11,15 @@ export class GetAllTasksController {
     async handle(request: Request<IUserResourceRequestParams>, response: Response, next: NextFunction){
 
         const { authenticated, params } = request;
-        if (!(authenticated && authenticated.userId) || !params.userId){
+        if (!(authenticated && authenticated.userUid) || !params.userUid){
             return next(new UnexpectedError());
         }
 
-        if (authenticated.userId !== params.userId){
+        if (authenticated.userUid !== params.userUid){
             return next(new UnexpectedError());
         }
 
-        const getAllTasksService: IApplicationService<IGetAllTasksResponse> = new GetAllTasksService(params.userId);
+        const getAllTasksService: IApplicationService<IGetAllTasksResponse> = new GetAllTasksService(params.userUid);
 
         await getAllTasksService.execute();
 

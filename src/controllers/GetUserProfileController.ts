@@ -12,7 +12,7 @@ export class GetUserProfileController {
     async handle(request: Request<IUserResourceRequestParams>, response: Response, next: NextFunction){
 
         const getUserProfileService: IApplicationService<IDisplayableUserProfileData> = 
-            new GetUserProfileService(request.params.userId);
+            new GetUserProfileService(request.params.userUid);
 
         await getUserProfileService.execute();
 

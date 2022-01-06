@@ -1,5 +1,5 @@
 export interface IDisplayableUserAccountData {
-    id: string | null;
+    uid: string | null;
     username: string | null;
     role: string | null;
     createdAt: string | null;

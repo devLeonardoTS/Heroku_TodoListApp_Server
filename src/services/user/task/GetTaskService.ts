@@ -11,13 +11,13 @@ import { ApplicationService } from "../../ApplicationService";
 
 export class GetTaskService extends ApplicationService<IGetTaskResponse> {
 
-    private requestedTaskId: string;
+    private requestedTaskUid: string;
     private task: Task | null;
     private displayableTask: IDisplayableTaskData | null;
 
-    constructor(requestedTaskId: string){
+    constructor(requestedTaskUid: string){
         super();
-        this.requestedTaskId = requestedTaskId;
+        this.requestedTaskUid = requestedTaskUid;
         this.task = null;
         this.displayableTask = null;
     }
@@ -25,7 +25,7 @@ export class GetTaskService extends ApplicationService<IGetTaskResponse> {
 
     async execute(): Promise<boolean> {
         
-        if (!await this.getRequestedTask(this.requestedTaskId)){ return false; }
+        if (!await this.getRequestedTask(this.requestedTaskUid)){ return false; }
 
         if (!this.task){ 
             this.error = new UnexpectedError();
@@ -39,12 +39,12 @@ export class GetTaskService extends ApplicationService<IGetTaskResponse> {
         return true;
     }
 
-    async getRequestedTask(taskId: string): Promise<boolean> {
+    async getRequestedTask(taskUid: string): Promise<boolean> {
 
         return await prismaClient.task
         .findUnique({
             where: {
-                id: taskId
+                uid: taskUid
             }
         })
         .then((task) => {

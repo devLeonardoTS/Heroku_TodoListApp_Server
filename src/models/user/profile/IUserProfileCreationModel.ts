@@ -1,5 +1,5 @@
 export interface IUserProfileCreationModel {
-    ownerId: string;
+    ownerUid: string;
     nickname: string;
     message: string;
 }

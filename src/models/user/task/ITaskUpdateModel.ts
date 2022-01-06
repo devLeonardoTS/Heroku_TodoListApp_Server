@@ -1,5 +1,5 @@
 export interface ITaskUpdateModel {
-    id: string,
+    uid: string,
     description: string | undefined,
     status: string | undefined
 }
