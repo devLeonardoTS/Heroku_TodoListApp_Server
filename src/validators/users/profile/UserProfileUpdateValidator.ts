@@ -13,7 +13,7 @@ export class UserProfileUpdateValidator extends Validator<IUserProfileUpdateMode
     async execute(): Promise<boolean> {
 
         if (await this.isLackingRequired()){ return false; }
-        if (await this.isAnyValueRangeInvalid()){ return false; }
+        if (await this.isAnyReceivedValueRangeInvalid()){ return false; }
 
         if (!await this.capitalizeValue(UserProfileConstants.NICKNAME)){ return false; }
         if (!await this.capitalizeValue(UserProfileConstants.MESSAGE)){ return false; }

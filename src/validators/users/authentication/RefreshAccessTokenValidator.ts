@@ -6,7 +6,7 @@ export class RefreshAccessTokenValidator extends Validator<string>{
     async execute(): Promise<boolean> {
         
         if (await this.isLackingRequired()){ return false; }
-        if (await this.isAnyValueRangeInvalid()){ return false; }
+        if (await this.isAnyReceivedValueRangeInvalid()){ return false; }
 
         this.result = this.validatableData.getFieldValue(RefreshAccessTokenConstants.REFRESH_TOKEN);
         return true;

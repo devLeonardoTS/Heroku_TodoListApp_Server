@@ -50,14 +50,14 @@ export abstract class ValidatableData implements IValidatableData {
         return validatableField.details;
     }
 
-    setNumberDetails(fieldName: string, minValue: number, maxValue: number, acceptableNumberValues?: Array<number>): IFieldDetails | null {
+    setNumberDetails(fieldName: string, minValue?: number, maxValue?: number, acceptableNumberValues?: Array<number>): IFieldDetails | null {
         const validatableField: IValidatableField | null = this.getField(fieldName);
         if (!validatableField){ return null; }
 
         if(validatableField.details.fieldValueType !== EFieldValueType.NUMBER){ return null; }
 
-        validatableField.details.minValue = minValue;
-        validatableField.details.maxValue = maxValue;
+        validatableField.details.minValue = minValue || null;
+        validatableField.details.maxValue = maxValue || null;
 
         validatableField.details.acceptableNumberValues = acceptableNumberValues || null;
 

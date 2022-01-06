@@ -58,7 +58,7 @@ export abstract class Validator<AnyTypeToBeValidatorResult> implements IValidato
 
     };
 
-    protected async isAnyValueRangeInvalid(): Promise<boolean>{
+    protected async isAnyReceivedValueRangeInvalid(): Promise<boolean>{
 
         if (this.error){ return true; }
 
@@ -129,7 +129,7 @@ export abstract class Validator<AnyTypeToBeValidatorResult> implements IValidato
 
     }
 
-    protected async isNotAcceptable(): Promise<boolean>{
+    protected async isAnyReceivedValueNotAcceptable(): Promise<boolean>{
 
         if (this.error){ return true; }
 
@@ -201,7 +201,7 @@ export abstract class Validator<AnyTypeToBeValidatorResult> implements IValidato
 
     }
 
-    protected async isAnyInputValueWithIncorrectType(): Promise<boolean>{
+    protected async isAnyReceivedValueWithIncorrectType(): Promise<boolean>{
 
         if (this.error){ return true; }
 

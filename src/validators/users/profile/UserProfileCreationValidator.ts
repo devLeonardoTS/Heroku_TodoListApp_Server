@@ -13,7 +13,7 @@ export class UserProfileCreationValidator extends Validator<IUserProfileCreation
     async execute(): Promise<boolean> {
         
         if (await this.isLackingRequired()){ return false; }
-        if (await this.isAnyValueRangeInvalid()){ return false; }
+        if (await this.isAnyReceivedValueRangeInvalid()){ return false; }
 
         this.result = new UserProfileCreationModel(
             this.validatableData.getFieldValue(UserProfileConstants.OWNER_ID),

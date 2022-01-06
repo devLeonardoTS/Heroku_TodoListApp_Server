@@ -12,7 +12,7 @@ export class TaskCreationValidator extends Validator<ITaskCreationModel> {
 
     async execute(): Promise<boolean> {
         if (await this.isLackingRequired()){ return false; }
-        if (await this.isAnyValueRangeInvalid()){ return false; }
+        if (await this.isAnyReceivedValueRangeInvalid()){ return false; }
         if (!await this.capitalizeValue(TaskConstants.DESCRIPTION)){ return false; }
 
         this.result = new TaskCreationModel(

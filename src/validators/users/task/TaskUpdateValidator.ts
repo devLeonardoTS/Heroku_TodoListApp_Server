@@ -13,8 +13,8 @@ export class TaskUpdateValidator extends Validator<ITaskUpdateModel> {
     async execute(): Promise<boolean> {
 
         if (await this.isLackingRequired()){ return false; }
-        if (await this.isAnyValueRangeInvalid()){ return false; }
-        if (await this.isNotAcceptable()){ return false; }
+        if (await this.isAnyReceivedValueRangeInvalid()){ return false; }
+        if (await this.isAnyReceivedValueNotAcceptable()){ return false; }
         if (!await this.capitalizeValue(TaskConstants.DESCRIPTION)){ return false; }
 
         const taskId = this.validatableData.getFieldValue(TaskConstants.TASK_ID);

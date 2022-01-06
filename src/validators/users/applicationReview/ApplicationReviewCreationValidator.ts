@@ -12,8 +12,8 @@ export class ApplicationReviewCreationValidator extends Validator<IApplicationRe
 
     async execute(): Promise<boolean> {
         if (await this.isLackingRequired()){ return false; }
-        if (await this.isAnyValueRangeInvalid()){ return false; }
-        if (await this.isAnyInputValueWithIncorrectType()){ return false; }
+        if (await this.isAnyReceivedValueRangeInvalid()){ return false; }
+        if (await this.isAnyReceivedValueWithIncorrectType()){ return false; }
 
         if (!await this.capitalizeValue(ApplicationReviewConstants.COMMENTARY)){ return false; }
 
