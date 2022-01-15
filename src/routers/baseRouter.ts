@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { publicRouter } from "./usersRouter/publicRouter";
+import { publicRouter } from "./publicRouter/publicRouter";
 import { usersBaseRouter } from "./usersRouter/usersBaseRouter";
 
 const baseRouter = Router();

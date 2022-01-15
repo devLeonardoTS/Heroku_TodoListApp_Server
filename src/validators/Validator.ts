@@ -318,4 +318,21 @@ export abstract class Validator<AnyTypeToBeValidatorResult> implements IValidato
 
     }
 
+    protected async changeNumericToAbsoluteValue(fieldName: string): Promise<boolean> {
+
+        if (this.error){ return false; }
+
+        if (this.validatableData.fields.length < 1){ return true; }
+
+        const fieldValue: string = String(this.validatableData.getFieldValue(fieldName));
+
+        const isNumericValue: boolean = validator.isNumeric(fieldValue);
+
+        if (!isNumericValue){ return true; }
+
+        this.validatableData.setFieldValue(fieldName, Math.abs(Number(fieldValue)));
+        return true;
+
+    }
+
 }

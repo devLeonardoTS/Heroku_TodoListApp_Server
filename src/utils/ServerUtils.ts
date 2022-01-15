@@ -25,7 +25,7 @@ export abstract class ServerUtils {
     }
 
     static listenForApplicationExceptions(){
-        process.on("unhandledRejection", ServerUtils.fileNotFoundAtFirebaseStorageHandler);
+        //process.on("unhandledRejection", ServerUtils.fileNotFoundAtFirebaseStorageHandler);
     }
 
     private static fileNotFoundAtFirebaseStorageHandler(error: any, promiseData: any){
