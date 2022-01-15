@@ -1,5 +1,6 @@
 import { Router } from "express";
-import { GetAllApplicationReviewsController, GetApplicationReviewController } from "../../_WorkInProgress/ReviewsFeature/ApplicationReviewRetrievalFeature";
+import { GetAllApplicationReviewsController } from "../../controllers/GetAllApplicationReviewsController";
+import { GetApplicationReviewController } from "../../controllers/GetApplicationReviewController";
 
 const publicAppReviewsRouter = Router({ mergeParams: true });
 

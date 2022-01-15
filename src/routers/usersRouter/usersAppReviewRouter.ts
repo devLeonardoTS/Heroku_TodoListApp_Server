@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { UserAuthenticationMiddleware } from '../../middlewares/UserAuthenticationMiddleware';
 import { AccessPermissionMiddleware } from '../../middlewares/AccessPermissionMiddleware';
 import { ApplicationReviewCreationController } from '../../controllers/ApplicationReviewCreationController';
-import { GetUserApplicationReviewController } from '../../_WorkInProgress/ReviewsFeature/ApplicationReviewRetrievalFeature';
+import { GetUserApplicationReviewController } from '../../controllers/GetUserApplicationReviewController';
 
 const usersAppReviewRouter = Router({ mergeParams: true });
 
