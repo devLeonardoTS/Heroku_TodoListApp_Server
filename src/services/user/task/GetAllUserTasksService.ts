@@ -1,80 +1,191 @@
-import prismaClient from "../../../apis/prisma";
 import { Task } from "@prisma/client";
+import prismaClient from "../../../apis/prisma";
+import { IListItemsWithCursorResponse } from "../../../classes/pagination/IListItemsWithCursorResponse";
+import { IListItemsWithOffsetResponse } from "../../../classes/pagination/IListItemsWithOffsetResponse";
+import { IPaginatedGet } from "../../../classes/pagination/IPaginatedGet";
+import { IPaginatedGetResponse } from "../../../classes/pagination/IPaginatedGetResponse";
+import { ListApplicationReviewsWithOffsetResponse } from "../../../classes/user/applicationReview/ListApplicationReviewsWithOffsetResponse";
 import { DisplayableUserTaskData } from "../../../classes/user/task/DisplayableUserTaskData";
 import { GetAllUserTasksResponse } from "../../../classes/user/task/GetAllUserTasksResponse";
 import { IDisplayableUserTaskData } from "../../../classes/user/task/IDisplayableUserTaskData";
-import { IGetAllUserTasksResponse } from "../../../classes/user/task/IGetAllUserTasksResponse";
-import { NotFoundError } from "../../../errors/NotFoundError";
+import { ListUserTasksWithCursorResponse } from "../../../classes/user/task/ListUserTasksWithCursorResponse";
+import { ListUserTasksWithOffsetResponse } from "../../../classes/user/task/ListUserTasksWithOffsetResponse";
+import { EPaginationType } from "../../../constants/pagination/EPaginationType";
+import { PaginatedGetConstants } from "../../../constants/pagination/PaginatedGetConstants";
+import { FieldValidationError } from "../../../errors/FieldValidationError";
+import { FieldValidationErrorData } from "../../../errors/FieldValidationErrorData";
+import { InvalidField } from "../../../errors/InvalidField";
 import { UnexpectedError } from "../../../errors/UnexpectedError";
-import { PrismaUtils } from "../../../utils/PrismaUtils";
+import { IPaginatedGetModel } from "../../../models/pagination/IPaginatedGetModel";
+import { PaginatedGetModel } from "../../../models/pagination/PaginatedGetModel";
+import { IValidator } from "../../../validators/IValidator";
 import { ApplicationService } from "../../ApplicationService";
 
-export class GetAllUserTasksService extends ApplicationService<IGetAllUserTasksResponse> {
+export class GetAllUserTasksService extends ApplicationService<IPaginatedGetResponse<IDisplayableUserTaskData>> implements IPaginatedGet<IDisplayableUserTaskData> {
 
-    private ownerUid: string;
-    private userTasks: Array<Task> | null;
-    private displayableTasks: Array<IDisplayableUserTaskData> | null;
+    private paginationValidator: IValidator<PaginatedGetModel>;
 
-    constructor(ownerUid: string){
+    constructor(paginationValidator: IValidator<IPaginatedGetModel>){
         super();
-        this.ownerUid = ownerUid;
-        this.userTasks = null;
-        this.displayableTasks = null;
+        this.paginationValidator = paginationValidator;
     }
 
     async execute(): Promise<boolean> {
+        
+        await this.paginationValidator.execute();
 
-        if (!await this.getAllUserTasks(this.ownerUid)){ return false; }
-
-        if (!this.userTasks){
+        if (!this.paginationValidator.result){
+            if (this.paginationValidator.error) {
+                this.error = this.paginationValidator.error;
+                return false;
+            }
             this.error = new UnexpectedError();
             return false;
         }
 
-        this.displayableTasks = new Array();
-        this.userTasks.forEach((task) => {
-            if (this.displayableTasks){
-                this.displayableTasks.push(new DisplayableUserTaskData(task));
-            }
-        });
+        const paginatedGetModel: IPaginatedGetModel = this.paginationValidator.result;
 
-        if (this.displayableTasks.length < 1){
-            this.error = new UnexpectedError();
-            return false;
-        }
+        const { paginationType, limit, page, offset, cursor } = paginatedGetModel;
 
-        this.result = new GetAllUserTasksResponse(this.displayableTasks);
+        const itemsCount: number = await this.getListItemsCount();
 
-        return true;
+        if (paginationType === EPaginationType.OFFSET){
 
-    }
+            const endsAtPage = Math.ceil(itemsCount / limit);
 
-    private async getAllUserTasks(ownerUid: string): Promise<boolean> {
+            const getUserTasksByOffsetResponse: IListItemsWithOffsetResponse<IDisplayableUserTaskData> =
+                await this.getListWithOffset(itemsCount, endsAtPage, limit, page, offset);
 
-        return await prismaClient.task
-        .findMany({
-            where: {
-                creatorUid: ownerUid
-            }
-        })
-        .then((userTasks) => {
-
-            if (!userTasks || userTasks.length < 1){
-                this.error = new NotFoundError();
+            if (getUserTasksByOffsetResponse.data === null){
+                this.error = new FieldValidationError(
+                    new FieldValidationErrorData([
+                        new InvalidField(
+                            PaginatedGetConstants.PAGE, 
+                            PaginatedGetConstants.invalidPageRequestMessage(page, endsAtPage)
+                        )
+                    ])
+                );
                 return false;
             }
 
-            this.userTasks = userTasks;
-            return true;
+            this.result = new GetAllUserTasksResponse(
+                getUserTasksByOffsetResponse
+            );
 
-        })
-        .catch((tasksRetrievalError) => {
+        }
 
-            this.error = PrismaUtils.handleRetrievalError(tasksRetrievalError);
+        if (paginationType === EPaginationType.CURSOR){
+
+            const getUserTasksByCursorResponse: IListItemsWithCursorResponse<IDisplayableUserTaskData> =
+                await this.getListWithCursor(itemsCount, limit, cursor);
+
+            if (getUserTasksByCursorResponse.data === null){
+                this.error = new FieldValidationError(
+                    new FieldValidationErrorData([
+                        new InvalidField(
+                            PaginatedGetConstants.CURSOR, 
+                            PaginatedGetConstants.invalidCursorRequestMessage(itemsCount, cursor)
+                        )
+                    ])
+                );
+                return false;
+            }
+
+            this.result = new GetAllUserTasksResponse(
+                undefined,
+                getUserTasksByCursorResponse
+            );
+
+        }
+
+        if (!this.result){
+            if (this.error){ return false; }
+            this.error = new UnexpectedError();
             return false;
+        }
 
+        return true;
+        
+    }
+
+    async getListItemsCount(): Promise<number> {
+        return await prismaClient.task.count();
+    }
+    
+    async getListWithOffset(itemsCount: number, endsAtPage: number, limit: number, page: number, offset: number): Promise<IListItemsWithOffsetResponse<IDisplayableUserTaskData>> {
+        
+        if (itemsCount === 0){
+            return new ListUserTasksWithOffsetResponse(page, 0, itemsCount);
+        }
+
+        const userTaskResults: Array<Task> = await prismaClient.task
+        .findMany({
+            take: limit,
+            skip: offset,
+            orderBy: {
+                id: "desc"
+            }
         });
 
+        const displayableUserTasks: Array<IDisplayableUserTaskData> = new Array();
+        userTaskResults.forEach((task) => {
+            displayableUserTasks.push(new DisplayableUserTaskData(task));
+        });
+
+        return new ListUserTasksWithOffsetResponse(
+            page,
+            userTaskResults.length,
+            itemsCount,
+            displayableUserTasks,
+            endsAtPage,
+            page > 1 ? page - 1 : undefined,
+            endsAtPage > page ? page + 1 : undefined
+        );
+        
+    }
+
+    async getListWithCursor(itemsCount: number, limit: number, cursor?: number): Promise<IListItemsWithCursorResponse<IDisplayableUserTaskData>> {
+        
+        if (itemsCount === 0){
+            return new ListUserTasksWithCursorResponse(itemsCount, 0);
+        }
+
+        const userTaskResults: Array<Task> = await prismaClient.task
+        .findMany({
+            take: limit + 1,
+            skip: cursor ? 1 : undefined,
+            cursor: cursor ? { id: cursor } : undefined,
+            orderBy: {
+                id: "asc"
+            }
+        });
+
+        const isResultFinal: boolean = userTaskResults.length <= limit;
+        const hasItems: boolean = userTaskResults.length > 0;
+
+        if (!isResultFinal){ userTaskResults.pop(); }
+
+        const lastResultsUserTask: Task | null = hasItems ? userTaskResults[userTaskResults.length - 1] : null;
+
+        let nextCursor: number = 0;
+        if (!isResultFinal && hasItems && lastResultsUserTask){
+            nextCursor = lastResultsUserTask.id;
+        }
+
+        if (!nextCursor && !hasItems){ return new ListUserTasksWithCursorResponse(itemsCount, 0); }
+
+        const displayableAppReviews: Array<IDisplayableUserTaskData> = new Array();
+        userTaskResults.forEach((task) => {
+            displayableAppReviews.push(new DisplayableUserTaskData(task));
+        });
+
+        return new ListUserTasksWithCursorResponse(
+            itemsCount,
+            userTaskResults.length,
+            nextCursor === 0 ? undefined : nextCursor,
+            displayableAppReviews
+        );
+        
     }
 
 }

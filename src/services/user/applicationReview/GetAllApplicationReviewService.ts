@@ -13,8 +13,8 @@ import { IListItemsWithOffsetResponse } from "../../../classes/pagination/IListI
 import { IPaginatedGet } from "../../../classes/pagination/IPaginatedGet";
 import { IPaginatedGetModel } from "../../../models/pagination/IPaginatedGetModel";
 import { IPaginatedGetResponse } from "../../../classes/pagination/IPaginatedGetResponse";
-import { ListItemsWithCursorResponse } from "../../../classes/pagination/ListItemsWithCursorResponse";
-import { ListItemsWithOffsetResponse } from "../../../classes/pagination/ListItemsWithOffsetResponse";
+import { ListApplicationReviewsWithCursorResponse } from "../../../classes/user/applicationReview/ListApplicationReviewsWithCursorResponse";
+import { ListApplicationReviewsWithOffsetResponse } from "../../../classes/user/applicationReview/ListApplicationReviewsWithOffsetResponse";
 import { ApplicationReviewsPaginatedGetResponse } from "../../../classes/user/applicationReview/ApplicationReviewsPaginatedGetResponse";
 import { DisplayableApplicationReviewData } from "../../../classes/user/applicationReview/DisplayableApplicationReviewData";
 import { IDisplayableApplicationReviewData } from "../../../classes/user/applicationReview/IDisplayableApplicationReviewData";
@@ -113,7 +113,7 @@ export class GetAllApplicationReviewService extends ApplicationService<IPaginate
     async getListWithOffset(itemsCount: number, endAtPage: number, limit: number, page: number, offset: number): Promise<IListItemsWithOffsetResponse<IDisplayableApplicationReviewData>> {
 
         if (itemsCount === 0){
-            return new ListItemsWithOffsetResponse(page, 0, itemsCount);
+            return new ListApplicationReviewsWithOffsetResponse(page, 0, itemsCount);
         }
 
         const appReviewResults: Array<ApplicationReview> = await prismaClient.applicationReview
@@ -130,7 +130,7 @@ export class GetAllApplicationReviewService extends ApplicationService<IPaginate
             displayableAppReviews.push(new DisplayableApplicationReviewData(review));
         });
 
-        return new ListItemsWithOffsetResponse(
+        return new ListApplicationReviewsWithOffsetResponse(
             page, 
             appReviewResults.length,
             itemsCount,
@@ -145,12 +145,12 @@ export class GetAllApplicationReviewService extends ApplicationService<IPaginate
     async getListWithCursor(itemsCount: number, limit: number, cursor?: number): Promise<IListItemsWithCursorResponse<IDisplayableApplicationReviewData>> {
 
         if (itemsCount === 0){
-            return new ListItemsWithCursorResponse(itemsCount, 0);
+            return new ListApplicationReviewsWithCursorResponse(itemsCount, 0);
         }
 
         const appReviewResults: Array<ApplicationReview> = await prismaClient.applicationReview
         .findMany({
-            take: limit,
+            take: limit + 1,
             skip: cursor ? 1 : undefined,
             cursor: cursor ? { id: cursor } : undefined,
             orderBy: { 
@@ -158,20 +158,29 @@ export class GetAllApplicationReviewService extends ApplicationService<IPaginate
             }
         });
 
-        const lastIndexOfResults: number = appReviewResults.length === 0 ? 0 : appReviewResults.length - 1;
-        const lastApplicationReview: ApplicationReview = appReviewResults[lastIndexOfResults]; 
+        const isResultFinal: boolean = appReviewResults.length <= limit;
+        const hasItems: boolean = appReviewResults.length > 0;
 
-        const nextCursor: number = lastApplicationReview.id;
+        if (!isResultFinal){ appReviewResults.pop(); }
+
+        const lastResultsAppReview: ApplicationReview | null = hasItems ? appReviewResults[appReviewResults.length - 1] : null;
+
+        let nextCursor: number = 0;
+        if (!isResultFinal && hasItems && lastResultsAppReview){
+            nextCursor = lastResultsAppReview.id;
+        }
+
+        if (!nextCursor && !hasItems){ return new ListApplicationReviewsWithCursorResponse(itemsCount, 0); }
 
         const displayableAppReviews: Array<IDisplayableApplicationReviewData> = new Array();
         appReviewResults.forEach((review) => {
             displayableAppReviews.push(new DisplayableApplicationReviewData(review));
         });
 
-        return new ListItemsWithCursorResponse(
+        return new ListApplicationReviewsWithCursorResponse(
             itemsCount,
             appReviewResults.length,
-            nextCursor === itemsCount ? undefined : nextCursor,
+            nextCursor === 0 ? undefined : nextCursor,
             displayableAppReviews
         );
 

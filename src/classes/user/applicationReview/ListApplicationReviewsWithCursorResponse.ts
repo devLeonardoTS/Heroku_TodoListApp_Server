@@ -1,7 +1,7 @@
-import { IDisplayableApplicationReviewData } from "../user/applicationReview/IDisplayableApplicationReviewData";
-import { IListItemsWithCursorResponse } from "./IListItemsWithCursorResponse";
+import { IDisplayableApplicationReviewData } from "./IDisplayableApplicationReviewData";
+import { IListItemsWithCursorResponse } from "../../pagination/IListItemsWithCursorResponse";
 
-export class ListItemsWithCursorResponse implements IListItemsWithCursorResponse<IDisplayableApplicationReviewData> {
+export class ListApplicationReviewsWithCursorResponse implements IListItemsWithCursorResponse<IDisplayableApplicationReviewData> {
     itemsFound: number;
     displaying: number; 
     nextCursor: number | null;

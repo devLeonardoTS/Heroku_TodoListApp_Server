@@ -9,7 +9,7 @@ import jwt from 'jsonwebtoken';
 
 export class UserAuthenticationMiddleware {
 
-    async requireAuthenticatedUser(request: Request, response: Response, next: NextFunction) : Promise<any> { 
+    async requireAuthenticatedUser(request: Request<any, any, any, any>, response: Response, next: NextFunction) : Promise<any> { 
 
         const { authorization } = request.headers;
 

@@ -1,20 +1,20 @@
-import { IDisplayableApplicationReviewData } from "../user/applicationReview/IDisplayableApplicationReviewData";
-import { IListItemsWithOffsetResponse } from "./IListItemsWithOffsetResponse";
+import { IListItemsWithOffsetResponse } from "../../pagination/IListItemsWithOffsetResponse";
+import { IDisplayableUserTaskData } from "./IDisplayableUserTaskData";
 
-export class ListItemsWithOffsetResponse implements IListItemsWithOffsetResponse<IDisplayableApplicationReviewData> {
+export class ListUserTasksWithOffsetResponse implements IListItemsWithOffsetResponse<IDisplayableUserTaskData> {
     itemsFound: number;
     displaying: number;
     actualPage: number;
     endsAtPage: number;
     previousPage: number | null;
     nextPage: number | null;
-    data: Array<IDisplayableApplicationReviewData> | null;
+    data: Array<IDisplayableUserTaskData> | null;
 
     constructor(
         actualPage: number,
         displaying: number,
         itemsFound: number,
-        applicationReviews?: Array<IDisplayableApplicationReviewData>, 
+        userTasks?: Array<IDisplayableUserTaskData>, 
         endsAtPage?: number, 
         previousPage?: number, 
         nextPage?: number
@@ -25,6 +25,6 @@ export class ListItemsWithOffsetResponse implements IListItemsWithOffsetResponse
         this.endsAtPage = endsAtPage || 1;
         this.previousPage = previousPage || null;
         this.nextPage = nextPage || null;
-        this.data = applicationReviews || null;
+        this.data = userTasks || null;
     }
 }
