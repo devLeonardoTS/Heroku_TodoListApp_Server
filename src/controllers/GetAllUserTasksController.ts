@@ -6,12 +6,13 @@ import { EHttpStatusCode } from '../constants/EHttpStatusCode';
 import { UnexpectedError } from '../errors/UnexpectedError';
 import { IPaginatedGetModel } from '../models/pagination/IPaginatedGetModel';
 import { PaginatedGetModel } from '../models/pagination/PaginatedGetModel';
+import { IUserTasksPaginatedGetModel } from '../models/user/task/IUserTasksPaginatedGetModel';
 import { IApplicationService } from '../services/IApplicationService';
 import { GetAllUserTasksService } from '../services/user/task/GetAllUserTasksService';
 import { IValidatableData } from '../validators/IValidatableData';
 import { IValidator } from '../validators/IValidator';
-import { PaginatedGetValidatableData } from '../validators/pagination/PaginatedGetValidatableData';
-import { PaginatedGetValidator } from '../validators/pagination/PaginatedGetValidator';
+import { UserTaskPaginatedGetValidatableData } from '../validators/users/task/UserTaskPaginatedGetValidatableData';
+import { UserTaskPaginatedGetValidator } from '../validators/users/task/UserTaskPaginatedGetValidator';
 
 export class GetAllUserTasksController {
     
@@ -26,11 +27,13 @@ export class GetAllUserTasksController {
             return next(new UnexpectedError());
         }
 
-        const validatableData: IValidatableData =
-            new PaginatedGetValidatableData(request.query);
+        const { userUid } = request.params;
 
-        const validator: IValidator<PaginatedGetModel> =
-            new PaginatedGetValidator(validatableData);
+        const validatableData: IValidatableData =
+            new UserTaskPaginatedGetValidatableData(userUid, request.query);
+
+        const validator: IValidator<IUserTasksPaginatedGetModel> =
+            new UserTaskPaginatedGetValidator(validatableData);
 
         const getAllUserTasksService: IApplicationService<IPaginatedGetResponse<IDisplayableUserTaskData>> =
             new GetAllUserTasksService(validator);

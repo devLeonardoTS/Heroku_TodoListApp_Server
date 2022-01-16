@@ -121,7 +121,7 @@ export class GetAllApplicationReviewService extends ApplicationService<IPaginate
             take: limit,
             skip: offset,
             orderBy: {
-                id: "asc"
+                id: "desc"
             }
         });
 
@@ -154,7 +154,7 @@ export class GetAllApplicationReviewService extends ApplicationService<IPaginate
             skip: cursor ? 1 : undefined,
             cursor: cursor ? { id: cursor } : undefined,
             orderBy: { 
-                id: "asc"
+                id: "desc"
             }
         });
 

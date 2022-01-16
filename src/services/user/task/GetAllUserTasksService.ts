@@ -18,14 +18,15 @@ import { InvalidField } from "../../../errors/InvalidField";
 import { UnexpectedError } from "../../../errors/UnexpectedError";
 import { IPaginatedGetModel } from "../../../models/pagination/IPaginatedGetModel";
 import { PaginatedGetModel } from "../../../models/pagination/PaginatedGetModel";
+import { IUserTasksPaginatedGetModel } from "../../../models/user/task/IUserTasksPaginatedGetModel";
 import { IValidator } from "../../../validators/IValidator";
 import { ApplicationService } from "../../ApplicationService";
 
 export class GetAllUserTasksService extends ApplicationService<IPaginatedGetResponse<IDisplayableUserTaskData>> implements IPaginatedGet<IDisplayableUserTaskData> {
 
-    private paginationValidator: IValidator<PaginatedGetModel>;
+    private paginationValidator: IValidator<IUserTasksPaginatedGetModel>;
 
-    constructor(paginationValidator: IValidator<IPaginatedGetModel>){
+    constructor(paginationValidator: IValidator<IUserTasksPaginatedGetModel>){
         super();
         this.paginationValidator = paginationValidator;
     }
@@ -43,18 +44,18 @@ export class GetAllUserTasksService extends ApplicationService<IPaginatedGetResp
             return false;
         }
 
-        const paginatedGetModel: IPaginatedGetModel = this.paginationValidator.result;
+        const userTasksPaginatedGetModel: IUserTasksPaginatedGetModel = this.paginationValidator.result;
 
-        const { paginationType, limit, page, offset, cursor } = paginatedGetModel;
+        const { creatorUid, paginationType, limit, page, offset, cursor } = userTasksPaginatedGetModel;
 
-        const itemsCount: number = await this.getListItemsCount();
+        const itemsCount: number = await this.getListItemsCount(creatorUid);
 
         if (paginationType === EPaginationType.OFFSET){
 
             const endsAtPage = Math.ceil(itemsCount / limit);
 
             const getUserTasksByOffsetResponse: IListItemsWithOffsetResponse<IDisplayableUserTaskData> =
-                await this.getListWithOffset(itemsCount, endsAtPage, limit, page, offset);
+                await this.getListWithOffset(itemsCount, endsAtPage, limit, page, offset, creatorUid);
 
             if (getUserTasksByOffsetResponse.data === null){
                 this.error = new FieldValidationError(
@@ -77,7 +78,7 @@ export class GetAllUserTasksService extends ApplicationService<IPaginatedGetResp
         if (paginationType === EPaginationType.CURSOR){
 
             const getUserTasksByCursorResponse: IListItemsWithCursorResponse<IDisplayableUserTaskData> =
-                await this.getListWithCursor(itemsCount, limit, cursor);
+                await this.getListWithCursor(itemsCount, limit, cursor, creatorUid);
 
             if (getUserTasksByCursorResponse.data === null){
                 this.error = new FieldValidationError(
@@ -108,11 +109,15 @@ export class GetAllUserTasksService extends ApplicationService<IPaginatedGetResp
         
     }
 
-    async getListItemsCount(): Promise<number> {
-        return await prismaClient.task.count();
+    async getListItemsCount(ownerUid?: string): Promise<number> {
+        return await prismaClient.task.count({ 
+            where: {
+                creatorUid: ownerUid
+            }
+        });
     }
     
-    async getListWithOffset(itemsCount: number, endsAtPage: number, limit: number, page: number, offset: number): Promise<IListItemsWithOffsetResponse<IDisplayableUserTaskData>> {
+    async getListWithOffset(itemsCount: number, endsAtPage: number, limit: number, page: number, offset: number, ownerUid?: string): Promise<IListItemsWithOffsetResponse<IDisplayableUserTaskData>> {
         
         if (itemsCount === 0){
             return new ListUserTasksWithOffsetResponse(page, 0, itemsCount);
@@ -120,6 +125,9 @@ export class GetAllUserTasksService extends ApplicationService<IPaginatedGetResp
 
         const userTaskResults: Array<Task> = await prismaClient.task
         .findMany({
+            where: {
+                creatorUid: ownerUid
+            },
             take: limit,
             skip: offset,
             orderBy: {
@@ -144,7 +152,7 @@ export class GetAllUserTasksService extends ApplicationService<IPaginatedGetResp
         
     }
 
-    async getListWithCursor(itemsCount: number, limit: number, cursor?: number): Promise<IListItemsWithCursorResponse<IDisplayableUserTaskData>> {
+    async getListWithCursor(itemsCount: number, limit: number, cursor?: number, ownerUid?: string): Promise<IListItemsWithCursorResponse<IDisplayableUserTaskData>> {
         
         if (itemsCount === 0){
             return new ListUserTasksWithCursorResponse(itemsCount, 0);
@@ -152,11 +160,14 @@ export class GetAllUserTasksService extends ApplicationService<IPaginatedGetResp
 
         const userTaskResults: Array<Task> = await prismaClient.task
         .findMany({
+            where: {
+                creatorUid: ownerUid
+            },
             take: limit + 1,
             skip: cursor ? 1 : undefined,
             cursor: cursor ? { id: cursor } : undefined,
             orderBy: {
-                id: "asc"
+                id: "desc"
             }
         });
 
@@ -185,7 +196,7 @@ export class GetAllUserTasksService extends ApplicationService<IPaginatedGetResp
             nextCursor === 0 ? undefined : nextCursor,
             displayableAppReviews
         );
-        
+
     }
 
 }
