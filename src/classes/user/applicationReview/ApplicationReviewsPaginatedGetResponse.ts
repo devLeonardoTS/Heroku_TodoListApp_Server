@@ -1,9 +1,9 @@
 import { IListItemsWithCursorResponse } from "../../pagination/IListItemsWithCursorResponse";
 import { IListItemsWithOffsetResponse } from "../../pagination/IListItemsWithOffsetResponse";
-import { IPaginatedRetrievalResponse } from "../../pagination/IPaginatedRetrievalResponse";
+import { IPaginatedGetResponse } from "../../pagination/IPaginatedGetResponse";
 import { IDisplayableApplicationReviewData } from "./IDisplayableApplicationReviewData";
 
-export class ApplicationReviewsPaginatedRetrievalResponse implements IPaginatedRetrievalResponse<IDisplayableApplicationReviewData> {
+export class ApplicationReviewsPaginatedGetResponse implements IPaginatedGetResponse<IDisplayableApplicationReviewData> {
     paginatedByOffset: IListItemsWithOffsetResponse<IDisplayableApplicationReviewData> | null;
     paginatedByCursor: IListItemsWithCursorResponse<IDisplayableApplicationReviewData> | null;
     

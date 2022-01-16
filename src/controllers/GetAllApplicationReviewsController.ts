@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { ParamsDictionary } from 'express-serve-static-core';
-import { IPaginatedRetrievalModel } from '../classes/pagination/IPaginatedRetrievalModel';
-import { IPaginatedRetrievalResponse } from '../classes/pagination/IPaginatedRetrievalResponse';
+import { IPaginatedGetModel } from '../models/pagination/IPaginatedGetModel';
+import { IPaginatedGetResponse } from '../classes/pagination/IPaginatedGetResponse';
 import { GetAllApplicationReviewService } from '../services/user/applicationReview/GetAllApplicationReviewService';
 import { IDisplayableApplicationReviewData } from '../classes/user/applicationReview/IDisplayableApplicationReviewData';
 import { EHttpStatusCode } from '../constants';
@@ -9,20 +9,20 @@ import { UnexpectedError } from '../errors/UnexpectedError';
 import { IApplicationService } from '../services/IApplicationService';
 import { IValidatableData } from '../validators/IValidatableData';
 import { IValidator } from '../validators/IValidator';
-import { PaginatedRetrievalValidatableData } from '../validators/pagination/PaginatedRetrievalValidatableData';
-import { PaginatedRetrievalValidator } from '../validators/pagination/PaginatedRetrievalValidator';
+import { PaginatedGetValidatableData } from '../validators/pagination/PaginatedGetValidatableData';
+import { PaginatedGetValidator } from '../validators/pagination/PaginatedGetValidator';
 
 export class GetAllApplicationReviewsController {
 
-    async handle(request: Request<ParamsDictionary, any, any, IPaginatedRetrievalModel>, response: Response, next: NextFunction){
+    async handle(request: Request<ParamsDictionary, any, any, IPaginatedGetModel>, response: Response, next: NextFunction){
 
         const validatableData: IValidatableData =
-            new PaginatedRetrievalValidatableData(request.query);
+            new PaginatedGetValidatableData(request.query);
 
-        const validator: IValidator<IPaginatedRetrievalModel> = 
-            new PaginatedRetrievalValidator(validatableData);
+        const validator: IValidator<IPaginatedGetModel> = 
+            new PaginatedGetValidator(validatableData);
 
-        const getAllApplicationReviewsService: IApplicationService<IPaginatedRetrievalResponse<IDisplayableApplicationReviewData>> =
+        const getAllApplicationReviewsService: IApplicationService<IPaginatedGetResponse<IDisplayableApplicationReviewData>> =
             new GetAllApplicationReviewService(validator);
 
         await getAllApplicationReviewsService.execute();

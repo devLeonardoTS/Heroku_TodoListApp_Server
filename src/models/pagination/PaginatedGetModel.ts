@@ -1,7 +1,7 @@
 import { EPaginationType } from "../../constants/pagination/EPaginationType";
-import { IPaginatedRetrievalModel } from "./IPaginatedRetrievalModel";
+import { IPaginatedGetModel } from "./IPaginatedGetModel";
 
-export class PaginatedRetrievalModel implements IPaginatedRetrievalModel {
+export class PaginatedGetModel implements IPaginatedGetModel {
     paginationType: EPaginationType;
     limit: number;
     page: number;

@@ -1,10 +1,10 @@
 import { IListItemsWithCursorResponse } from "./IListItemsWithCursorResponse";
 import { IListItemsWithOffsetResponse } from "./IListItemsWithOffsetResponse";
-import { IPaginatedRetrievalResponse } from "./IPaginatedRetrievalResponse";
+import { IPaginatedGetResponse } from "./IPaginatedGetResponse";
 
-export interface IPaginatedRetrieval<AnyDisplayableData> {
+export interface IPaginatedGet<AnyDisplayableData> {
 
-    result: IPaginatedRetrievalResponse<AnyDisplayableData> | null;
+    result: IPaginatedGetResponse<AnyDisplayableData> | null;
 
     getListItemsCount(): Promise<number>;
     getListWithOffset(itemsCount: number, endAtPage: number, limit: number, page: number, offset: number): Promise<IListItemsWithOffsetResponse<AnyDisplayableData>>;

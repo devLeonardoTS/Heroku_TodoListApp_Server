@@ -1,7 +1,7 @@
 import { ApplicationReview } from "@prisma/client";
 import prismaClient from "../../../apis/prisma";
 import { EPaginationType } from "../../../constants/pagination/EPaginationType";
-import { PaginatedRetrievalConstants } from "../../../constants/pagination/PaginatedRetrievalConstants";
+import { PaginatedGetConstants } from "../../../constants/pagination/PaginatedGetConstants";
 import { FieldValidationError } from "../../../errors/FieldValidationError";
 import { FieldValidationErrorData } from "../../../errors/FieldValidationErrorData";
 import { InvalidField } from "../../../errors/InvalidField";
@@ -10,20 +10,20 @@ import { ApplicationService } from "../../ApplicationService";
 import { IValidator } from "../../../validators/IValidator";
 import { IListItemsWithCursorResponse } from "../../../classes/pagination/IListItemsWithCursorResponse";
 import { IListItemsWithOffsetResponse } from "../../../classes/pagination/IListItemsWithOffsetResponse";
-import { IPaginatedRetrieval } from "../../../classes/pagination/IPaginatedRetrieval";
-import { IPaginatedRetrievalModel } from "../../../classes/pagination/IPaginatedRetrievalModel";
-import { IPaginatedRetrievalResponse } from "../../../classes/pagination/IPaginatedRetrievalResponse";
+import { IPaginatedGet } from "../../../classes/pagination/IPaginatedGet";
+import { IPaginatedGetModel } from "../../../models/pagination/IPaginatedGetModel";
+import { IPaginatedGetResponse } from "../../../classes/pagination/IPaginatedGetResponse";
 import { ListItemsWithCursorResponse } from "../../../classes/pagination/ListItemsWithCursorResponse";
 import { ListItemsWithOffsetResponse } from "../../../classes/pagination/ListItemsWithOffsetResponse";
-import { ApplicationReviewsPaginatedRetrievalResponse } from "../../../classes/user/applicationReview/ApplicationReviewsPaginatedRetrievalResponse";
+import { ApplicationReviewsPaginatedGetResponse } from "../../../classes/user/applicationReview/ApplicationReviewsPaginatedGetResponse";
 import { DisplayableApplicationReviewData } from "../../../classes/user/applicationReview/DisplayableApplicationReviewData";
 import { IDisplayableApplicationReviewData } from "../../../classes/user/applicationReview/IDisplayableApplicationReviewData";
 
-export class GetAllApplicationReviewService extends ApplicationService<IPaginatedRetrievalResponse<IDisplayableApplicationReviewData>> implements IPaginatedRetrieval<IDisplayableApplicationReviewData> {
+export class GetAllApplicationReviewService extends ApplicationService<IPaginatedGetResponse<IDisplayableApplicationReviewData>> implements IPaginatedGet<IDisplayableApplicationReviewData> {
 
-    private paginationValidator: IValidator<IPaginatedRetrievalModel>;
+    private paginationValidator: IValidator<IPaginatedGetModel>;
 
-    constructor(paginationValidator: IValidator<IPaginatedRetrievalModel>){
+    constructor(paginationValidator: IValidator<IPaginatedGetModel>){
         super();
         this.paginationValidator = paginationValidator;
     }
@@ -41,7 +41,7 @@ export class GetAllApplicationReviewService extends ApplicationService<IPaginate
             return false;
         }
 
-        const paginatedRetrievalModel: IPaginatedRetrievalModel = this.paginationValidator.result;
+        const paginatedRetrievalModel: IPaginatedGetModel = this.paginationValidator.result;
 
         const { paginationType, limit, page, offset, cursor } = paginatedRetrievalModel;
 
@@ -58,15 +58,15 @@ export class GetAllApplicationReviewService extends ApplicationService<IPaginate
                 this.error = new FieldValidationError(
                     new FieldValidationErrorData([
                         new InvalidField(
-                            PaginatedRetrievalConstants.PAGE, 
-                            PaginatedRetrievalConstants.invalidPageRequestMessage(page, endsAtPage)
+                            PaginatedGetConstants.PAGE, 
+                            PaginatedGetConstants.invalidPageRequestMessage(page, endsAtPage)
                         )
                     ])
                 );
                 return false;
             }
 
-            this.result = new ApplicationReviewsPaginatedRetrievalResponse(
+            this.result = new ApplicationReviewsPaginatedGetResponse(
                 getApplicationReviewsByOffsetResponse 
             );
 
@@ -81,15 +81,15 @@ export class GetAllApplicationReviewService extends ApplicationService<IPaginate
                 this.error = new FieldValidationError(
                     new FieldValidationErrorData([
                         new InvalidField(
-                            PaginatedRetrievalConstants.CURSOR, 
-                            PaginatedRetrievalConstants.invalidCursorRequestMessage(itemsCount, cursor)
+                            PaginatedGetConstants.CURSOR, 
+                            PaginatedGetConstants.invalidCursorRequestMessage(itemsCount, cursor)
                         )
                     ])
                 );
                 return false;
             }
 
-            this.result = new ApplicationReviewsPaginatedRetrievalResponse(
+            this.result = new ApplicationReviewsPaginatedGetResponse(
                 undefined,
                 getApplicationReviewsByCursorResponse
             );

@@ -1,4 +1,4 @@
-export abstract class PaginatedRetrievalConstants {
+export abstract class PaginatedGetConstants {
 
     public static readonly LIMIT: string = "limit";
     public static readonly PAGE: string = "page";

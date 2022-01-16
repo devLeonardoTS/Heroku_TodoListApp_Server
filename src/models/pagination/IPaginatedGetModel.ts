@@ -1,6 +1,6 @@
 import { EPaginationType } from "../../constants/pagination/EPaginationType";
 
-export interface IPaginatedRetrievalModel {
+export interface IPaginatedGetModel {
     paginationType: EPaginationType;
     limit: number;
     page: number;
