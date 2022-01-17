@@ -1,6 +1,6 @@
 export interface IDisplayableUserProfileData {
-    id: string;
-    ownerId: string;
+    uid: string;
+    ownerUid: string;
     nickname: string;
     avatarUrl: string;
     message: string;

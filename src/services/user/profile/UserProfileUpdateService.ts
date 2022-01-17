@@ -52,7 +52,7 @@ export class UserProfileUpdateService extends ApplicationService<IUserProfileUpd
             return false;
         }
 
-        const actualUserProfile: UserProfile | null = await this.getActualUserProfile(validated.ownerId);
+        const actualUserProfile: UserProfile | null = await this.getActualUserProfile(validated.ownerUid);
         if (!actualUserProfile){ return false; }
 
         const updatedUserProfile: UserProfile | null = await this.updateUserProfile(validated);
@@ -79,7 +79,7 @@ export class UserProfileUpdateService extends ApplicationService<IUserProfileUpd
             const key: string = keyValuePair[0];
             const value: any = keyValuePair[1];
 
-            const isUpdatableKey = key !== UserProfileConstants.OWNER_ID;
+            const isUpdatableKey = key !== UserProfileConstants.OWNER_UID;
             const hasValue = !(value === undefined || value === "" || value === null);
 
             if (isUpdatableKey && hasValue){
@@ -95,12 +95,12 @@ export class UserProfileUpdateService extends ApplicationService<IUserProfileUpd
 
     }
 
-    private async getActualUserProfile(userId: string): Promise<UserProfile | null> {
+    private async getActualUserProfile(userUid: string): Promise<UserProfile | null> {
 
         return await prismaClient.userProfile
         .findUnique({
             where: {
-                ownerId: userId
+                ownerUid: userUid
             }
         })
         .then((userProfile) => {
@@ -122,7 +122,7 @@ export class UserProfileUpdateService extends ApplicationService<IUserProfileUpd
         return await prismaClient.userProfile
         .update({
             where: {
-                ownerId: validated.ownerId
+                ownerUid: validated.ownerUid
             },
             data: {
                 nickname: validated.nickname,

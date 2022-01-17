@@ -6,15 +6,15 @@ import { AccessPermissionError } from '../errors/AccessPermissionError';
 import { UnexpectedError } from '../errors/UnexpectedError';
 
 export class AccessPermissionMiddleware {
-    async strictToOwner(request: Request<IUserResourceRequestParams>, response: Response, next: NextFunction){
+    async strictToOwner(request: Request<IUserResourceRequestParams, any, any, any>, response: Response, next: NextFunction){
 
         const {authenticated, params} = request;
 
-        if (!authenticated || !authenticated.userId){
+        if (!authenticated || !authenticated.userUid){
             return next(new UnexpectedError());
         }
 
-        if (authenticated.userId !== params.userId){
+        if (authenticated.userUid !== params.userUid){
             return next(
                 new AccessPermissionError(
                     EAccessPermissionStatus.REQUESTER_NOT_OWNER,

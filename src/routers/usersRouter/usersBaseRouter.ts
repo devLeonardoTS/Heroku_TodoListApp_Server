@@ -6,6 +6,7 @@ import { RefreshAccessTokenController } from '../../controllers/RefreshAccessTok
 import { UserLogoutController } from '../../controllers/UserLogoutController';
 import { usersProfileRouter } from './usersProfileRouter';
 import { usersTasksRouter } from './usersTaskRouter';
+import { usersAppReviewRouter } from './usersAppReviewRouter';
 
 const usersBaseRouter = Router({ mergeParams: true });
 
@@ -20,8 +21,10 @@ usersBaseRouter.delete("/logout",
     new UserLogoutController().handle
 );
 
-usersBaseRouter.use("/:userId/profile", usersProfileRouter);
+usersBaseRouter.use("/:userUid/profile", usersProfileRouter);
 
-usersBaseRouter.use("/:userId/tasks", usersTasksRouter)
+usersBaseRouter.use("/:userUid/tasks", usersTasksRouter);
+
+usersBaseRouter.use("/:userUid/app_review", usersAppReviewRouter);
 
 export { usersBaseRouter }

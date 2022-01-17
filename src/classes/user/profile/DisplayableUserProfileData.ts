@@ -2,8 +2,8 @@ import { UserProfile } from "@prisma/client";
 import { IDisplayableUserProfileData } from "./IDisplayableUserProfileData";
 
 export class DisplayableUserProfileData implements IDisplayableUserProfileData {
-    id: string;
-    ownerId: string;
+    uid: string;
+    ownerUid: string;
     nickname: string;
     avatarUrl: string;
     message: string;
@@ -11,9 +11,9 @@ export class DisplayableUserProfileData implements IDisplayableUserProfileData {
     updatedAt: string;
 
     constructor(userProfile: UserProfile){
-        const { id, ownerId, nickname, avatarUrl, message, createdAt, updatedAt } = userProfile;
-        this.id = id;
-        this.ownerId = ownerId;
+        const { uid, ownerUid, nickname, avatarUrl, message, createdAt, updatedAt } = userProfile;
+        this.uid = uid;
+        this.ownerUid = ownerUid;
         this.nickname = nickname;
         this.avatarUrl = avatarUrl;
         this.message = message || "";

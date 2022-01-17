@@ -1,7 +1,7 @@
 import { UserRole } from "@prisma/client";
 
 export interface IDisplayableAuthenticatedUserAccountData {
-    id: string | null;
+    uid: string | null;
     role: UserRole | null;
     createdAt: string;
     updatedAt: string;

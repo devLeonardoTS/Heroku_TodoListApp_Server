@@ -11,7 +11,8 @@ datasource db {
 }
 
 model UserAccount {
-  id String @id @db.Char(36) @default(uuid())
+  id Int @id @default(autoincrement())
+  uid String @unique @default(uuid())
 
   username String @unique @db.VarChar(50)
   password String @db.VarChar(100)
@@ -28,8 +29,11 @@ model UserAccount {
 }
 
 model Token {
-  id String @id @db.Char(36) @default(uuid())
-  ownerId String @db.Char(36)
+  id Int @id @default(autoincrement())
+  uid String @unique @default(uuid())
+
+  ownerId Int
+  ownerUid String
 
   tokenType TokenType
   
@@ -40,8 +44,11 @@ model Token {
 }
 
 model UserProfile {
-  id String @id @db.Char(36) @default(uuid())
-  ownerId String @db.Char(36)
+  id Int @id @default(autoincrement())
+  uid String @unique @default(uuid())
+
+  ownerId Int
+  ownerUid String @unique
 
   nickname String @db.VarChar(50)
   avatarUrl String @db.VarChar(255) @default("http://storage.googleapis.com/heroku-todolist-server.appspot.com/uploads/avatars/default_user_avatar.png")
@@ -54,8 +61,11 @@ model UserProfile {
 }
 
 model Task {
-  id String @id @db.Char(36) @default(uuid())
-  creatorId String @db.Char(36)
+  id Int @id @default(autoincrement())
+  uid String @unique @default(uuid())
+
+  creatorId Int
+  creatorUid String
 
   description String @db.VarChar(255)
   status TaskStatus @default(TODO)
@@ -68,8 +78,11 @@ model Task {
 }
 
 model ApplicationReview {
-  id String @id @db.Char(36) @default(uuid())
-  creatorId String @db.Char(36)
+  id Int @id @default(autoincrement())
+  uid String @unique @default(uuid())
+
+  creatorId Int
+  creatorUid String @unique
 
   commentary String @db.VarChar(255)
   rate Int @db.SmallInt

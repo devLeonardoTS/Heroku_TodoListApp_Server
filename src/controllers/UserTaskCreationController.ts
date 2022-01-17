@@ -1,29 +1,29 @@
 import { Request, Response, NextFunction } from 'express';
 import { IUserResourceRequestParams } from '../classes/user/IUserResourceRequestParams';
-import { ITaskCreationResponse } from '../classes/user/task/ITaskCreationResponse';
-import { TaskCreationResponse } from '../classes/user/task/TaskCreationResponse';
+import { IUserTaskCreationResponse } from '../classes/user/task/IUserTaskCreationResponse';
+import { UserTaskCreationResponse } from '../classes/user/task/UserTaskCreationResponse';
 import { EHttpStatusCode } from '../constants/EHttpStatusCode';
 import { UnexpectedError } from '../errors/UnexpectedError';
-import { ITaskCreationModel } from '../models/user/task/ITaskCreationModel';
+import { IUserTaskCreationModel } from '../models/user/task/IUserTaskCreationModel';
 import { IApplicationService } from '../services/IApplicationService';
-import { TaskCreationService } from '../services/user/task/TaskCreationService';
+import { UserTaskCreationService } from '../services/user/task/UserTaskCreationService';
 import { IValidatableData } from '../validators/IValidatableData';
 import { IValidator } from '../validators/IValidator';
-import { TaskCreationValidatableData } from '../validators/users/task/TaskCreationValidatableData';
-import { TaskCreationValidator } from '../validators/users/task/TaskCreationValidator';
+import { UserTaskCreationValidatableData } from '../validators/users/task/UserTaskCreationValidatableData';
+import { UserTaskCreationValidator } from '../validators/users/task/UserTaskCreationValidator';
 
 export class UserTaskCreationController {
 
     async handle(request: Request<IUserResourceRequestParams>, response: Response, next: NextFunction){
 
-        const creatorId = request.params.userId;
-        if (!creatorId){ return next(new UnexpectedError()); }
+        const creatorUid = request.params.userUid;
+        if (!creatorUid){ return next(new UnexpectedError()); }
 
-        const validatableData: IValidatableData = new TaskCreationValidatableData(creatorId, request.body);
-        const validator: IValidator<ITaskCreationModel> = new TaskCreationValidator(validatableData);
+        const validatableData: IValidatableData = new UserTaskCreationValidatableData(creatorUid, request.body);
+        const validator: IValidator<IUserTaskCreationModel> = new UserTaskCreationValidator(validatableData);
 
-        const taskCreationService: IApplicationService<TaskCreationResponse> =
-            new TaskCreationService(validator);
+        const taskCreationService: IApplicationService<IUserTaskCreationResponse> =
+            new UserTaskCreationService(validator);
 
         await taskCreationService.execute();
 
@@ -32,7 +32,7 @@ export class UserTaskCreationController {
             return next(new UnexpectedError());
         }
 
-        const taskCreationResponse: ITaskCreationResponse = taskCreationService.result;
+        const taskCreationResponse: IUserTaskCreationResponse = taskCreationService.result;
 
         return response.status(EHttpStatusCode.OK).json(taskCreationResponse);
 

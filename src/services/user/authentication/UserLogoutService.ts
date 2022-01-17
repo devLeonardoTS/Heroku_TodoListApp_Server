@@ -10,16 +10,16 @@ import { ApplicationService } from "../../ApplicationService";
 
 export class UserLogoutService extends ApplicationService<IUserLogoutResponse>{
 
-    private userId: string;
+    private userUid: string;
 
-    constructor(userId: string){
+    constructor(userUid: string){
         super();
-        this.userId = userId;
+        this.userUid = userUid;
     }
 
     async execute(): Promise<boolean> {
 
-        if (!this.userId){
+        if (!this.userUid){
             this.error = new UserAuthenticationError(
                 EUserAuthenticationErrorStatus.AUTHENTICATION_REQUIRED,
                 EUserAuthenticationErrorMessage.AUTHENTICATION_REQUIRED
@@ -27,7 +27,7 @@ export class UserLogoutService extends ApplicationService<IUserLogoutResponse>{
             return false;
         }
 
-        await this.removeUserRefreshToken(this.userId);
+        await this.removeUserRefreshToken(this.userUid);
 
         if (this.error){ return false; }
 
@@ -37,13 +37,13 @@ export class UserLogoutService extends ApplicationService<IUserLogoutResponse>{
 
     }
 
-    private async removeUserRefreshToken(userId: string): Promise<boolean> {
+    private async removeUserRefreshToken(userUid: string): Promise<boolean> {
 
         return await prismaClient.token
         .deleteMany({
             where: {
                 UserAccount: {
-                    id: userId
+                    uid: userUid
                 },
                 AND: {
                     tokenType: TokenType.ACCESS_REFRESH

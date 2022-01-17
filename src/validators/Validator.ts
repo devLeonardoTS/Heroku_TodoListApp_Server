@@ -13,6 +13,7 @@ import { IValidatableData } from "./IValidatableData";
 import { IValidatableField } from "./IValidatableField";
 import { IValidator } from "./IValidator";
 import { IFieldValidationErrorData } from "../errors/IFieldValidationErrorData";
+import validator from 'validator';
 
 export abstract class Validator<AnyTypeToBeValidatorResult> implements IValidator<AnyTypeToBeValidatorResult> {
 
@@ -57,13 +58,13 @@ export abstract class Validator<AnyTypeToBeValidatorResult> implements IValidato
 
     };
 
-    protected async isAnyValueRangeInvalid(): Promise<boolean>{
+    protected async isAnyReceivedValueRangeInvalid(): Promise<boolean>{
 
         if (this.error){ return true; }
 
         if (this.validatableData.fields.length < 1){ return false; }
 
-        let invalidFields: Array<IInvalidField> = new Array();
+        const invalidFields: Array<IInvalidField> = new Array();
 
         this.validatableData.fields.forEach((field) => {
             const value: any = field.value;
@@ -96,15 +97,17 @@ export abstract class Validator<AnyTypeToBeValidatorResult> implements IValidato
 
             if (hasValue && isNumber){
 
-                let valueAsNumber: number | null = null;
-                try {
-                    valueAsNumber = Number(value);
-                } catch (error) {
-                    const errorReason: string = "Invalid field value. The input should be of type number.";
+                const isValueNumeric: boolean = validator.isNumeric(value);
+
+                if (!isValueNumeric){
+                    const errorReason: string = "Invalid field value. The input should be of type number.";                
                     invalidFields.push(new InvalidField(field.name, errorReason));
+                    return;
                 }
 
-                if (valueAsNumber && details.minValue && details.maxValue){
+                const valueAsNumber: number = Number(value);
+
+                if (details.minValue !== null && details.maxValue !== null){
                     const isInvalid: boolean = valueAsNumber < details.minValue || valueAsNumber > details.maxValue;
                     
                     if (isInvalid){
@@ -112,6 +115,7 @@ export abstract class Validator<AnyTypeToBeValidatorResult> implements IValidato
                         invalidFields.push(new InvalidField(field.name, errorReason, details));
                     }
                 }
+
             }
         });
 
@@ -125,7 +129,7 @@ export abstract class Validator<AnyTypeToBeValidatorResult> implements IValidato
 
     }
 
-    protected async isNotAcceptable(): Promise<boolean>{
+    protected async isAnyReceivedValueNotAcceptable(): Promise<boolean>{
 
         if (this.error){ return true; }
 
@@ -168,21 +172,20 @@ export abstract class Validator<AnyTypeToBeValidatorResult> implements IValidato
 
             if (hasValue && isNumber && acceptableNumbers){
 
-                let valueAsNumber: number | null = null;
-                try {
-                    valueAsNumber = Number(value);
-                } catch (error) {
-                    const errorReason: string = "Invalid field value. The input should be of type number.";
+                const isValueNumeric: boolean = validator.isNumeric(value);
+
+                if (!isValueNumeric){
+                    const errorReason: string = "Invalid field value. The input should be of type number.";                
                     invalidFields.push(new InvalidField(field.name, errorReason));
+                    return;
                 }
 
-                if (valueAsNumber){
-                    if (!acceptableNumbers.includes(valueAsNumber)){
-                        const errorReason: string = "The value provided was not within the acceptable values list."
-                        invalidFields.push(new InvalidField(field.name, errorReason, details));
-                    }
-                }
+                const valueAsNumber: number = Number(value);
 
+                if (!acceptableNumbers.includes(valueAsNumber)){
+                    const errorReason: string = "The value provided was not within the acceptable values list."
+                    invalidFields.push(new InvalidField(field.name, errorReason, details));
+                }
 
             }
 
@@ -195,6 +198,102 @@ export abstract class Validator<AnyTypeToBeValidatorResult> implements IValidato
         );
 
         return true;
+
+    }
+
+    protected async isAnyReceivedValueWithIncorrectType(): Promise<boolean>{
+
+        if (this.error){ return true; }
+
+        if (this.validatableData.fields.length < 1){ return false; }
+
+        const invalidFields: Array<IInvalidField> = new Array();
+
+        this.validatableData.fields.forEach((field) => {
+
+            const value: any = field.value;
+            const details: IFieldDetails = field.details;
+            const type: EFieldValueType = details.fieldValueType;
+
+            const hasValue: boolean = value !== "";
+            const isString: boolean = type === EFieldValueType.STRING;
+            const isNumber: boolean = type === EFieldValueType.NUMBER;
+            const isBoolean: boolean = type === EFieldValueType.BOOLEAN;
+
+            if (hasValue && isString){
+
+                let valueAsString: string | null = null;
+                try {
+                    valueAsString = String(value);
+                } catch (error) {
+                    const errorReason: string = "Invalid field value. The input should be of type string.";
+                    invalidFields.push(new InvalidField(field.name, errorReason, details));
+                }
+
+            }
+
+            if (hasValue && isNumber){
+
+                const isValueNumeric: boolean = validator.isNumeric(value);
+
+                if (!isValueNumeric){
+                    const errorReason: string = "Invalid field value. The input should be of type number.";                
+                    invalidFields.push(new InvalidField(field.name, errorReason, details));
+                }
+
+            }
+
+            if (hasValue && isBoolean){
+
+                const isValueBoolean: boolean = validator.isBoolean(value);
+
+                if (!isValueBoolean){
+                    const errorReason: string = "Invalid field value. The input should be of type boolean.";
+                    invalidFields.push(new InvalidField(field.name, errorReason, details));
+                }
+
+            }
+
+        });
+
+        if (invalidFields.length < 1){ return false; }
+
+        this.error = new FieldValidationError(
+            new FieldValidationErrorData(invalidFields) 
+        );
+
+        return true;
+    }
+
+    protected async isNumericFieldEmpty(fieldName: string): Promise<boolean>{
+
+        if (this.error){ return true; }
+
+        if (this.validatableData.fields.length < 1){ return false; }
+
+        const field: IValidatableField | null = this.validatableData.getField(fieldName);
+
+        if (!field){
+            this.error = new UnexpectedError();
+            return true;
+        }
+
+        const fieldType: EFieldValueType = field.details.fieldValueType;
+        const fieldValue: any = field.value;
+
+        if (fieldType === EFieldValueType.NUMBER && fieldValue === ""){
+
+            const errorReason: string = "Empty field value.";
+            this.error = new FieldValidationError(
+                new FieldValidationErrorData([
+                    new InvalidField(fieldName, errorReason)
+                ])
+            );
+
+            return true;
+        }
+
+        return false;
 
     }
 
@@ -215,6 +314,23 @@ export abstract class Validator<AnyTypeToBeValidatorResult> implements IValidato
 
         this.validatableData.setFieldValue(fieldName, reconstructedFieldValue);
 
+        return true;
+
+    }
+
+    protected async changeNumericToAbsoluteValue(fieldName: string): Promise<boolean> {
+
+        if (this.error){ return false; }
+
+        if (this.validatableData.fields.length < 1){ return true; }
+
+        const fieldValue: string = String(this.validatableData.getFieldValue(fieldName));
+
+        const isNumericValue: boolean = validator.isNumeric(fieldValue);
+
+        if (!isNumericValue){ return true; }
+
+        this.validatableData.setFieldValue(fieldName, Math.abs(Number(fieldValue)));
         return true;
 
     }

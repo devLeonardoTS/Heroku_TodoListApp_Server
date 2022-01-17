@@ -13,7 +13,7 @@ export class UserAuthenticationValidator extends Validator<IUserAuthenticationMo
     async execute(): Promise<boolean> {
 
         if (await this.isLackingRequired()){ return false; }
-        if (await this.isAnyValueRangeInvalid()){ return false; }
+        if (await this.isAnyReceivedValueRangeInvalid()){ return false; }
 
         this.result = new UserAuthenticationModel(
             this.validatableData.getFieldValue(UserAccountConstants.USERNAME),

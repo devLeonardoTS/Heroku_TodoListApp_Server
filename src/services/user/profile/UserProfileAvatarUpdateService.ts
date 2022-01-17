@@ -7,12 +7,12 @@ import { ApplicationService } from "../../ApplicationService";
 
 export class UserProfileAvatarUpdateService extends ApplicationService<IDisplayableUserProfileData> {
 
-    private userId: string;
+    private userUid: string;
     private avatarUrl: string | null;
 
-    constructor(userId: string, avatarUrl: string | null){
+    constructor(userUid: string, avatarUrl: string | null){
         super();
-        this.userId = userId;
+        this.userUid = userUid;
         this.avatarUrl = avatarUrl || null;
     }
 
@@ -21,7 +21,7 @@ export class UserProfileAvatarUpdateService extends ApplicationService<IDisplaya
         return await prismaClient.userProfile
         .update({
             where: {
-                ownerId: this.userId
+                ownerUid: this.userUid
             },
             data: {
                 avatarUrl: this.avatarUrl || EAppDefaultString.DEFAULT_AVATAR_URL,

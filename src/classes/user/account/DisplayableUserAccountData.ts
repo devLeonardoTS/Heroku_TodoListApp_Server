@@ -2,7 +2,7 @@ import { UserAccount } from ".prisma/client";
 import { IDisplayableUserAccountData } from "./IDisplayableUserAccountData";
 
 export class DisplayableUserAccountData implements IDisplayableUserAccountData {
-    id: string | null;
+    uid: string | null;
     username: string | null;
     role: string | null;
     createdAt: string | null;
@@ -10,9 +10,9 @@ export class DisplayableUserAccountData implements IDisplayableUserAccountData {
     lastLogin: string | null;
 
     constructor(data: UserAccount){
-        const {id, username, role, createdAt, updatedAt, lastLogin} = data;
+        const { uid, username, role, createdAt, updatedAt, lastLogin } = data;
 
-        this.id = id || null;
+        this.uid = uid || null;
         this.username = username || null;
         this.role = role || null;
         this.createdAt = createdAt.toString() || null;

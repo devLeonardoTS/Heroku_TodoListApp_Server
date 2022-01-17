@@ -14,12 +14,12 @@ export class AuthenticatedUserResponse implements IAuthenticatedUserResponse {
         refreshToken: string,
         user: IDisplayableAuthenticatedUserAccountData,
     ){
-        const { id: userId, role, createdAt: userCreatedAt, updatedAt: userUpdatedAt, lastLogin } = user;
+        const { uid: userUid, role, createdAt: userCreatedAt, updatedAt: userUpdatedAt, lastLogin } = user;
         this.message = EUserAuthenticationMessage.AUTHENTICATED;
         this.accessTokenType = 'Bearer';
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
-        this.user = { id: userId, role, createdAt: userCreatedAt, updatedAt: userUpdatedAt, lastLogin };
+        this.user = { uid: userUid, role, createdAt: userCreatedAt, updatedAt: userUpdatedAt, lastLogin };
     }
     
     

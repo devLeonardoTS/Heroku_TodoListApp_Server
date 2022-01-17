@@ -16,11 +16,11 @@ export class UserProfileCreationController {
 
     async handle(request: Request<IUserResourceRequestParams>, response: Response, next: NextFunction){
 
-        const { userId: ownerId } = request.params;
+        const { userUid: ownerUid } = request.params;
         const receivedData = request.body;
 
         const validatableData: IValidatableData = 
-            new UserProfileCreationValidatableData(ownerId, receivedData);
+            new UserProfileCreationValidatableData(ownerUid, receivedData);
 
         const validator: IValidator<IUserProfileCreationModel> =
             new UserProfileCreationValidator(validatableData);

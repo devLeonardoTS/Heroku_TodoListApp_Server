@@ -22,11 +22,11 @@ export class UserProfileAvatarUploadController {
         const newAvatarUrl: string | null = file?.destination || null;
         // If "newAvatarUrl" is null, the user's avatar will return to the default one.
 
-        if (!authenticated || !authenticated.userId){ return next(new UnexpectedError()); }
-        if (authenticated.userId !== params.userId){ return next(new UnexpectedError()); }
+        if (!authenticated || !authenticated.userUid){ return next(new UnexpectedError()); }
+        if (authenticated.userUid !== params.userUid){ return next(new UnexpectedError()); }
 
         const getUserProfileService: IApplicationService<IDisplayableUserProfileData> =
-            new GetUserProfileService(authenticated.userId);
+            new GetUserProfileService(authenticated.userUid);
 
         await getUserProfileService.execute();
 
@@ -51,7 +51,7 @@ export class UserProfileAvatarUploadController {
 
         const profileAvatarUpdateService: IApplicationService<IDisplayableUserProfileData> =
             new UserProfileAvatarUpdateService(
-                authenticated.userId, 
+                authenticated.userUid, 
                 newAvatarUrl
             );
 

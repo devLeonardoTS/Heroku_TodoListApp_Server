@@ -13,17 +13,17 @@ export class UserProfileUpdateValidator extends Validator<IUserProfileUpdateMode
     async execute(): Promise<boolean> {
 
         if (await this.isLackingRequired()){ return false; }
-        if (await this.isAnyValueRangeInvalid()){ return false; }
+        if (await this.isAnyReceivedValueRangeInvalid()){ return false; }
 
         if (!await this.capitalizeValue(UserProfileConstants.NICKNAME)){ return false; }
         if (!await this.capitalizeValue(UserProfileConstants.MESSAGE)){ return false; }
 
-        const validatedOwnerId = this.validatableData.getFieldValue(UserProfileConstants.OWNER_ID);
+        const validatedOwnerUid = this.validatableData.getFieldValue(UserProfileConstants.OWNER_UID);
         const validatedNickname = this.validatableData.getFieldValue(UserProfileConstants.NICKNAME);
         const validatedMessage = this.validatableData.getFieldValue(UserProfileConstants.MESSAGE);
 
         this.result = new UserProfileUpdateModel(
-            validatedOwnerId,
+            validatedOwnerUid,
             validatedNickname === "" ? undefined : validatedNickname,
             validatedMessage === "" ? undefined : validatedMessage
         );

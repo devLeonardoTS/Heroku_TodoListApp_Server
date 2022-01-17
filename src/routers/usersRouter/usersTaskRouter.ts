@@ -2,23 +2,23 @@ import { Router } from 'express';
 import { UserAuthenticationMiddleware } from '../../middlewares/UserAuthenticationMiddleware';
 import { AccessPermissionMiddleware } from '../../middlewares/AccessPermissionMiddleware';
 import { UserTaskCreationController } from '../../controllers/UserTaskCreationController';
-import { GetAllTasksController } from '../../controllers/GetAllTasksController';
-import { GetTaskController } from '../../controllers/GetTaskController';
-import { TaskUpdateController } from '../../controllers/TaskUpdateController';
-import { TaskRemovalController } from '../../controllers/TaskRemovalController';
+import { GetAllUserTasksController } from '../../controllers/GetAllUserTasksController';
+import { GetUserTaskController } from '../../controllers/GetUserTaskController';
+import { UserTaskUpdateController } from '../../controllers/UserTaskUpdateController';
+import { UserTaskRemovalController } from '../../controllers/UserTaskRemovalController';
 
 const usersTasksRouter = Router({ mergeParams: true });
 
 usersTasksRouter.get("/",
     new UserAuthenticationMiddleware().requireAuthenticatedUser,
     new AccessPermissionMiddleware().strictToOwner,
-    new GetAllTasksController().handle
+    new GetAllUserTasksController().handle
 );
 
-usersTasksRouter.get("/:taskId",
+usersTasksRouter.get("/:taskUid",
     new UserAuthenticationMiddleware().requireAuthenticatedUser,
     new AccessPermissionMiddleware().strictToOwner,
-    new GetTaskController().handle
+    new GetUserTaskController().handle
 );
 
 usersTasksRouter.post("/",
@@ -27,16 +27,16 @@ usersTasksRouter.post("/",
     new UserTaskCreationController().handle
 );
 
-usersTasksRouter.patch("/:taskId",
+usersTasksRouter.patch("/:taskUid",
     new UserAuthenticationMiddleware().requireAuthenticatedUser,
     new AccessPermissionMiddleware().strictToOwner,
-    new TaskUpdateController().handle
+    new UserTaskUpdateController().handle
 );
 
-usersTasksRouter.delete("/:taskId",
+usersTasksRouter.delete("/:taskUid",
     new UserAuthenticationMiddleware().requireAuthenticatedUser,
     new AccessPermissionMiddleware().strictToOwner,
-    new TaskRemovalController().handle
+    new UserTaskRemovalController().handle
 );
 
 export { usersTasksRouter };
