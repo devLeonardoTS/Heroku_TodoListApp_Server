@@ -3,6 +3,7 @@
 
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["interactiveTransactions"]
 }
 
 datasource db {
@@ -38,7 +39,7 @@ model Token {
   tokenType TokenType
   
   createdAt DateTime @db.Timestamptz(0) @default(now())
-  expiresAt DateTime @db.Timestamptz(0)
+  expiresAt DateTime? @db.Timestamptz(0)
 
   UserAccount UserAccount @relation(fields: [ownerId], references: [id])
 }
@@ -97,6 +98,7 @@ model ApplicationReview {
 
 enum TokenType {
   ACCESS_REFRESH
+  ACCOUNT_RECOVERY
 }
 
 enum UserRole {

@@ -1,5 +1,4 @@
 import { Router } from 'express';
-import { UserAccountCreationController } from '../../controllers/UserAccountCreationController';
 import { UserAuthenticationController } from '../../controllers/UserAuthenticationController';
 import { UserAuthenticationMiddleware } from '../../middlewares/UserAuthenticationMiddleware';
 import { RefreshAccessTokenController } from '../../controllers/RefreshAccessTokenController';
@@ -7,6 +6,7 @@ import { UserLogoutController } from '../../controllers/UserLogoutController';
 import { usersProfileRouter } from './usersProfileRouter';
 import { usersTasksRouter } from './usersTaskRouter';
 import { usersAppReviewRouter } from './usersAppReviewRouter';
+import { UserAccountCreationController } from '../../controllers/UserAccountCreationController';
 
 const usersBaseRouter = Router({ mergeParams: true });
 

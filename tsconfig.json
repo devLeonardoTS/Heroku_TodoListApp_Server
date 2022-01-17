@@ -16,6 +16,6 @@
   ],
   "exclude": [
     "node_modules",
-    "src/_WorkInProgress"
+    // "src/_WorkInProgress"
   ]
 }
