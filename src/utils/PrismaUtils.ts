@@ -110,4 +110,29 @@ export abstract class PrismaUtils {
 
     }
 
+    public static handleVerificationError(error?: Error): IHttpError {
+
+        const isDevelopmentEnv = process.env.NODE_ENV === "development";
+
+        if (isDevelopmentEnv && error){
+
+            const errorArr: Array<string> = error.message.split("\n");
+            return new DatabaseError(
+                EDatabaseErrorStatus.DATABASE_VERIFICATION_ERROR,
+                EDatabaseErrorMessage.DATABASE_VERIFICATION_ERROR,
+                { 
+                    message: errorArr[errorArr.length - 1]?.trim() || error.message,
+                    error: error
+                }
+            );
+
+        }
+
+        return new DatabaseError(
+            EDatabaseErrorStatus.DATABASE_VERIFICATION_ERROR,
+            EDatabaseErrorMessage.DATABASE_VERIFICATION_ERROR
+        );
+
+    }
+
 }
