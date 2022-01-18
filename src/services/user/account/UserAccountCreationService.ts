@@ -67,12 +67,12 @@ export class UserAccountCreationService extends ApplicationService<IUserAccountC
 
     private async createUserAccountAndRecoveryToken(userAccountCreationModel: IUserAccountCreationModel): Promise<boolean> {
 
-        const { username, password } = userAccountCreationModel;
-
         if (!userAccountCreationModel){
             this.error = new UnexpectedError();
             return false;
         }
+
+        const { username, password } = userAccountCreationModel;        
 
         let userAccount: UserAccount | null = null;
         let accountRecoveryToken: Token | null = null;
