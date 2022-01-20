@@ -135,6 +135,10 @@ export class GetAllUserTasksService extends ApplicationService<IPaginatedGetResp
             }
         });
 
+        if (userTaskResults.length < 1){
+            return new ListUserTasksWithOffsetResponse(page, userTaskResults.length, itemsCount);
+        }
+
         const displayableUserTasks: Array<IDisplayableUserTaskData> = new Array();
         userTaskResults.forEach((task) => {
             displayableUserTasks.push(new DisplayableUserTaskData(task));

@@ -97,7 +97,7 @@ export abstract class Validator<AnyTypeToBeValidatorResult> implements IValidato
 
             if (hasValue && isNumber){
 
-                const isValueNumeric: boolean = validator.isNumeric(value);
+                const isValueNumeric: boolean = validator.isNumeric(String(value));
 
                 if (!isValueNumeric){
                     const errorReason: string = "Invalid field value. The input should be of type number.";                
@@ -234,7 +234,7 @@ export abstract class Validator<AnyTypeToBeValidatorResult> implements IValidato
 
             if (hasValue && isNumber){
 
-                const isValueNumeric: boolean = validator.isNumeric(value);
+                const isValueNumeric: boolean = validator.isNumeric(String(value));
 
                 if (!isValueNumeric){
                     const errorReason: string = "Invalid field value. The input should be of type number.";                

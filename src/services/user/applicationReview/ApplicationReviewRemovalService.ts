@@ -7,16 +7,16 @@ import { ApplicationService } from "../../ApplicationService";
 
 export class ApplicationReviewRemovalService extends ApplicationService<IApplicationReviewRemovalResponse> {
 
-    private appReviewUid: string;
+    private creatorUid: string;
 
-    constructor(appReviewUid: string){
+    constructor(creatorUid: string){
         super();
-        this.appReviewUid = appReviewUid;
+        this.creatorUid = creatorUid;
     }
 
     async execute(): Promise<boolean> {
 
-        if (!await this.removeAppReview(this.appReviewUid)){ return false; }
+        if (!await this.removeAppReview(this.creatorUid)){ return false; }
 
         const taskRemovalResponse: ApplicationReviewRemovalResponse = new ApplicationReviewRemovalResponse();
 
@@ -26,12 +26,12 @@ export class ApplicationReviewRemovalService extends ApplicationService<IApplica
 
     }
 
-    async removeAppReview(appReviewUid: string): Promise<boolean> {
+    async removeAppReview(creatorUid: string): Promise<boolean> {
 
         return await prismaClient.applicationReview
         .delete({
             where: {
-                uid: appReviewUid
+                creatorUid: creatorUid
             }
         })
         .then((appReview) => {

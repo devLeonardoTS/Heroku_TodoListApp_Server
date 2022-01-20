@@ -20,6 +20,7 @@ import { ValidatorError } from "../../../errors/ValidatorError";
 import { EValidatorErrorStatus } from "../../../constants/EValidatorErrorStatus";
 import { EValidatorErrorMessage } from "../../../constants/EValidatorErrorMessage";
 import { UserAccountConstants } from "../../../constants/user/account/UserAccountConstants";
+import { ConflictError } from "../../../errors/ConflictError";
 
 export class UserAccountCreationValidator extends Validator<IUserAccountCreationModel> {
 
@@ -124,7 +125,7 @@ export class UserAccountCreationValidator extends Validator<IUserAccountCreation
             } else {
                 const invalidField: IInvalidField = new InvalidField(UserAccountConstants.USERNAME, EUserAccountCreationValidationMessage.USERNAME_TAKEN);
                 const errorData: IFieldValidationErrorData = new FieldValidationErrorData([invalidField]);
-                this.error = new FieldValidationError(errorData);
+                this.error = new ConflictError(errorData);
                 return true;
             }
         })

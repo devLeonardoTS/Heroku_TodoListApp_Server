@@ -18,6 +18,6 @@ export class DisplayableUserTaskData implements IDisplayableUserTaskData {
         this.status = status;
         this.createdAt = createdAt.toString();
         this.updatedAt = updatedAt.toString();
-        this.completedAt = completedAt ? completedAt.toString() : "";
+        this.completedAt = completedAt ? completedAt.toString() : null;
     }
 }

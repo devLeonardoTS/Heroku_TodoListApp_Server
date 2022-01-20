@@ -7,4 +7,5 @@ export enum ERequestErrorStatus {
     EMPTY_FIELDS = "EMPTY_FIELDS",
     BAD_REQUEST = "BAD_REQUEST",
     UNEXPECTED_ERROR = "UNEXPECTED_ERROR",
+    CONFLICT = "CONFLICT",
 }

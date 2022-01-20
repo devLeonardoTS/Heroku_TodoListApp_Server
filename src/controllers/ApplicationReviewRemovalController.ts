@@ -12,9 +12,9 @@ export class ApplicationReviewRemovalController {
     async handle(request: Request<IPublicResourceRequestParams | IUserResourceRequestParams, any, any, any>, response: Response, next: NextFunction){
 
         const { authenticated } = request;
-        const { appReviewUid, userUid } = request.params;
+        const { userUid } = request.params;
 
-        if (!authenticated || !userUid || !appReviewUid){
+        if (!authenticated || !userUid){
             return next(new UnexpectedError());
         }
 
@@ -23,7 +23,7 @@ export class ApplicationReviewRemovalController {
         }
 
         const appReviewRemovalService: IApplicationService<IApplicationReviewRemovalResponse> =
-            new ApplicationReviewRemovalService(appReviewUid);
+            new ApplicationReviewRemovalService(userUid);
 
         await appReviewRemovalService.execute();
 

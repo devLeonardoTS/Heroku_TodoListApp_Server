@@ -125,6 +125,10 @@ export class GetAllApplicationReviewService extends ApplicationService<IPaginate
             }
         });
 
+        if (appReviewResults.length < 1){
+            return new ListApplicationReviewsWithOffsetResponse(page, appReviewResults.length, itemsCount);
+        }
+
         const displayableAppReviews: Array<IDisplayableApplicationReviewData> = new Array();
         appReviewResults.forEach((review) => {
             displayableAppReviews.push(new DisplayableApplicationReviewData(review));
