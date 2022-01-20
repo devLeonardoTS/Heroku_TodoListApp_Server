@@ -18,6 +18,7 @@ import { ListApplicationReviewsWithOffsetResponse } from "../../../classes/user/
 import { ApplicationReviewsPaginatedGetResponse } from "../../../classes/user/applicationReview/ApplicationReviewsPaginatedGetResponse";
 import { DisplayableApplicationReviewData } from "../../../classes/user/applicationReview/DisplayableApplicationReviewData";
 import { IDisplayableApplicationReviewData } from "../../../classes/user/applicationReview/IDisplayableApplicationReviewData";
+import { NotFoundError } from "../../../errors/NotFoundError";
 
 export class GetAllApplicationReviewService extends ApplicationService<IPaginatedGetResponse<IDisplayableApplicationReviewData>> implements IPaginatedGet<IDisplayableApplicationReviewData> {
 
@@ -55,14 +56,7 @@ export class GetAllApplicationReviewService extends ApplicationService<IPaginate
                 await this.getListWithOffset(itemsCount, endsAtPage, limit, page, offset);
 
             if (getApplicationReviewsByOffsetResponse.data === null){
-                this.error = new FieldValidationError(
-                    new FieldValidationErrorData([
-                        new InvalidField(
-                            PaginatedGetConstants.PAGE, 
-                            PaginatedGetConstants.invalidPageRequestMessage(page, endsAtPage)
-                        )
-                    ])
-                );
+                this.error = new NotFoundError();
                 return false;
             }
 
@@ -78,14 +72,7 @@ export class GetAllApplicationReviewService extends ApplicationService<IPaginate
                 await this.getListWithCursor(itemsCount, limit, cursor);
 
             if (getApplicationReviewsByCursorResponse.data === null){
-                this.error = new FieldValidationError(
-                    new FieldValidationErrorData([
-                        new InvalidField(
-                            PaginatedGetConstants.CURSOR, 
-                            PaginatedGetConstants.invalidCursorRequestMessage(itemsCount, cursor)
-                        )
-                    ])
-                );
+                this.error = new NotFoundError();
                 return false;
             }
 
