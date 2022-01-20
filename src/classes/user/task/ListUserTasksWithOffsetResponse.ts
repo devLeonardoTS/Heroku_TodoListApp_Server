@@ -1,6 +1,8 @@
 import { IListItemsWithOffsetResponse } from "../../pagination/IListItemsWithOffsetResponse";
 import { IDisplayableUserTaskData } from "./IDisplayableUserTaskData";
 
+
+
 export class ListUserTasksWithOffsetResponse implements IListItemsWithOffsetResponse<IDisplayableUserTaskData> {
     itemsFound: number;
     displaying: number;

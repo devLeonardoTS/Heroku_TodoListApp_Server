@@ -6,6 +6,7 @@
     "typeRoots": ["./src/@types", "./node_modules/@types"],
     "sourceMap": true,
     "outDir": "./dist",
+    "resolveJsonModule": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,

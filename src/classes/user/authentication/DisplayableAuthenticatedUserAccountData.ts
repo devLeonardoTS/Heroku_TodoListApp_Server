@@ -3,14 +3,16 @@ import { IDisplayableAuthenticatedUserAccountData } from "./IDisplayableAuthenti
 
 export class DisplayableAuthenticatedUserAccountData implements IDisplayableAuthenticatedUserAccountData {
     uid: string | null;
+    username: string | null;
     role: UserRole | null;
     createdAt: string;
     updatedAt: string;
     lastLogin: string;
 
     constructor(userAccount: UserAccount){
-        const { uid, role, createdAt, updatedAt, lastLogin } = userAccount;
+        const { uid, username, role, createdAt, updatedAt, lastLogin } = userAccount;
         this.uid = uid;
+        this.username = username;
         this.role = role;
         this.createdAt = createdAt.toString();
         this.updatedAt = updatedAt.toString();
