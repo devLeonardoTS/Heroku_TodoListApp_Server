@@ -106,7 +106,6 @@
                 databaseErrorExample:
                   $ref: "#/components/schemas/DatabaseErrorResponse/example"
                 validatorErrorExample:
-                  type: object
                   $ref: "#/components/schemas/ValidatorErrorResponse/example"
 
 # COMPONENTS/SCHEMAS #

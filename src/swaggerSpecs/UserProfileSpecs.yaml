@@ -64,7 +64,6 @@
                 databaseErrorExample:
                   $ref: "#/components/schemas/DatabaseErrorResponse/example"
                 validatorErrorExample:
-                  type: object
                   $ref: "#/components/schemas/ValidatorErrorResponse/example"
 
   post:
@@ -136,7 +135,6 @@
                 databaseErrorExample:
                   $ref: "#/components/schemas/DatabaseErrorResponse/example"
                 validatorErrorExample:
-                  type: object
                   $ref: "#/components/schemas/ValidatorErrorResponse/example"
 
   patch:
@@ -213,7 +211,6 @@
                 databaseErrorExample:
                   $ref: "#/components/schemas/DatabaseErrorResponse/example"
                 validatorErrorExample:
-                  type: object
                   $ref: "#/components/schemas/ValidatorErrorResponse/example"
 
 /api/users/{userUid}/profile/avatar:
@@ -294,7 +291,6 @@
                 databaseErrorExample:
                   $ref: "#/components/schemas/DatabaseErrorResponse/example"
                 validatorErrorExample:
-                  type: object
                   $ref: "#/components/schemas/ValidatorErrorResponse/example"
                 fileStorageErrorExample:
                   $ref: "#/components/schemas/FileStorageErrorResponse/example"

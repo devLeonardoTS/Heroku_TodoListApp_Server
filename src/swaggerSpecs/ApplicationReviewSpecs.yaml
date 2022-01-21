@@ -38,29 +38,28 @@
               schema:
                 $ref: "#/components/schemas/NotFoundErrorResponse"
         500:
-        description: An unexpected error. If you receive this, contact the administrator.
-        content:
-          'application/json':
-            schema: 
-              type: object
-              properties:
-                unexpectedErrorExample:
-                  type: object
-                  $ref: "#/components/schemas/UnexpectedErrorResponse"
-                databaseErrorExample:
-                  type: object
-                  $ref: "#/components/schemas/DatabaseErrorResponse"
-                validatorErrorExample:
-                  type: object
-                  $ref: "#/components/schemas/ValidatorErrorResponse"
-              examples:
-                unexpectedErrorExample: 
-                  $ref: "#/components/schemas/UnexpectedErrorResponse/example"
-                databaseErrorExample:
-                  $ref: "#/components/schemas/DatabaseErrorResponse/example"
-                validatorErrorExample:
-                  type: object
-                  $ref: "#/components/schemas/ValidatorErrorResponse/example"
+          description: An unexpected error. If you receive this, contact the administrator.
+          content:
+            'application/json':
+              schema: 
+                type: object
+                properties:
+                  unexpectedErrorExample:
+                    type: object
+                    $ref: "#/components/schemas/UnexpectedErrorResponse"
+                  databaseErrorExample:
+                    type: object
+                    $ref: "#/components/schemas/DatabaseErrorResponse"
+                  validatorErrorExample:
+                    type: object
+                    $ref: "#/components/schemas/ValidatorErrorResponse"
+                examples:
+                  unexpectedErrorExample: 
+                    $ref: "#/components/schemas/UnexpectedErrorResponse/example"
+                  databaseErrorExample:
+                    $ref: "#/components/schemas/DatabaseErrorResponse/example"
+                  validatorErrorExample:
+                    $ref: "#/components/schemas/ValidatorErrorResponse/example"
 
 /api/app_reviews/{appReviewUid}:
   get:
@@ -114,7 +113,6 @@
                 databaseErrorExample:
                   $ref: "#/components/schemas/DatabaseErrorResponse/example"
                 validatorErrorExample:
-                  type: object
                   $ref: "#/components/schemas/ValidatorErrorResponse/example"
 
 
@@ -170,7 +168,6 @@
                 databaseErrorExample:
                   $ref: "#/components/schemas/DatabaseErrorResponse/example"
                 validatorErrorExample:
-                  type: object
                   $ref: "#/components/schemas/ValidatorErrorResponse/example"
 
   post:
