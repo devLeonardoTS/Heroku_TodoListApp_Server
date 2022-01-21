@@ -1,0 +1,496 @@
+# ROUTES #
+
+/api/app_reviews:
+  get:
+    tags: ["TodoList API - PUBLIC END-POINTS"]
+    description: Returns a paginated list containing ALL of the application reviews made by our users. You can navigate with either the offset or the cursor technique. If no params are sent, the cursor technique is applied by default.
+    security: []
+    parameters: 
+        - name: page
+          in: query
+          required: false
+          type: integer
+        - name: limit
+          in: query
+          required: false
+          type: integer
+        - name: cursor
+          in: query
+          required: false
+          type: integer
+    responses:
+        200: 
+          description: A successful response.
+          content:
+            'application/json':
+              schema:
+                '$ref': '#/components/schemas/PaginatedGetAllAplicationReviewsResponse'
+        400:
+          description: A bad request response.
+          content:
+            'application/json':
+              schema:
+                $ref: "#/components/schemas/FieldValidationErrorResponse"
+        404:
+          description: The resource was not found.
+          content:
+            'application/json':
+              schema:
+                $ref: "#/components/schemas/NotFoundErrorResponse"
+        500:
+        description: An unexpected error. If you receive this, contact the administrator.
+        content:
+          'application/json':
+            schema: 
+              type: object
+              properties:
+                unexpectedErrorExample:
+                  type: object
+                  $ref: "#/components/schemas/UnexpectedErrorResponse"
+                databaseErrorExample:
+                  type: object
+                  $ref: "#/components/schemas/DatabaseErrorResponse"
+                validatorErrorExample:
+                  type: object
+                  $ref: "#/components/schemas/ValidatorErrorResponse"
+              examples:
+                unexpectedErrorExample: 
+                  $ref: "#/components/schemas/UnexpectedErrorResponse/example"
+                databaseErrorExample:
+                  $ref: "#/components/schemas/DatabaseErrorResponse/example"
+                validatorErrorExample:
+                  type: object
+                  $ref: "#/components/schemas/ValidatorErrorResponse/example"
+
+/api/app_reviews/{appReviewUid}:
+  get:
+    tags: ["TodoList API - PUBLIC END-POINTS"]
+    description: Returns an application review by it's UID.
+    security: []
+    parameters: 
+      - name: appReviewUid
+        in: path
+        description: The UID of an Application Review.
+        required: true
+        type: string
+    responses:
+      200: 
+        description: A successful response.
+        content:
+            'application/json':
+              schema:
+                '$ref': '#/components/schemas/GetApplicationReviewResponse'
+      400:
+        description: A bad request response.
+        content:
+          'application/json':
+            schema:
+              $ref: "#/components/schemas/FieldValidationErrorResponse"
+      404:
+        description: The resource was not found.
+        content:
+          'application/json':
+            schema:
+              $ref: "#/components/schemas/NotFoundErrorResponse"
+      500:
+        description: An unexpected error. If you receive this, contact the administrator.
+        content:
+          'application/json':
+            schema: 
+              type: object
+              properties:
+                unexpectedErrorExample:
+                  type: object
+                  $ref: "#/components/schemas/UnexpectedErrorResponse"
+                databaseErrorExample:
+                  type: object
+                  $ref: "#/components/schemas/DatabaseErrorResponse"
+                validatorErrorExample:
+                  type: object
+                  $ref: "#/components/schemas/ValidatorErrorResponse"
+              examples:
+                unexpectedErrorExample: 
+                  $ref: "#/components/schemas/UnexpectedErrorResponse/example"
+                databaseErrorExample:
+                  $ref: "#/components/schemas/DatabaseErrorResponse/example"
+                validatorErrorExample:
+                  type: object
+                  $ref: "#/components/schemas/ValidatorErrorResponse/example"
+
+
+/api/users/{userUid}/app_review:
+  get:
+    tags: ["TodoList API - PUBLIC END-POINTS"]
+    description: Use this end-point to get the user's app review if it exists.
+    security: []
+    parameters: 
+      - name: userUid
+        in: path
+        description: The UID of an User Account.
+        required: true
+        type: string
+    responses:
+      200:
+        description: A successful response.
+        content:
+          'application/json':
+            schema:
+              '$ref': '#/components/schemas/GetApplicationReviewResponse'
+      400:
+        description: A bad request response.
+        content:
+          'application/json':
+            schema:
+              $ref: "#/components/schemas/FieldValidationErrorResponse"
+      404:
+        description: The resource was not found.
+        content:
+          'application/json':
+            schema:
+              $ref: "#/components/schemas/NotFoundErrorResponse"
+      500:
+        description: An unexpected error. If you receive this, contact the administrator.
+        content:
+          'application/json':
+            schema: 
+              type: object
+              properties:
+                unexpectedErrorExample:
+                  type: object
+                  $ref: "#/components/schemas/UnexpectedErrorResponse"
+                databaseErrorExample:
+                  type: object
+                  $ref: "#/components/schemas/DatabaseErrorResponse"
+                validatorErrorExample:
+                  type: object
+                  $ref: "#/components/schemas/ValidatorErrorResponse"
+              examples:
+                unexpectedErrorExample: 
+                  $ref: "#/components/schemas/UnexpectedErrorResponse/example"
+                databaseErrorExample:
+                  $ref: "#/components/schemas/DatabaseErrorResponse/example"
+                validatorErrorExample:
+                  type: object
+                  $ref: "#/components/schemas/ValidatorErrorResponse/example"
+
+  post:
+    tags: ["TodoList API - USER END-POINTS"]
+    description: Use this end-point to create a new application review. The user must be authenticated.
+    parameters: 
+      - name: userUid
+        in: path
+        description: The UID of an User Account.
+        required: true
+        type: string
+    requestBody:
+      required: true
+      content:
+        'application/json':
+          schema:
+            '$ref': '#/components/schemas/ApplicationReviewCreationModel'
+    responses:
+      200:
+        description: A successful response.
+        content:
+          'application/json':
+            schema:
+              '$ref': '#/components/schemas/ApplicationReviewCreationResponse'
+      400:
+        description: A bad request response.
+        content:
+          'application/json':
+            schema:
+              $ref: "#/components/schemas/FieldValidationErrorResponse"
+      401:
+        description: An unauthorized request response.
+        content:
+          'application/json':
+            schema: 
+              type: object
+              properties:
+                accessPermissionErrorExample:
+                  type: object
+                  $ref: "#/components/schemas/AccessPermissionErrorResponse"
+                userAuthenticationErrorExample:
+                  type: object
+                  $ref: "#/components/schemas/UserAuthenticationErrorResponse"
+              examples:
+                accessPermissionErrorExample: 
+                  $ref: "#/components/schemas/AccessPermissionErrorResponse/example"
+                userAuthenticationErrorExample:
+                  $ref: "#/components/schemas/UserAuthenticationErrorResponse/example"
+      404:
+        description: The resource was not found.
+        content:
+          'application/json':
+            schema:
+              $ref: "#/components/schemas/NotFoundErrorResponse"
+      500:
+        description: An unexpected error. If you receive this, contact the administrator.
+        content:
+          'application/json':
+            schema: 
+              type: object
+              properties:
+                unexpectedErrorExample:
+                  type: object
+                  $ref: "#/components/schemas/UnexpectedErrorResponse"
+                databaseErrorExample:
+                  type: object
+                  $ref: "#/components/schemas/DatabaseErrorResponse"
+                validatorErrorExample:
+                  type: object
+                  $ref: "#/components/schemas/ValidatorErrorResponse"
+              examples:
+                unexpectedErrorExample: 
+                  $ref: "#/components/schemas/UnexpectedErrorResponse/example"
+                databaseErrorExample:
+                  $ref: "#/components/schemas/DatabaseErrorResponse/example"
+                validatorErrorExample:
+                  type: object
+                  $ref: "#/components/schemas/ValidatorErrorResponse"
+
+  delete:
+    tags: ["TodoList API - USER END-POINTS"]
+    description: Use this end-point to remove the user's Application Review. The user must be authenticated. Only the Application Review's creator can use this end-point.
+    parameters: 
+      - name: userUid
+        in: path
+        description: The UID of an User Account.
+        required: true
+        type: string
+    responses:
+      200:
+        description: A successful response.
+        content:
+          'application/json':
+            schema:
+              '$ref': '#/components/schemas/ApplicationReviewRemovalResponse'
+      400:
+        description: A bad request response.
+        content:
+          'application/json':
+            schema:
+              $ref: "#/components/schemas/FieldValidationErrorResponse"
+      401:
+        description: An unauthorized request response.
+        content:
+          'application/json':
+            schema: 
+              type: object
+              properties:
+                accessPermissionErrorExample:
+                  type: object
+                  $ref: "#/components/schemas/AccessPermissionErrorResponse"
+                userAuthenticationErrorExample:
+                  type: object
+                  $ref: "#/components/schemas/UserAuthenticationErrorResponse"
+              examples:
+                accessPermissionErrorExample: 
+                  $ref: "#/components/schemas/AccessPermissionErrorResponse/example"
+                userAuthenticationErrorExample:
+                  $ref: "#/components/schemas/UserAuthenticationErrorResponse/example"
+      404:
+        description: The resource was not found.
+        content:
+          'application/json':
+            schema:
+              $ref: "#/components/schemas/NotFoundErrorResponse"
+      500:
+        description: An unexpected error. If you receive this, contact the administrator.
+        content:
+          'application/json':
+            schema: 
+              type: object
+              properties:
+                unexpectedErrorExample:
+                  type: object
+                  $ref: "#/components/schemas/UnexpectedErrorResponse"
+                databaseErrorExample:
+                  type: object
+                  $ref: "#/components/schemas/DatabaseErrorResponse"
+              examples:
+                unexpectedErrorExample: 
+                  $ref: "#/components/schemas/UnexpectedErrorResponse/example"
+                databaseErrorExample:
+                  $ref: "#/components/schemas/DatabaseErrorResponse/example"
+
+# COMPONENTS/SCHEMAS #
+
+components:
+  schemas:
+
+    # MODELS #
+
+    ApplicationReviewCreationModel:
+      type: object
+      properties:
+        commentary:
+          type: string
+        rate:
+          type: integer
+      required:
+        - commentary
+        - rate
+      example:
+        commentary: São milhares de ToDoList Apps, mas esse aqui tá show!
+        rate: 0 to 5
+
+    # DISPLAYABLES #
+
+    DisplayableApplicationReviewData:
+      type: object
+      properties:
+        uid:
+          type: string
+        creatorUid:
+          type: string
+        commentary:
+          type: string
+        rate:
+          type: integer
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+        active:
+          type: boolean
+      example:
+        uid: bb7306a5-ab5a-4485-9e40-87b94c066288
+        creatorUid: bb7306a5-ab5a-4485-9e40-87b94c066288
+        commentary: There are thousands of ToDo List Apps out there, but this one is marvelous!
+        rate: 5
+        createdAt: Thu Jan 20 2022 17:08:13 GMT-0300 (GMT-03:00)
+        updatedAt: Thu Jan 20 2022 17:08:13 GMT-0300 (GMT-03:00)
+        active: true
+
+    ListApplicationReviewsWithOffsetResponse:
+      type: object
+      properties:
+        itemsFound:
+          type: integer
+        displaying:
+          type: integer
+        actualPage:
+          type: integer
+        endsAtPage:
+          type: integer
+        previousPage:
+          type: integer
+          nullable: true
+        nextPage:
+          type: integer
+          nullable: true
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/DisplayableApplicationReviewData"
+      example:
+        itemsFound: 1
+        displaying: 1
+        actualPage: 1
+        endsAtPage: 1
+        previousPage: null
+        nextPage: null
+        data: [
+          {
+            uid: "bb7306a5-ab5a-4485-9e40-87b94c066288",
+            creatorUid: "bb7306a5-ab5a-4485-9e40-87b94c066288",
+            commentary: "There are thousands of ToDo List Apps out there, but this one is marvelous!",
+            rate: 5,
+            createdAt: "Thu Jan 20 2022 17:08:13 GMT-0300 (GMT-03:00)",
+            updatedAt: "Thu Jan 20 2022 17:08:13 GMT-0300 (GMT-03:00)",
+            active: true
+          }
+        ]
+
+    ListApplicationReviewsWithCursorResponse:
+      type: object
+      properties:
+        itemsFound:
+          type: integer
+        displaying:
+          type: integer
+        nextCursor:
+          type: integer
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/DisplayableApplicationReviewData"
+      example:
+        itemsFound: 50
+        displaying: 2
+        nextCursor: 2
+        data: [
+          {
+            uid: "bb7306a5-ab5a-4485-9e40-87b94c066288",
+            creatorUid: "bb7306a5-ab5a-4485-9e40-87b94c066288",
+            commentary: "There are thousands of ToDo List Apps out there, but this one is marvelous!",
+            rate: 5,
+            createdAt: "Thu Jan 20 2022 17:08:13 GMT-0300 (GMT-03:00)",
+            updatedAt: "Thu Jan 20 2022 17:08:13 GMT-0300 (GMT-03:00)",
+            active: true
+          },
+          {
+            uid: "bb7306a5-ab5a-4485-9e40-87b94c066288",
+            creatorUid: "bb7306a5-ab5a-4485-9e40-87b94c066288",
+            commentary: "There are thousands of ToDo List Apps out there, but this one is marvelous!",
+            rate: 5,
+            createdAt: "Thu Jan 20 2022 17:08:13 GMT-0300 (GMT-03:00)",
+            updatedAt: "Thu Jan 20 2022 17:08:13 GMT-0300 (GMT-03:00)",
+            active: true
+          }
+        ]
+
+    # SUCCESSFUL RESPONSES #
+
+    ApplicationReviewCreationResponse:
+      type: object
+      properties:
+        applicationReview:
+          type: object
+          '$ref': "#/components/schemas/DisplayableApplicationReviewData"
+      example:
+        applicationReview: 
+          uid: bb7306a5-ab5a-4485-9e40-87b94c066288
+          creatorUid: bb7306a5-ab5a-4485-9e40-87b94c066288
+          commentary: There are thousands of ToDo List Apps out there, but this one is marvelous!
+          rate: 5
+          createdAt: Thu Jan 20 2022 17:08:13 GMT-0300 (GMT-03:00)
+          updatedAt: Thu Jan 20 2022 17:08:13 GMT-0300 (GMT-03:00)
+          active: true
+
+    PaginatedGetAllAplicationReviewsResponse:
+      type: object
+      properties:
+        paginatedByOffset:
+          type: object
+          nullable: true
+          $ref: "#/components/schemas/ListApplicationReviewsWithOffsetResponse"
+        paginatedByCursor:
+          type: object
+          nullable: true
+          $ref: "#/components/schemas/ListApplicationReviewsWithCursorResponse"
+      examples:
+        paginatedByOffset: 
+          $ref: "#/components/schemas/ListApplicationReviewsWithOffsetResponse/example"
+        paginatedByCursor: 
+          $ref: "#/components/schemas/ListApplicationReviewsWithCursorResponse/example"
+
+    GetApplicationReviewResponse:
+      type: object
+      properties:
+        data:
+          type: object
+          '$ref': "#/components/schemas/DisplayableApplicationReviewData"
+      examples:
+        data: 
+          $ref: "#/components/schemas/DisplayableApplicationReviewData"
+
+    ApplicationReviewRemovalResponse:
+      type: object
+      properties:
+        message:
+          type: string
+      example:
+        message: The review has been successfully removed.

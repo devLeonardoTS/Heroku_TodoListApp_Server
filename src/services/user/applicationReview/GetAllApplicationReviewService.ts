@@ -56,7 +56,7 @@ export class GetAllApplicationReviewService extends ApplicationService<IPaginate
                 await this.getListWithOffset(itemsCount, endsAtPage, limit, page, offset);
 
             if (getApplicationReviewsByOffsetResponse.data === null){
-                this.error = new NotFoundError();
+                this.error = new NotFoundError()
                 return false;
             }
 

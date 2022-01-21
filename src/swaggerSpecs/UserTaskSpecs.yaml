@@ -1,0 +1,589 @@
+# ROUTES #
+
+/api/users/{userUid}/tasks:
+  get:
+    tags: ["TodoList API - USER END-POINTS"]
+    description: Returns a paginated list containing ALL of the tasks made by a specific user. You can navigate with either the offset or the cursor technique. If no params are sent, the cursor technique is applied by default. This list can only be accessed by the task's creator.
+    parameters: 
+      - name: userUid
+        in: path
+        description: The UID of an User Account.
+        required: true
+        type: string
+      - name: page
+        in: query
+        required: false
+        type: integer
+      - name: limit
+        in: query
+        required: false
+        type: integer
+      - name: cursor
+        in: query
+        required: false
+        type: integer
+    responses:
+      200:
+        description: A successful response.
+        content:
+          'application/json':
+            schema:
+              '$ref': '#/components/schemas/PaginatedGetAllUserTasksResponse'
+      400:
+        description: A bad request response.
+        content:
+          'application/json':
+            schema:
+              $ref: "#/components/schemas/FieldValidationErrorResponse"
+      401:
+        description: An unauthorized request response.
+        content:
+          'application/json':
+            schema: 
+              type: object
+              properties:
+                accessPermissionErrorExample:
+                  type: object
+                  $ref: "#/components/schemas/AccessPermissionErrorResponse"
+                userAuthenticationErrorExample:
+                  type: object
+                  $ref: "#/components/schemas/UserAuthenticationErrorResponse"
+              examples:
+                accessPermissionErrorExample: 
+                  $ref: "#/components/schemas/AccessPermissionErrorResponse/example"
+                userAuthenticationErrorExample:
+                  $ref: "#/components/schemas/UserAuthenticationErrorResponse/example"
+      404:
+        description: The resource was not found.
+        content:
+          'application/json':
+            schema:
+              $ref: "#/components/schemas/NotFoundErrorResponse"
+      500:
+        description: An unexpected error. If you receive this, contact the administrator.
+        content:
+          'application/json':
+            schema: 
+              type: object
+              properties:
+                unexpectedErrorExample:
+                  type: object
+                  $ref: "#/components/schemas/UnexpectedErrorResponse"
+                databaseErrorExample:
+                  type: object
+                  $ref: "#/components/schemas/DatabaseErrorResponse"
+                validatorErrorExample:
+                  type: object
+                  $ref: "#/components/schemas/ValidatorErrorResponse"
+              examples:
+                unexpectedErrorExample: 
+                  $ref: "#/components/schemas/UnexpectedErrorResponse/example"
+                databaseErrorExample:
+                  $ref: "#/components/schemas/DatabaseErrorResponse/example"
+                validatorErrorExample:
+                  type: object
+                  $ref: "#/components/schemas/ValidatorErrorResponse/example"
+    
+  post:
+    tags: ["TodoList API - USER END-POINTS"]
+    description: Use this end-point to create a new user's task. The user must be authenticated.
+    parameters: 
+      - name: userUid
+        in: path
+        description: The UID of an User Account.
+        required: true
+        type: string
+    requestBody:
+      required: true
+      content:
+        'application/json':
+          schema:
+            '$ref': '#/components/schemas/UserTaskCreationModel'
+    responses:
+      200:
+        description: A successful response.
+        content:
+          'application/json':
+            schema:
+              '$ref': '#/components/schemas/UserTaskCreationResponse'
+      400:
+        description: A bad request response.
+        content:
+          'application/json':
+            schema:
+              $ref: "#/components/schemas/FieldValidationErrorResponse"
+      401:
+        description: An unauthorized request response.
+        content:
+          'application/json':
+            schema: 
+              type: object
+              properties:
+                accessPermissionErrorExample:
+                  type: object
+                  $ref: "#/components/schemas/AccessPermissionErrorResponse"
+                userAuthenticationErrorExample:
+                  type: object
+                  $ref: "#/components/schemas/UserAuthenticationErrorResponse"
+              examples:
+                accessPermissionErrorExample: 
+                  $ref: "#/components/schemas/AccessPermissionErrorResponse/example"
+                userAuthenticationErrorExample:
+                  $ref: "#/components/schemas/UserAuthenticationErrorResponse/example"
+      404:
+        description: The resource was not found.
+        content:
+          'application/json':
+            schema:
+              $ref: "#/components/schemas/NotFoundErrorResponse"
+      500:
+        description: An unexpected error. If you receive this, contact the administrator.
+        content:
+          'application/json':
+            schema: 
+              type: object
+              properties:
+                unexpectedErrorExample:
+                  type: object
+                  $ref: "#/components/schemas/UnexpectedErrorResponse"
+                databaseErrorExample:
+                  type: object
+                  $ref: "#/components/schemas/DatabaseErrorResponse"
+                validatorErrorExample:
+                  type: object
+                  $ref: "#/components/schemas/ValidatorErrorResponse"
+              examples:
+                unexpectedErrorExample: 
+                  $ref: "#/components/schemas/UnexpectedErrorResponse/example"
+                databaseErrorExample:
+                  $ref: "#/components/schemas/DatabaseErrorResponse/example"
+                validatorErrorExample:
+                  type: object
+                  $ref: "#/components/schemas/ValidatorErrorResponse/example"
+
+/api/users/{userUid}/tasks/{taskUid}:
+  get:
+    tags: ["TodoList API - USER END-POINTS"]
+    description: Returns a specific user's task. A task can only be accessed by it's creator.
+    parameters: 
+      - name: userUid
+        in: path
+        description: The UID of an User Account.
+        required: true
+        type: string
+      - name: taskUid
+        in: path
+        description: The UID of a User's Task.
+        required: true
+        type: string
+    responses:
+      200:
+        description: A successful response.
+        content:
+          'application/json':
+            schema:
+              '$ref': '#/components/schemas/GetUserTaskResponse'
+      400:
+        description: A bad request response.
+        content:
+          'application/json':
+            schema:
+              $ref: "#/components/schemas/FieldValidationErrorResponse"
+      401:
+        description: An unauthorized request response.
+        content:
+          'application/json':
+            schema: 
+              type: object
+              properties:
+                accessPermissionErrorExample:
+                  type: object
+                  $ref: "#/components/schemas/AccessPermissionErrorResponse"
+                userAuthenticationErrorExample:
+                  type: object
+                  $ref: "#/components/schemas/UserAuthenticationErrorResponse"
+              examples:
+                accessPermissionErrorExample: 
+                  $ref: "#/components/schemas/AccessPermissionErrorResponse/example"
+                userAuthenticationErrorExample:
+                  $ref: "#/components/schemas/UserAuthenticationErrorResponse/example"
+      404:
+        description: The resource was not found.
+        content:
+          'application/json':
+            schema:
+              $ref: "#/components/schemas/NotFoundErrorResponse"
+      500:
+        description: An unexpected error. If you receive this, contact the administrator.
+        content:
+          'application/json':
+            schema: 
+              type: object
+              properties:
+                unexpectedErrorExample:
+                  type: object
+                  $ref: "#/components/schemas/UnexpectedErrorResponse"
+                databaseErrorExample:
+                  type: object
+                  $ref: "#/components/schemas/DatabaseErrorResponse"
+                validatorErrorExample:
+                  type: object
+                  $ref: "#/components/schemas/ValidatorErrorResponse"
+              examples:
+                unexpectedErrorExample: 
+                  $ref: "#/components/schemas/UnexpectedErrorResponse/example"
+                databaseErrorExample:
+                  $ref: "#/components/schemas/DatabaseErrorResponse/example"
+                validatorErrorExample:
+                  type: object
+                  $ref: "#/components/schemas/ValidatorErrorResponse/example"
+
+  patch:
+    tags: ["TodoList API - USER END-POINTS"]
+    description: Use this end-point to update a user's task. The user must be authenticated. Only the task's creator can use this end-point.
+    parameters: 
+      - name: userUid
+        in: path
+        description: The UID of an User Account.
+        required: true
+        type: string
+      - name: taskUid
+        in: path
+        description: The UID of a User's Task.
+        required: true
+        type: string
+    requestBody:
+      required: true
+      content:
+        'application/json':
+          schema:
+            '$ref': '#/components/schemas/UserTaskUpdateModel'
+    responses:
+      200:
+        description: A successful response.
+        content:
+          'application/json':
+            schema:
+              '$ref': '#/components/schemas/UserTaskUpdateResponse'
+      400:
+        description: A bad request response.
+        content:
+          'application/json':
+            schema:
+              $ref: "#/components/schemas/FieldValidationErrorResponse"
+      401:
+        description: An unauthorized request response.
+        content:
+          'application/json':
+            schema: 
+              type: object
+              properties:
+                accessPermissionErrorExample:
+                  type: object
+                  $ref: "#/components/schemas/AccessPermissionErrorResponse"
+                userAuthenticationErrorExample:
+                  type: object
+                  $ref: "#/components/schemas/UserAuthenticationErrorResponse"
+              examples:
+                accessPermissionErrorExample: 
+                  $ref: "#/components/schemas/AccessPermissionErrorResponse/example"
+                userAuthenticationErrorExample:
+                  $ref: "#/components/schemas/UserAuthenticationErrorResponse/example"
+      404:
+        description: The resource was not found.
+        content:
+          'application/json':
+            schema:
+              $ref: "#/components/schemas/NotFoundErrorResponse"
+      500:
+        description: An unexpected error. If you receive this, contact the administrator.
+        content:
+          'application/json':
+            schema: 
+              type: object
+              properties:
+                unexpectedErrorExample:
+                  type: object
+                  $ref: "#/components/schemas/UnexpectedErrorResponse"
+                databaseErrorExample:
+                  type: object
+                  $ref: "#/components/schemas/DatabaseErrorResponse"
+                validatorErrorExample:
+                  type: object
+                  $ref: "#/components/schemas/ValidatorErrorResponse"
+              examples:
+                unexpectedErrorExample: 
+                  $ref: "#/components/schemas/UnexpectedErrorResponse/example"
+                databaseErrorExample:
+                  $ref: "#/components/schemas/DatabaseErrorResponse/example"
+                validatorErrorExample:
+                  type: object
+                  $ref: "#/components/schemas/ValidatorErrorResponse/example"
+
+  delete:
+    tags: ["TodoList API - USER END-POINTS"]
+    description: Use this end-point to remove a user's task. The user must be authenticated. Only the task's creator can use this end-point.
+    parameters: 
+      - name: userUid
+        in: path
+        description: The UID of an User Account.
+        required: true
+        type: string
+      - name: taskUid
+        in: path
+        description: The UID of a User's Task.
+        required: true
+        type: string
+    responses:
+      200:
+        description: A successful response.
+        content:
+          'application/json':
+            schema:
+              '$ref': '#/components/schemas/UserTaskRemovalResponse'
+      400:
+        description: A bad request response.
+        content:
+          'application/json':
+            schema:
+              $ref: "#/components/schemas/FieldValidationErrorResponse"
+      401:
+        description: An unauthorized request response.
+        content:
+          'application/json':
+            schema: 
+              type: object
+              properties:
+                accessPermissionErrorExample:
+                  type: object
+                  $ref: "#/components/schemas/AccessPermissionErrorResponse"
+                userAuthenticationErrorExample:
+                  type: object
+                  $ref: "#/components/schemas/UserAuthenticationErrorResponse"
+              examples:
+                accessPermissionErrorExample: 
+                  $ref: "#/components/schemas/AccessPermissionErrorResponse/example"
+                userAuthenticationErrorExample:
+                  $ref: "#/components/schemas/UserAuthenticationErrorResponse/example"
+      404:
+        description: The resource was not found.
+        content:
+          'application/json':
+            schema:
+              $ref: "#/components/schemas/NotFoundErrorResponse"
+      500:
+        description: An unexpected error. If you receive this, contact the administrator.
+        content:
+          'application/json':
+            schema: 
+              type: object
+              properties:
+                unexpectedErrorExample:
+                  type: object
+                  $ref: "#/components/schemas/UnexpectedErrorResponse"
+                databaseErrorExample:
+                  type: object
+                  $ref: "#/components/schemas/DatabaseErrorResponse"
+                validatorErrorExample:
+                  type: object
+                  $ref: "#/components/schemas/ValidatorErrorResponse"
+              examples:
+                unexpectedErrorExample: 
+                  $ref: "#/components/schemas/UnexpectedErrorResponse/example"
+                databaseErrorExample:
+                  $ref: "#/components/schemas/DatabaseErrorResponse/example"
+                validatorErrorExample:
+                  type: object
+                  $ref: "#/components/schemas/ValidatorErrorResponse/example"
+
+# COMPONENTS/SCHEMAS #
+
+components:
+  schemas:
+
+    # MODELS #
+
+    UserTaskCreationModel:
+      type: object
+      properties:
+        description:
+          type: string
+      required:
+        - description
+      example:
+        description: Check devLeonardoTS's todo list app API.
+
+    UserTaskUpdateModel:
+      type: object
+      properties:
+        description:
+          type: string
+        status:
+          type: string
+      example:
+        description: Check devLeonardoTS's todo list app API.
+        status: TODO or STARTED or STRUGGLING or DONE.
+
+    # DISPLAYABLES # 
+
+    DisplayableUserTaskData:
+      type: object
+      properties:
+        uid:
+          type: string
+        creatorUid:
+          type: string
+        description:
+          type: string
+        status:
+          type: string
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+        completedAt:
+          type: string
+      example:
+        uid: bb7306a5-ab5a-4485-9e40-87b94c066288
+        creatorUid: bb7306a5-ab5a-4485-9e40-87b94c066288
+        description: Check devLeonardoTS's todo list API.
+        status: TODO or STARTED or STRUGGLING or DONE.
+        createdAt: Thu Jan 20 2022 17:08:13 GMT-0300 (GMT-03:00)
+        updatedAt: Thu Jan 20 2022 17:08:13 GMT-0300 (GMT-03:00)
+        completedAt: null
+
+    ListUserTasksWithOffsetResponse:
+      type: object
+      properties:
+        itemsFound:
+          type: integer
+        displaying:
+          type: integer
+        actualPage:
+          type: integer
+        endsAtPage:
+          type: integer
+        previousPage:
+          type: integer
+          nullable: true
+        nextPage:
+          type: integer
+          nullable: true
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/DisplayableUserTaskData"
+      example:
+        itemsFound: 1
+        displaying: 1
+        actualPage: 1
+        endsAtPage: 1
+        previousPage: null
+        nextPage: null
+        data: [
+          {
+            uid: "bb7306a5-ab5a-4485-9e40-87b94c066288",
+            creatorUid: "bb7306a5-ab5a-4485-9e40-87b94c066288",
+            description: "Check devLeonardoTS's todo list API.",
+            status: "TODO or STARTED or STRUGGLING or DONE.",
+            createdAt: "Thu Jan 20 2022 17:08:13 GMT-0300 (GMT-03:00)",
+            updatedAt: "Thu Jan 20 2022 17:08:13 GMT-0300 (GMT-03:00)",
+            completedAt: null
+          }
+        ]
+
+    ListUserTasksWithCursorResponse:
+      type: object
+      properties:
+        itemsFound:
+          type: integer
+        displaying:
+          type: integer
+        nextCursor:
+          type: integer
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/DisplayableUserTaskData"
+      example:
+        itemsFound: 50
+        displaying: 2
+        nextCursor: 2
+        data: [
+          {
+            uid: "bb7306a5-ab5a-4485-9e40-87b94c066288",
+            creatorUid: "bb7306a5-ab5a-4485-9e40-87b94c066288",
+            description: "Check devLeonardoTS's todo list API.",
+            status: "TODO or STARTED or STRUGGLING or DONE.",
+            createdAt: "Thu Jan 20 2022 17:08:13 GMT-0300 (GMT-03:00)",
+            updatedAt: "Thu Jan 20 2022 17:08:13 GMT-0300 (GMT-03:00)",
+            completedAt: null
+          },
+          {
+            uid: "bb7306a5-ab5a-4485-9e40-87b94c066288",
+            creatorUid: "bb7306a5-ab5a-4485-9e40-87b94c066288",
+            description: "Give devLeonardoTS's a star at the todo list api repository on GitHub.",
+            status: "TODO or STARTED or STRUGGLING or DONE.",
+            createdAt: "Thu Jan 20 2022 17:08:13 GMT-0300 (GMT-03:00)",
+            updatedAt: "Thu Jan 20 2022 17:08:13 GMT-0300 (GMT-03:00)",
+            completedAt: null
+          }
+        ]
+
+    # SUCCESSFUL RESPONSES #
+
+    UserTaskCreationResponse:
+      type: object
+      properties:
+        task:
+          type: object
+          $ref: "#/components/schemas/DisplayableUserTaskData"
+      examples:
+        task: 
+          $ref: "#/components/schemas/DisplayableUserTaskData/example"
+
+    PaginatedGetAllUserTasksResponse:
+      type: object
+      properties:
+        paginatedByOffset:
+          type: object
+          nullable: true
+          $ref: "#/components/schemas/ListUserTasksWithOffsetResponse"
+        paginatedByCursor:
+          type: object
+          nullable: true
+          $ref: "#/components/schemas/ListUserTasksWithCursorResponse"
+      examples:
+        paginatedByOffset: 
+          $ref: "#/components/schemas/ListUserTasksWithOffsetResponse/example"
+        paginatedByCursor: 
+          $ref: "#/components/schemas/ListUserTasksWithCursorResponse/example"
+
+    GetUserTaskResponse:
+      type: object
+      properties:
+        task:
+          type: object
+          $ref: "#/components/schemas/DisplayableUserTaskData"
+      examples:
+        task: 
+          $ref: "#/components/schemas/DisplayableUserTaskData/example"
+
+    UserTaskUpdateResponse:
+      type: object
+      properties:
+        task:
+          type: object
+          $ref: "#/components/schemas/DisplayableUserTaskData"
+      examples:
+        task: 
+          $ref: "#/components/schemas/DisplayableUserTaskData/example"
+
+    UserTaskRemovalResponse:
+      type: object
+      properties:
+        message:
+          type: string
+      example:
+        message: The task has been removed successfully.
+    

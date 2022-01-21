@@ -1,0 +1,212 @@
+# ROUTES #
+
+/api/users/accounts:
+  post:
+    tags: ["TodoList API - PUBLIC END-POINTS"]
+    description: Use this end-point to create a new user's account. Remember your user to store the provided Account Recovery Token in a safe place.
+    security: []
+    requestBody:
+      required: true
+      content:
+        'application/json':
+          schema:
+            '$ref': '#/components/schemas/UserAccountCreationModel'
+    responses:
+      200: 
+        description: A successful response.
+        content: 
+          'application/json':
+            schema:
+              '$ref': '#/components/schemas/UserAccountCreationResponse'
+      400:
+        description: A bad request response.
+        content:
+          'application/json':
+            schema:
+              $ref: "#/components/schemas/FieldValidationErrorResponse"
+      409:
+        description: A conflict response.
+        content:
+          'application/json':
+            schema:
+              $ref: "#/components/schemas/ConflictErrorResponse"
+      500:
+        description: An unexpected error. If you receive this, contact the administrator.
+        content:
+          'application/json':
+            schema: 
+              type: object
+              properties:
+                unexpectedErrorExample:
+                  type: object
+                  $ref: "#/components/schemas/UnexpectedErrorResponse"
+                databaseErrorExample:
+                  type: object
+                  $ref: "#/components/schemas/DatabaseErrorResponse"
+                validatorErrorExample:
+                  type: object
+                  $ref: "#/components/schemas/ValidatorErrorResponse"
+              examples:
+                unexpectedErrorExample: 
+                  $ref: "#/components/schemas/UnexpectedErrorResponse/example"
+                databaseErrorExample:
+                  $ref: "#/components/schemas/DatabaseErrorResponse/example"
+                validatorErrorExample:
+                  $ref: "#/components/schemas/ValidatorErrorResponse/example"
+
+/api/users/accounts/recovery:
+  patch:
+    tags: ["TodoList API - PUBLIC END-POINTS"]
+    description: Use this end-point to allow your user to recover their account.
+    security: []
+    requestBody:
+      required: true
+      content:
+        'application/json':
+          schema:
+            '$ref': '#/components/schemas/UserAccountRecoveryModel'
+    responses:
+      200: 
+        description: A successful response.
+        content: 
+          'application/json':
+            schema:
+              '$ref': '#/components/schemas/UserAccountRecoveryResponse'
+      400:
+        description: A bad request response.
+        content:
+          'application/json':
+            schema:
+              $ref: "#/components/schemas/FieldValidationErrorResponse"
+      401:
+        description: An unauthorized request response.
+        content:
+          'application/json':
+            schema: 
+              $ref: "#/components/schemas/UserAccountRecoveryErroResponse"
+      500:
+        description: An unexpected error. If you receive this, contact the administrator.
+        content:
+          'application/json':
+            schema: 
+              type: object
+              properties:
+                unexpectedErrorExample:
+                  type: object
+                  $ref: "#/components/schemas/UnexpectedErrorResponse"
+                databaseErrorExample:
+                  type: object
+                  $ref: "#/components/schemas/DatabaseErrorResponse"
+                validatorErrorExample:
+                  type: object
+                  $ref: "#/components/schemas/ValidatorErrorResponse"
+              examples:
+                unexpectedErrorExample: 
+                  $ref: "#/components/schemas/UnexpectedErrorResponse/example"
+                databaseErrorExample:
+                  $ref: "#/components/schemas/DatabaseErrorResponse/example"
+                validatorErrorExample:
+                  type: object
+                  $ref: "#/components/schemas/ValidatorErrorResponse/example"
+
+# COMPONENTS/SCHEMAS #
+
+components:
+  schemas:
+
+    # MODELS #
+
+    UserAccountCreationModel:
+            type: object
+            properties:
+                username:
+                    type: string
+                password:
+                    type: string
+            required:
+                - username
+                - password
+            example:
+                username: MeuUsernameSuperUnico
+                password: M1nh4S3nh4S3gur4_1337
+
+    UserAccountRecoveryModel:
+      type: object
+      properties:
+        recoveryToken:
+          type: string
+        username:
+          type: string
+        newPassword:
+          type: string
+      required:
+        - recoveryToken
+        - username
+        - newPassword
+      example:
+        recoveryToken: 942b59b9-baa9-459a-a95f-83126293ac94
+        username: MeuUsernameSuperUnico
+        newPassword: M1nh4S3nh4S3gur4_1337_QUE_NAO_VOU_PERDER!
+
+    # DISPLAYABLES # 
+
+    DisplayableUserAccountData:
+      type: object
+      properties:
+        uid:
+          type: string
+        username:
+          type: string
+        role:
+          type: string
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+        lastLogin:
+          type: string
+      example:
+        uid: bb7306a5-ab5a-4485-9e40-87b94c066288
+        username: MeuUsernameSuperUnico
+        role: USER
+        createdAt: Thu Jan 06 2022 10:26:28 GMT-0300 (GMT-03:00)
+        updatedAt: Thu Jan 06 2022 10:26:28 GMT-0300 (GMT-03:00)
+        lastLogin: Thu Jan 08 2022 16:20:15 GMT-0300 (GMT-03:00)
+
+    # SUCCESSFUL RESPONSES #
+
+    UserAccountCreationResponse:
+      type: object
+      properties:
+        accountRecoveryToken:
+          type: string
+        account:
+          type: object
+          '$ref': "#/components/schemas/DisplayableUserAccountData"
+      example:
+        accountRecoveryToken: 942b59b9-baa9-459a-a95f-83126293ac94
+        account: 
+          uid: bb7306a5-ab5a-4485-9e40-87b94c066288
+          username: MeuUsernameSuperUnico
+          role: USER
+          createdAt: Thu Jan 06 2022 10:26:28 GMT-0300 (GMT-03:00)
+          updatedAt: Thu Jan 06 2022 10:26:28 GMT-0300 (GMT-03:00)
+          lastLogin: Thu Jan 08 2022 16:20:15 GMT-0300 (GMT-03:00)
+
+    UserAccountRecoveryResponse:
+      type: object
+      properties:
+        message:
+          type: string
+        account:
+          type: object
+          '$ref': "#/components/schemas/DisplayableUserAccountData"
+      example:
+        message: Your password was successfully updated! Please keep it somewhere safe.
+        account: 
+          uid: bb7306a5-ab5a-4485-9e40-87b94c066288
+          username: MeuUsernameSuperUnico
+          role: USER
+          createdAt: Thu Jan 06 2022 10:26:28 GMT-0300 (GMT-03:00)
+          updatedAt: Thu Jan 06 2022 10:26:28 GMT-0300 (GMT-03:00)
+          lastLogin: Thu Jan 08 2022 16:20:15 GMT-0300 (GMT-03:00)

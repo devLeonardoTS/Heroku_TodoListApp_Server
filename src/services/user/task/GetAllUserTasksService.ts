@@ -59,7 +59,7 @@ export class GetAllUserTasksService extends ApplicationService<IPaginatedGetResp
                 await this.getListWithOffset(itemsCount, endsAtPage, limit, page, offset, creatorUid);
 
             if (getUserTasksByOffsetResponse.data === null){
-                this.error =  new NotFoundError();
+                this.error = new NotFoundError();
                 return false;
             }
 

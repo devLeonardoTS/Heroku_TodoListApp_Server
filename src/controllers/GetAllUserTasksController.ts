@@ -55,19 +55,6 @@ export class GetAllUserTasksController {
 
         return next(new UnexpectedError());
 
-        // const getAllUserTasksService: IApplicationService<IGetAllUserTasksResponse> = new GetAllUserTasksService(params.userUid);
-
-        // await getAllUserTasksService.execute();
-
-        // if (!getAllUserTasksService.result){
-        //     if (getAllUserTasksService.error){ return next(getAllUserTasksService.error); }
-        //     return next(new UnexpectedError());
-        // }
-
-        // const getAllUserTasksResponse: IGetAllUserTasksResponse = getAllUserTasksService.result;
-
-        // return response.status(EHttpStatusCode.OK).json(getAllUserTasksResponse);
-
     }
 
 }
