@@ -83,7 +83,7 @@
         content:
           'application/json':
             schema: 
-              $ref: "#/components/schemas/UserAccountRecoveryErroResponse"
+              $ref: "#/components/schemas/UserAccountRecoveryErrorResponse"
       500:
         description: An unexpected error. If you receive this, contact the administrator.
         content:

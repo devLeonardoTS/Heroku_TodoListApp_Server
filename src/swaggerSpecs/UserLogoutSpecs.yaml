@@ -50,7 +50,7 @@
                   $ref: "#/components/schemas/DatabaseErrorResponse"
                 validatorErrorExample:
                   type: object
-                  $ref: "#/components/schemas/ValidatorErrorResponse/example"
+                  $ref: "#/components/schemas/ValidatorErrorResponse"
               examples:
                 unexpectedErrorExample: 
                   $ref: "#/components/schemas/UnexpectedErrorResponse/example"
