@@ -48,6 +48,7 @@ export const swaggerOptions: Options = {
     apis: [
         "./src/routers/**/*.ts",
         "./src/models/**/*.ts",
-        "./src/classes/**/*.ts"
+        "./src/classes/**/*.ts",
+        "./src/swaggerSpecs/*.yaml"
     ]
 }

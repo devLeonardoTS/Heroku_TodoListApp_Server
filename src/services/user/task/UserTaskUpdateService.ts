@@ -76,6 +76,8 @@ export class UserTaskUpdateService extends ApplicationService<IUserTaskUpdateRes
 
     private async updateTask(validated: IUserTaskUpdateModel): Promise<boolean> {
 
+        const updateDate: Date = new Date();
+
         return await prismaClient.task
         .update({
             where: {
@@ -84,7 +86,8 @@ export class UserTaskUpdateService extends ApplicationService<IUserTaskUpdateRes
             data: {
                 description: validated.description,
                 status: validated.status as TaskStatus || undefined,
-                updatedAt: new Date()
+                updatedAt: updateDate,
+                completedAt: validated.status as TaskStatus === TaskStatus.DONE ? updateDate : undefined
             }
         })
         .then((task) => {

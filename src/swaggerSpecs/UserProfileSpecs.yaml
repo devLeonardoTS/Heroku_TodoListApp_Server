@@ -1,0 +1,222 @@
+# ROUTES #
+
+/api/users/{userUid}/profile:
+  get:
+    tags: ["TodoList API - USER END-POINTS"]
+    description: Returns the user's profile. The user must be authenticated.
+    parameters: 
+      - name: userUid
+        in: path
+        description: The UID of an User Account.
+        required: true
+        type: string
+    responses:
+      200: 
+        description: A successful response.
+        content: 
+          'application/json':
+            schema:
+              '$ref': '#/components/schemas/GetUserProfileResponse'
+      400:
+        description: A bad request response.
+      404:
+        description: A not found request response.
+      500:
+        description: An unexpected error. If you receive this, contact the administrator.
+
+  post:
+    tags: ["TodoList API - USER END-POINTS"]
+    description: Use this end-point to create a new user's profile. The user must be authenticated.
+    parameters: 
+      - name: userUid
+        in: path
+        description: The UID of an User Account.
+        required: true
+        type: string
+    requestBody:
+      required: true
+      content:
+        'application/json':
+          schema:
+            '$ref': '#/components/schemas/UserProfileCreationModel'
+    responses:
+      200:
+        description: A successful response.
+        content:
+          'application/json':
+              schema:
+                '$ref': '#/components/schemas/UserProfileCreationResponse'
+      500:
+        description: An unexpected error. If you receive this, contact the administrator.
+
+  patch:
+    tags: ["TodoList API - USER END-POINTS"]
+    description: Use this end-point to update a user's profile. The user must be authenticated.
+    parameters: 
+      - name: userUid
+        in: path
+        description: The UID of an User Account.
+        required: true
+        type: string
+    requestBody:
+      required: true
+      content:
+        'application/json':
+          schema:
+            '$ref': '#/components/schemas/UserProfileUpdateModel'
+    responses:
+      200:
+        description: A successful response.
+        content:
+          'application/json':
+            schema:
+              '$ref': '#/components/schemas/UserProfileUpdateResponse'
+      500:
+        description: An unexpected error. If you receive this, contact the administrator.
+
+/api/users/{userUid}/profile/avatar:
+  patch:
+    tags: ["TodoList API - USER END-POINTS"]
+    description: Use this end-point to update the avatar of a user's profile. The user must be authenticated.
+    parameters: 
+      - name: userUid
+        in: path
+        description: The UID of an User Account.
+        required: true
+        type: string
+    requestBody:
+      required: true
+      content:
+        'multipart/form-data':
+          schema:
+            '$ref': '#/components/schemas/UserProfileAvatarUpdateModel'
+    responses:
+      200:
+        description: A successful response.
+        content:
+          'multipart/form-data':
+            schema:
+              '$ref': '#/components/schemas/UpdateUserProfileAvatarResponse'
+      500:
+        description: An unexpected error. If you receive this, contact the administrator.
+
+# COMPONENTS/SCHEMAS #
+
+components:
+  schemas:
+
+    # MODELS #
+
+    UserProfileCreationModel:
+      type: object
+      properties:
+        nickname:
+          type: string
+        message:
+          type: string
+      required:
+        - nickname
+        - message
+      example:
+        nickname: Buguêncio
+        message: Meu perfil é super bacana!
+
+    UserProfileUpdateModel:
+      type: object
+      properties:
+        nickname:
+          type: string
+        message:
+          type: string
+      example:
+        nickname: Buguêncio -Optional
+        message: Meu perfil é super bacana! -Optional
+
+    UserProfileAvatarUpdateModel:
+      type: object
+      properties:
+        avatar:
+          type: array
+          description: If an empty value is sent, the avatar will go back to default.
+          items:
+            type: string
+            format: binary
+
+    # DISPLAYABLES # 
+
+    DisplayableUserProfileData:
+      type: object
+      properties:
+        uid:
+          type: string
+        ownerUid:
+          type: string
+        nickname:
+          type: string
+        avatarUrl:
+          type: string
+        message:
+          type: string
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+      example:
+        uid: bb7306a5-ab5a-4485-9e40-87b94c066288
+        ownerUid: bb7306a5-ab5a-4485-9e40-87b94c066288
+        nickname: Buguêncio
+        avatarUrl: https://storage.googleapis.com/heroku-todolist-server.appspot.com/uploads/avatars/default_user_avatar.png
+        message: Meu perfil é super bacana!
+        createdAt: Thu Jan 20 2022 05:22:28 GMT-0300 (GMT-03:00)
+        updatedAt: Thu Jan 20 2022 05:22:28 GMT-0300 (GMT-03:00)
+
+    # SUCCESSFUL RESPONSES #
+
+    GetUserProfileResponse:
+      type: object
+      properties:
+        profile:
+          type: object
+          '$ref': "#/components/schemas/DisplayableUserProfileData"
+      examples:
+        profile: 
+          $ref: "#/components/schemas/DisplayableUserProfileData/example"
+
+    UserProfileCreationResponse:
+      type: object
+      properties:
+        profile:
+          type: object
+          '$ref': "#/components/schemas/DisplayableUserProfileData"
+      examples:
+        profile: 
+          '$ref': "#/components/schemas/DisplayableUserProfileData/example"
+
+    UserProfileUpdateResponse:
+      type: object
+      properties:
+        message:
+          type: string
+        profile:
+          type: object
+          '$ref': "#/components/schemas/DisplayableUserProfileData"
+      example:
+        message: "Data was updated for the following fields: {Any updated field}"
+        profile: 
+          uid: bb7306a5-ab5a-4485-9e40-87b94c066288
+          ownerUid: bb7306a5-ab5a-4485-9e40-87b94c066288
+          nickname: Buguêncio
+          avatarUrl: https://storage.googleapis.com/heroku-todolist-server.appspot.com/uploads/avatars/default_user_avatar.png
+          message: Meu perfil é super bacana!
+          createdAt: Thu Jan 20 2022 05:22:28 GMT-0300 (GMT-03:00)
+          updatedAt: Thu Jan 20 2022 05:22:28 GMT-0300 (GMT-03:00)
+
+    UpdateUserProfileAvatarResponse:
+      type: object
+      properties:
+        profile:
+          type: object
+          '$ref': "#/components/schemas/DisplayableUserProfileData"
+      examples:
+        profile: 
+          '$ref': "#/components/schemas/DisplayableUserProfileData/example"
