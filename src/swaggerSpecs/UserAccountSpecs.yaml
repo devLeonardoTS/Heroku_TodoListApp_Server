@@ -20,10 +20,39 @@
               '$ref': '#/components/schemas/UserAccountCreationResponse'
       400:
         description: A bad request response.
-      404:
-        description: A not found request response.
+        content:
+          'application/json':
+            schema:
+              $ref: "#/components/schemas/FieldValidationErrorResponse"
+      409:
+        description: A conflict response.
+        content:
+          'application/json':
+            schema:
+              $ref: "#/components/schemas/ConflictErrorResponse"
       500:
         description: An unexpected error. If you receive this, contact the administrator.
+        content:
+          'application/json':
+            schema: 
+              type: object
+              properties:
+                unexpectedErrorExample:
+                  type: object
+                  $ref: "#/components/schemas/UnexpectedErrorResponse"
+                databaseErrorExample:
+                  type: object
+                  $ref: "#/components/schemas/DatabaseErrorResponse"
+                validatorErrorExample:
+                  type: object
+                  $ref: "#/components/schemas/ValidatorErrorResponse"
+              examples:
+                unexpectedErrorExample: 
+                  $ref: "#/components/schemas/UnexpectedErrorResponse/example"
+                databaseErrorExample:
+                  $ref: "#/components/schemas/DatabaseErrorResponse/example"
+                validatorErrorExample:
+                  $ref: "#/components/schemas/ValidatorErrorResponse/example"
 
 /api/users/accounts/recovery:
   patch:
@@ -45,10 +74,40 @@
               '$ref': '#/components/schemas/UserAccountRecoveryResponse'
       400:
         description: A bad request response.
-      404:
-        description: A not found request response.
+        content:
+          'application/json':
+            schema:
+              $ref: "#/components/schemas/FieldValidationErrorResponse"
+      401:
+        description: An unauthorized request response.
+        content:
+          'application/json':
+            schema: 
+              $ref: "#/components/schemas/UserAccountRecoveryErroResponse"
       500:
         description: An unexpected error. If you receive this, contact the administrator.
+        content:
+          'application/json':
+            schema: 
+              type: object
+              properties:
+                unexpectedErrorExample:
+                  type: object
+                  $ref: "#/components/schemas/UnexpectedErrorResponse"
+                databaseErrorExample:
+                  type: object
+                  $ref: "#/components/schemas/DatabaseErrorResponse"
+                validatorErrorExample:
+                  type: object
+                  $ref: "#/components/schemas/ValidatorErrorResponse"
+              examples:
+                unexpectedErrorExample: 
+                  $ref: "#/components/schemas/UnexpectedErrorResponse/example"
+                databaseErrorExample:
+                  $ref: "#/components/schemas/DatabaseErrorResponse/example"
+                validatorErrorExample:
+                  type: object
+                  $ref: "#/components/schemas/ValidatorErrorResponse/example"
 
 # COMPONENTS/SCHEMAS #
 

@@ -15,6 +15,7 @@ import { PaginatedGetConstants } from "../../../constants/pagination/PaginatedGe
 import { FieldValidationError } from "../../../errors/FieldValidationError";
 import { FieldValidationErrorData } from "../../../errors/FieldValidationErrorData";
 import { InvalidField } from "../../../errors/InvalidField";
+import { NotFoundError } from "../../../errors/NotFoundError";
 import { UnexpectedError } from "../../../errors/UnexpectedError";
 import { IPaginatedGetModel } from "../../../models/pagination/IPaginatedGetModel";
 import { PaginatedGetModel } from "../../../models/pagination/PaginatedGetModel";
@@ -58,14 +59,7 @@ export class GetAllUserTasksService extends ApplicationService<IPaginatedGetResp
                 await this.getListWithOffset(itemsCount, endsAtPage, limit, page, offset, creatorUid);
 
             if (getUserTasksByOffsetResponse.data === null){
-                this.error = new FieldValidationError(
-                    new FieldValidationErrorData([
-                        new InvalidField(
-                            PaginatedGetConstants.PAGE, 
-                            PaginatedGetConstants.invalidPageRequestMessage(page, endsAtPage)
-                        )
-                    ])
-                );
+                this.error = new NotFoundError();
                 return false;
             }
 
@@ -81,14 +75,7 @@ export class GetAllUserTasksService extends ApplicationService<IPaginatedGetResp
                 await this.getListWithCursor(itemsCount, limit, cursor, creatorUid);
 
             if (getUserTasksByCursorResponse.data === null){
-                this.error = new FieldValidationError(
-                    new FieldValidationErrorData([
-                        new InvalidField(
-                            PaginatedGetConstants.CURSOR, 
-                            PaginatedGetConstants.invalidCursorRequestMessage(itemsCount, cursor)
-                        )
-                    ])
-                );
+                this.error = new NotFoundError();
                 return false;
             }
 

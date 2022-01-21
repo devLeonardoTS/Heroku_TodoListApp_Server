@@ -1,0 +1,149 @@
+# COMPONENTS/SCHEMAS #
+
+components:
+  schemas:
+
+    # MODELS #
+
+    HttpError:
+      type: object
+      properties:
+        code:
+          type: integer
+        status:
+          type: string
+        message:
+          type: string
+        data:
+          type: object
+          nullable: true
+
+    # ERROR RESPONSES #
+    
+    # CODE: 500 - INTERNAL_SERVER_ERROR #
+
+    UnexpectedErrorResponse:
+      allOf: 
+        - $ref: "#/components/schemas/HttpError"
+        - type: object
+          example:
+            code: 500
+            status: "UNEXPECTED_ERROR"
+            message: "Custom message OR Something is not quite right in our end, our team has been notified and will promptly look into it. Please try again later."
+            data: null
+
+    DatabaseErrorResponse:
+      allOf: 
+        - $ref: "#/components/schemas/HttpError"
+        - type: object
+          example:
+            code: 500
+            status: "DATABASE_INSERTION_ERROR or DATABASE_RETRIEVAL_ERROR or DATABASE_UPDATE_ERROR or DATABASE_REMOVAL_ERROR or DATABASE_TRANSACTION_ERROR or DATABASE_VERIFICATION_ERROR"
+            message: "A message related to the error."
+            data: null
+
+    FileStorageErrorResponse:
+      allOf: 
+        - $ref: "#/components/schemas/HttpError"
+        - type: object
+          example:
+            code: 500
+            status: "FILE_UPLOAD_ERROR or FILE_REMOVAL_ERROR"
+            message: "A message related to the error's status."
+            data: null
+
+    ValidatorErrorResponse:
+      allOf: 
+        - $ref: "#/components/schemas/HttpError"
+        - type: object
+          example:
+            code: 500
+            status: "VALIDATOR_ERROR"
+            message: "Something went wrong during the validation of your data. Please try again later, if the problem persists notify the administrators."
+            data: null
+
+    # CODE: 409 - CONFLICT #
+
+    ConflictErrorResponse:
+      allOf: 
+        - $ref: "#/components/schemas/HttpError"
+        - type: object
+          example:
+            code: 409
+            status: "CONFLICT"
+            message: "The data you sent is conflicting with an existing data. Change your input and try again."
+            data: "The same object returned by a BAD_REQUEST error, pointing to the field that presents the conflicting value."
+
+    # CODE: 404 - NOT_FOUND #
+
+    NotFoundErrorResponse:
+      allOf: 
+        - $ref: "#/components/schemas/HttpError"
+        - type: object
+          example:
+            code: 404
+            status: "NOT_FOUND"
+            message: "Resource not found."
+            data: null
+
+    # CODE: 401 - UNAUTHORIZED #
+
+    AccessPermissionErrorResponse:
+      allOf: 
+        - $ref: "#/components/schemas/HttpError"
+        - type: object
+          example:
+            code: 401
+            status: "REQUEST_NOT_OWNER"
+            message: "Unauthorized request. This resource is only accessible to it's owner."
+            data: null
+
+    UserAuthenticationErrorResponse:
+      allOf: 
+        - $ref: "#/components/schemas/HttpError"
+        - type: object
+          example:
+            code: 401
+            status: "INVALID_CREDENTIALS or AUTHENTICATION_REQUIRED or EXPIRED_ACCESS_TOKEN or INVALID_ACCESS_TOKEN or INACTIVE_ACCESS_TOKEN or INVALID_REFRESH_TOKEN or EXPIRED_REFRESH_TOKEN"
+            message: "A message related to the error's status."
+            data: null
+
+    UserAccountRecoveryErrorResponse:
+      allOf: 
+        - $ref: "#/components/schemas/HttpError"
+        - type: object
+          example:
+            code: 401
+            status: "INVALID_RECOVERY_TOKEN"
+            message: "A message related to the error's status."
+            data: null
+
+    # CODE: 400 - BAD_REQUEST #
+
+    FieldValidationErrorResponse:
+      allOf:
+        - $ref: "#/components/schemas/HttpError"
+        - type: object
+          example:
+            code: 400
+            status: "INVALID_FIELD"
+            message: "Invalid field value. Verify your input and try again."
+            data: {
+              invalidFields: [
+                {
+                  name: "The name of a parameter in Path, Query or Body",
+                  reason: "The reason for the parameter (field) invalidation",
+                  fieldDetails: {
+                    fieldValueType: "STRING or NUMBER or BOOLEAN",
+                    isRequired: "BOOLEAN",
+                    minValue: "NUMBER or NULL",
+                    maxValue: "NUMBER or NULL",
+                    minLength: "NUMBER or NULL",
+                    maxLength: "NUMBER or NULL",
+                    acceptableStringValue: "[STRING] or NULL",
+                    acceptableNumberValues: "[NUMBER] or NULL",
+                    _attention: "fieldDetails can be NULL - this field doesn't exist. Don't validate it on your app."
+                  }
+                }
+              ]
+            }

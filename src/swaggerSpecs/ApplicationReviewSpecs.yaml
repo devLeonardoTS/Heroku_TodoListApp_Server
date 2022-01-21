@@ -24,11 +24,43 @@
           content:
             'application/json':
               schema:
-                '$ref': '#/components/schemas/ApplicationReviewsPaginatedGetResponse'
+                '$ref': '#/components/schemas/PaginatedGetAllAplicationReviewsResponse'
         400:
           description: A bad request response.
+          content:
+            'application/json':
+              schema:
+                $ref: "#/components/schemas/FieldValidationErrorResponse"
+        404:
+          description: The resource was not found.
+          content:
+            'application/json':
+              schema:
+                $ref: "#/components/schemas/NotFoundErrorResponse"
         500:
-          description: An unexpected error. If you receive this, contact the administrator.
+        description: An unexpected error. If you receive this, contact the administrator.
+        content:
+          'application/json':
+            schema: 
+              type: object
+              properties:
+                unexpectedErrorExample:
+                  type: object
+                  $ref: "#/components/schemas/UnexpectedErrorResponse"
+                databaseErrorExample:
+                  type: object
+                  $ref: "#/components/schemas/DatabaseErrorResponse"
+                validatorErrorExample:
+                  type: object
+                  $ref: "#/components/schemas/ValidatorErrorResponse"
+              examples:
+                unexpectedErrorExample: 
+                  $ref: "#/components/schemas/UnexpectedErrorResponse/example"
+                databaseErrorExample:
+                  $ref: "#/components/schemas/DatabaseErrorResponse/example"
+                validatorErrorExample:
+                  type: object
+                  $ref: "#/components/schemas/ValidatorErrorResponse/example"
 
 /api/app_reviews/{appReviewUid}:
   get:
@@ -50,10 +82,41 @@
                 '$ref': '#/components/schemas/GetApplicationReviewResponse'
       400:
         description: A bad request response.
+        content:
+          'application/json':
+            schema:
+              $ref: "#/components/schemas/FieldValidationErrorResponse"
       404:
-        description: A not found request response.
+        description: The resource was not found.
+        content:
+          'application/json':
+            schema:
+              $ref: "#/components/schemas/NotFoundErrorResponse"
       500:
         description: An unexpected error. If you receive this, contact the administrator.
+        content:
+          'application/json':
+            schema: 
+              type: object
+              properties:
+                unexpectedErrorExample:
+                  type: object
+                  $ref: "#/components/schemas/UnexpectedErrorResponse"
+                databaseErrorExample:
+                  type: object
+                  $ref: "#/components/schemas/DatabaseErrorResponse"
+                validatorErrorExample:
+                  type: object
+                  $ref: "#/components/schemas/ValidatorErrorResponse"
+              examples:
+                unexpectedErrorExample: 
+                  $ref: "#/components/schemas/UnexpectedErrorResponse/example"
+                databaseErrorExample:
+                  $ref: "#/components/schemas/DatabaseErrorResponse/example"
+                validatorErrorExample:
+                  type: object
+                  $ref: "#/components/schemas/ValidatorErrorResponse/example"
+
 
 /api/users/{userUid}/app_review:
   get:
@@ -73,8 +136,42 @@
           'application/json':
             schema:
               '$ref': '#/components/schemas/GetApplicationReviewResponse'
+      400:
+        description: A bad request response.
+        content:
+          'application/json':
+            schema:
+              $ref: "#/components/schemas/FieldValidationErrorResponse"
+      404:
+        description: The resource was not found.
+        content:
+          'application/json':
+            schema:
+              $ref: "#/components/schemas/NotFoundErrorResponse"
       500:
         description: An unexpected error. If you receive this, contact the administrator.
+        content:
+          'application/json':
+            schema: 
+              type: object
+              properties:
+                unexpectedErrorExample:
+                  type: object
+                  $ref: "#/components/schemas/UnexpectedErrorResponse"
+                databaseErrorExample:
+                  type: object
+                  $ref: "#/components/schemas/DatabaseErrorResponse"
+                validatorErrorExample:
+                  type: object
+                  $ref: "#/components/schemas/ValidatorErrorResponse"
+              examples:
+                unexpectedErrorExample: 
+                  $ref: "#/components/schemas/UnexpectedErrorResponse/example"
+                databaseErrorExample:
+                  $ref: "#/components/schemas/DatabaseErrorResponse/example"
+                validatorErrorExample:
+                  type: object
+                  $ref: "#/components/schemas/ValidatorErrorResponse/example"
 
   post:
     tags: ["TodoList API - USER END-POINTS"]
@@ -98,8 +195,60 @@
           'application/json':
             schema:
               '$ref': '#/components/schemas/ApplicationReviewCreationResponse'
+      400:
+        description: A bad request response.
+        content:
+          'application/json':
+            schema:
+              $ref: "#/components/schemas/FieldValidationErrorResponse"
+      401:
+        description: An unauthorized request response.
+        content:
+          'application/json':
+            schema: 
+              type: object
+              properties:
+                accessPermissionErrorExample:
+                  type: object
+                  $ref: "#/components/schemas/AccessPermissionErrorResponse"
+                userAuthenticationErrorExample:
+                  type: object
+                  $ref: "#/components/schemas/UserAuthenticationErrorResponse"
+              examples:
+                accessPermissionErrorExample: 
+                  $ref: "#/components/schemas/AccessPermissionErrorResponse/example"
+                userAuthenticationErrorExample:
+                  $ref: "#/components/schemas/UserAuthenticationErrorResponse/example"
+      404:
+        description: The resource was not found.
+        content:
+          'application/json':
+            schema:
+              $ref: "#/components/schemas/NotFoundErrorResponse"
       500:
         description: An unexpected error. If you receive this, contact the administrator.
+        content:
+          'application/json':
+            schema: 
+              type: object
+              properties:
+                unexpectedErrorExample:
+                  type: object
+                  $ref: "#/components/schemas/UnexpectedErrorResponse"
+                databaseErrorExample:
+                  type: object
+                  $ref: "#/components/schemas/DatabaseErrorResponse"
+                validatorErrorExample:
+                  type: object
+                  $ref: "#/components/schemas/ValidatorErrorResponse"
+              examples:
+                unexpectedErrorExample: 
+                  $ref: "#/components/schemas/UnexpectedErrorResponse/example"
+                databaseErrorExample:
+                  $ref: "#/components/schemas/DatabaseErrorResponse/example"
+                validatorErrorExample:
+                  type: object
+                  $ref: "#/components/schemas/ValidatorErrorResponse"
 
   delete:
     tags: ["TodoList API - USER END-POINTS"]
@@ -117,8 +266,54 @@
           'application/json':
             schema:
               '$ref': '#/components/schemas/ApplicationReviewRemovalResponse'
+      400:
+        description: A bad request response.
+        content:
+          'application/json':
+            schema:
+              $ref: "#/components/schemas/FieldValidationErrorResponse"
+      401:
+        description: An unauthorized request response.
+        content:
+          'application/json':
+            schema: 
+              type: object
+              properties:
+                accessPermissionErrorExample:
+                  type: object
+                  $ref: "#/components/schemas/AccessPermissionErrorResponse"
+                userAuthenticationErrorExample:
+                  type: object
+                  $ref: "#/components/schemas/UserAuthenticationErrorResponse"
+              examples:
+                accessPermissionErrorExample: 
+                  $ref: "#/components/schemas/AccessPermissionErrorResponse/example"
+                userAuthenticationErrorExample:
+                  $ref: "#/components/schemas/UserAuthenticationErrorResponse/example"
+      404:
+        description: The resource was not found.
+        content:
+          'application/json':
+            schema:
+              $ref: "#/components/schemas/NotFoundErrorResponse"
       500:
         description: An unexpected error. If you receive this, contact the administrator.
+        content:
+          'application/json':
+            schema: 
+              type: object
+              properties:
+                unexpectedErrorExample:
+                  type: object
+                  $ref: "#/components/schemas/UnexpectedErrorResponse"
+                databaseErrorExample:
+                  type: object
+                  $ref: "#/components/schemas/DatabaseErrorResponse"
+              examples:
+                unexpectedErrorExample: 
+                  $ref: "#/components/schemas/UnexpectedErrorResponse/example"
+                databaseErrorExample:
+                  $ref: "#/components/schemas/DatabaseErrorResponse/example"
 
 # COMPONENTS/SCHEMAS #
 
@@ -265,7 +460,7 @@ components:
           updatedAt: Thu Jan 20 2022 17:08:13 GMT-0300 (GMT-03:00)
           active: true
 
-    ApplicationReviewsPaginatedGetResponse:
+    PaginatedGetAllAplicationReviewsResponse:
       type: object
       properties:
         paginatedByOffset:
