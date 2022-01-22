@@ -147,3 +147,17 @@ components:
                 }
               ]
             }
+
+    FileUploadErrorResponse:
+      allOf:
+        - $ref: "#/components/schemas/HttpError"
+        - type: object
+          example:
+            code: 400
+            status: "INVALID_AVATAR_FILE_SIZE or INVALID_AVATAR_FILE_TYPE"
+            message: "A message related to the error's status."
+            data: {
+              acceptableMimeTypes: "A Mime Type like (image/jpeg)",
+              limitInBytes: 3145728,
+              _attention: "data can be NULL - this [_attention] field doesn't exist. Don't validate it on your app."
+            }

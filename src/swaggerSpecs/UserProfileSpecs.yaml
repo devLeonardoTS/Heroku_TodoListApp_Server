@@ -229,7 +229,19 @@
         content:
           'application/json':
             schema:
-              $ref: "#/components/schemas/FieldValidationErrorResponse"
+              type: object
+              properties:
+                fieldValidationErrorExample:
+                  type: object
+                  $ref: "#/components/schemas/FieldValidationErrorResponse"
+                fileUploadErrorExample:
+                  type: object
+                  $ref: "#/components/schemas/FileUploadErrorResponse"
+              examples:
+                fieldValidationErrorExample:
+                  $ref: "#/components/schemas/FieldValidationErrorResponse/example"
+                fileUploadErrorExample:
+                  $ref: "#/components/schemas/FileUploadErrorResponse/example"
       401:
         description: An unauthorized request response.
         content:
