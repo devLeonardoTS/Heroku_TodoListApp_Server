@@ -2,7 +2,7 @@
 
 /api/users/{userUid}/profile:
   get:
-    tags: ["TodoList API - USER END-POINTS"]
+    tags: ["TodoList API - PUBLIC END-POINTS"]
     description: Returns the user's profile. The user must be authenticated.
     parameters: 
       - name: userUid
@@ -23,19 +23,6 @@
           'application/json':
             schema:
               $ref: "#/components/schemas/FieldValidationErrorResponse"
-      401:
-        description: An unauthorized request response.
-        content:
-          'application/json':
-            schema: 
-              type: object
-              properties:
-                userAuthenticationErrorExample:
-                  type: object
-                  $ref: "#/components/schemas/UserAuthenticationErrorResponse"
-              examples:
-                userAuthenticationErrorExample:
-                  $ref: "#/components/schemas/UserAuthenticationErrorResponse/example"
       404:
         description: The resource was not found.
         content:

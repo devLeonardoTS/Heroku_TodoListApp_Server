@@ -16,7 +16,6 @@ const usersProfileRouter = Router({ mergeParams: true });
  * $ref: "#/api/users/{userUid}/profile"
  */
 usersProfileRouter.get("/", 
-    new UserAuthenticationMiddleware().requireAuthenticatedUser,
     new GetUserProfileController().handle
 );
 
