@@ -1,7 +1,7 @@
 {
   "name": "heroku_todolistapp_server",
   "version": "1.0.0",
-  "description": "O back-end (Web api) de uma aplicação simples que permitirá os usuários gerenciarem suas tarefas.",
+  "description": "Uma RESTful API que fornece operações no estilo Create, Read, Update, Delete para aplicações front-end (Web ou Mobile) de Todo Listing (Listas de Tarefas simples).",
   "main": "server.js",
   "scripts": {
     "start": "node dist/server.js",

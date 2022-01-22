@@ -4,6 +4,7 @@
   get:
     tags: ["TodoList API - PUBLIC END-POINTS"]
     description: Returns the user's profile. The user must be authenticated.
+    security: []
     parameters: 
       - name: userUid
         in: path

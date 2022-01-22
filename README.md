@@ -1,5 +1,5 @@
 # Heroku_TodoListApp_Server
-Uma RESTful API que fornece operações no estilo Create, Read, Update, Delete para aplicações front-end (Web ou Mobile).
+Uma RESTful API que fornece operações no estilo Create, Read, Update, Delete para aplicações front-end (Web ou Mobile) de Todo Listing (Listas de Tarefas simples).
 
 Foi desenvolvida como meio para que eu adquira mais conhecimentos sobre JavaScript, TypeScript, Arquitetura REST, integrações com Cloud APIs como o Heroku PostgreSQL/Google Firebase/Google Cloud (Armazenamos as imagens dos perfis dos usuários em um bucket do Google Cloud Storage e o banco de dados está na nuvem), Testes (unitários, end-to-end, etc) utilizando a biblioteca Jest e também para aprender mais sobre ambientes de produção, uma vez que o servidor está hospedado e ativo em um Dyno (imagine um Container do Docker) na Heroku.
 
