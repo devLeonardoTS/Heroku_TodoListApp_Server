@@ -17,7 +17,7 @@ export const swaggerOptions: Options = {
         openapi: "3.0.0",
         info: {
             title: "devLeonardoTS's ToDoList API",
-            description: "<hr>devLeonardoTS's ToDoList API Documentation <br> <small>_Atenção: Aperte F5 caso você fique preso em um carregamento infinito, isso acontece ao não declarar parâmetros Path._</small><hr>",
+            description: "<hr><br> __devLeonardoTS's ToDoList API Dynamic Documentation__ <br> <small>_Atenção: Aperte F5 caso você fique preso em um carregamento infinito, isso acontece ao não declarar parâmetros Path._</small><br><hr><br> __Links__",
             version: "1.0.0",
             contact: {
                 name: "devLeonardoTS",
